@@ -22,7 +22,7 @@ public class SearchGames
 
     public class Result
     {
-        public class SearchGame
+        public class SearchGameResult
         {
             public long Id { get; set; }
     
@@ -31,7 +31,7 @@ public class SearchGames
             public List<string> Platforms { get; set; }
         }
         
-        public List<SearchGame> Games { get; set; }
+        public List<SearchGameResult> Games { get; set; }
     }
 
     public class Handler : IRequestHandler<Query, Result>
@@ -49,7 +49,7 @@ public class SearchGames
         {
             var games = await _gameService.SearchGameByTitle(query.GameTitle);
 
-            return new Result { Games = games.Select(_mapper.Map<APIGame, Result.SearchGame>).ToList() };
+            return new Result { Games = games.Select(_mapper.Map<APIGame, Result.SearchGameResult>).ToList() };
         }
     }
 }

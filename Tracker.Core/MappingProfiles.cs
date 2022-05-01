@@ -24,7 +24,7 @@ public class MappingProfiles : Profile
         CreateMap<AddTrackedGame.Command, TrackedGame>();
         
         // SearchGame
-        CreateMap<APIGame, SearchGames.Result.SearchGame>();
+        CreateMap<APIGame, SearchGames.Result.SearchGameResult>();
 
         // GetGame
         CreateMap<Game, GetGame.Result>()
