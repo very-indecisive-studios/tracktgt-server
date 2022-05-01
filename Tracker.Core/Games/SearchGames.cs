@@ -47,8 +47,6 @@ public class SearchGames
         
         public async Task<Result> Handle(Query query, CancellationToken cancellationToken)
         {
-            throw new ArithmeticException();
-            
             var games = await _gameService.SearchGameByTitle(query.GameTitle);
 
             return new Result { Games = games.Select(_mapper.Map<APIGame, Result.SearchGame>).ToList() };
