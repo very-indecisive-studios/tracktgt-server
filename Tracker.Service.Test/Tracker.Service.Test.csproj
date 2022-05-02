@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Tracker.Service.Game\Tracker.Service.Game.csproj" />
+      <ProjectReference Include="..\Tracker.Service.User\Tracker.Service.User.csproj" />
     </ItemGroup>
 
 </Project>
