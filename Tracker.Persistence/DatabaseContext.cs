@@ -14,15 +14,7 @@ public class DatabaseContext : DbContext
     public DatabaseContext() { }
     
     public DatabaseContext(DbContextOptions<DatabaseContext> options): base(options) { }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var dbFile = Path.Combine(Environment.GetFolderPath(
-            Environment.SpecialFolder.ApplicationData), "tracktgt.db");
-
-        optionsBuilder.UseSqlite($"Data Source={dbFile}");
-    }
-
+    
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         UpdateAuditFields();
