@@ -21,13 +21,13 @@ public class MappingProfiles : Profile
                 options => options.MapFrom(apiGame => apiGame.Id));
         
         // AddGame
-        CreateMap<AddTrackedGame.Command, TrackedGame>();
+        CreateMap<AddTrackedGameCommand, TrackedGame>();
         
         // SearchGame
-        CreateMap<APIGame, SearchGames.Result.SearchGameResult>();
+        CreateMap<APIGame, SearchGamesResult.SearchGameResult>();
 
         // GetGame
-        CreateMap<Game, GetGame.Result>()
+        CreateMap<Game, GetGameResult>()
             .ForSourceMember(game => game.Id,
                 options => options.DoNotValidate())
             .ForMember(

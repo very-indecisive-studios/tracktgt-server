@@ -5,51 +5,48 @@ using Tracker.Service.Game;
 
 namespace Tracker.Core.Games;
 
-public class SearchGames
+public class SearchGamesQuery : IRequest<SearchGamesResult>
 {
-    public class Query : IRequest<Result>
+    public string GameTitle { get; set; }
+}
+
+public class SearchGamesValidator : AbstractValidator<SearchGamesQuery>
+{
+    public SearchGamesValidator()
     {
-        public string GameTitle { get; set; }
+        RuleFor(query => query.GameTitle).NotEmpty();
+    }
+}
+
+public class SearchGamesResult
+{
+    public class SearchGameResult
+    {
+        public long Id { get; set; }
+
+        public string Title { get; set; }
+
+        public List<string> Platforms { get; set; }
     }
     
-    public class Validator : AbstractValidator<Query>
+    public List<SearchGameResult> Games { get; set; }
+}
+
+public class SearchGamesHandler : IRequestHandler<SearchGamesQuery, SearchGamesResult>
+{
+    private readonly IGameService _gameService;
+    private readonly IMapper _mapper;
+
+    public SearchGamesHandler(IGameService gameService, IMapper mapper)
     {
-        public Validator()
-        {
-            RuleFor(query => query.GameTitle).NotEmpty();
-        }
+        _gameService = gameService;
+        _mapper = mapper;
     }
-
-    public class Result
-    {
-        public class SearchGameResult
-        {
-            public long Id { get; set; }
     
-            public string Title { get; set; }
-    
-            public List<string> Platforms { get; set; }
-        }
-        
-        public List<SearchGameResult> Games { get; set; }
-    }
-
-    public class Handler : IRequestHandler<Query, Result>
+    public async Task<SearchGamesResult> Handle(SearchGamesQuery searchGamesQuery, CancellationToken cancellationToken)
     {
-        private readonly IGameService _gameService;
-        private readonly IMapper _mapper;
+        var games = await _gameService.SearchGameByTitle(searchGamesQuery.GameTitle);
 
-        public Handler(IGameService gameService, IMapper mapper)
-        {
-            _gameService = gameService;
-            _mapper = mapper;
-        }
-        
-        public async Task<Result> Handle(Query query, CancellationToken cancellationToken)
-        {
-            var games = await _gameService.SearchGameByTitle(query.GameTitle);
-
-            return new Result { Games = games.Select(_mapper.Map<APIGame, Result.SearchGameResult>).ToList() };
-        }
+        return new SearchGamesResult { Games = games.Select(_mapper.Map<APIGame, SearchGamesResult.SearchGameResult>).ToList() };
     }
 }

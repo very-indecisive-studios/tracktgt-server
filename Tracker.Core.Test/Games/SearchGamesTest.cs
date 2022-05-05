@@ -17,7 +17,7 @@ public class SearchGamesTest
 
     private IMapper _mapper { get; set; }
     
-    private SearchGames.Handler _handler { get; set; }
+    private SearchGamesHandler SearchGamesHandler { get; set; }
     
     [TestInitialize]
     public void TestClassInit()
@@ -30,7 +30,7 @@ public class SearchGamesTest
         });
         _mapper = mappingConfig.CreateMapper();
 
-        _handler = new SearchGames.Handler(_mockGameService.Object, _mapper);
+        SearchGamesHandler = new SearchGamesHandler(_mockGameService.Object, _mapper);
     }
 
     [TestMethod]
@@ -60,7 +60,7 @@ public class SearchGamesTest
                 It.Is<string>(s => "chaos chef".Contains(s.ToLower()))))
             .ReturnsAsync(fakeAPIGameList);
         
-        var result = await _handler.Handle(new SearchGames.Query()
+        var result = await SearchGamesHandler.Handle(new SearchGamesQuery()
         {
             GameTitle = gameTitle
         }, CancellationToken.None);
@@ -81,7 +81,7 @@ public class SearchGamesTest
             .Setup(service => service.SearchGameByTitle(It.IsAny<string>()))
             .ReturnsAsync(new List<APIGame>());
         
-        var result = await _handler.Handle(new SearchGames.Query()
+        var result = await SearchGamesHandler.Handle(new SearchGamesQuery()
         {
             GameTitle = gameTitle
         }, CancellationToken.None);

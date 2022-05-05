@@ -14,9 +14,9 @@ public class GameController : APIControllerBase
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     [HttpPost("track/add", Name = nameof(AddTrackedGame))]
-    public Task<Unit> AddTrackedGame(AddTrackedGame.Command command)
+    public Task<Unit> AddTrackedGame(AddTrackedGameCommand addTrackedGameCommand)
     {
-        return _mediator.Send(command);
+        return _mediator.Send(addTrackedGameCommand);
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -26,9 +26,9 @@ public class GameController : APIControllerBase
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     [HttpGet("{id:long}", Name = nameof(GetGame))]
-    public Task<GetGame.Result> GetGame(long id)
+    public Task<GetGameResult> GetGame(long id)
     {
-        return _mediator.Send(new GetGame.Query { GameId = id});
+        return _mediator.Send(new GetGameQuery { GameId = id});
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,8 +38,8 @@ public class GameController : APIControllerBase
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     [HttpGet("search", Name = nameof(SearchGames))]
-    public Task<SearchGames.Result> SearchGames([FromQuery] string title)
+    public Task<SearchGamesResult> SearchGames([FromQuery] string title)
     {
-        return _mediator.Send(new SearchGames.Query { GameTitle = title});
+        return _mediator.Send(new SearchGamesQuery { GameTitle = title});
     }
 }

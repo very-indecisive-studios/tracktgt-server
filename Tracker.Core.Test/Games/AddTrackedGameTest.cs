@@ -23,7 +23,7 @@ public class AddTrackedGameTest
     
     private IMapper _mapper { get; set; }
     
-    private AddTrackedGame.Handler _handler { get; set; }
+    private AddTrackedGameHandler AddTrackedGameHandler { get; set; }
     
     [TestInitialize]
     public void TestClassInit()
@@ -38,7 +38,7 @@ public class AddTrackedGameTest
         });
         _mapper = mappingConfig.CreateMapper();
 
-        _handler = new AddTrackedGame.Handler(_mockDatabase.Object, _mockGameService.Object, _mapper);
+        AddTrackedGameHandler = new AddTrackedGameHandler(_mockDatabase.Object, _mockGameService.Object, _mapper);
     }
 
     [TestMethod]
@@ -51,7 +51,7 @@ public class AddTrackedGameTest
             Title = "Chaos Chef"
         };
         
-        var command = new AddTrackedGame.Command
+        var command = new AddTrackedGameCommand
         {
             UserId = default,
             GameId = fakeGame.RemoteId,
@@ -68,7 +68,7 @@ public class AddTrackedGameTest
             .ReturnsDbSet(new List<TrackedGame>());
 
         // Execute
-        await _handler.Handle(command, CancellationToken.None);
+        await AddTrackedGameHandler.Handle(command, CancellationToken.None);
         
         // Verify
         _mockGameService.Verify(service => service.GetGameById(It.IsAny<long>()), Times.Never);
@@ -88,7 +88,7 @@ public class AddTrackedGameTest
             Platforms = new List<string> { "PC" }
         };
         
-        var command = new AddTrackedGame.Command
+        var command = new AddTrackedGameCommand
         {
             UserId = default,
             GameId = fakeAPIGame.Id,
@@ -108,7 +108,7 @@ public class AddTrackedGameTest
             .ReturnsAsync(fakeAPIGame);
         
         // Execute
-        await _handler.Handle(command, CancellationToken.None);
+        await AddTrackedGameHandler.Handle(command, CancellationToken.None);
         
         // Verify
         _mockGameService.Verify(service => service.GetGameById(It.IsAny<long>()));
@@ -121,7 +121,7 @@ public class AddTrackedGameTest
     public async Task AddTrackedGame_GameNotFound()
     {
         // Setup
-        var command = new AddTrackedGame.Command
+        var command = new AddTrackedGameCommand
         {
             UserId = default,
             GameId = 42069,
@@ -141,7 +141,7 @@ public class AddTrackedGameTest
             .ReturnsAsync((APIGame?) null);
         
         // Execute & Verify
-        await Assert.ThrowsExceptionAsync<NotFoundException>(() => _handler.Handle(command, CancellationToken.None));
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddTrackedGameHandler.Handle(command, CancellationToken.None));
         _mockGameService.Verify(service => service.GetGameById(It.IsAny<long>()));
         _mockDatabase.Verify(database => database.TrackedGames.Add(It.IsAny<TrackedGame>()), Times.Never);
         _mockDatabase.Verify(database => database.Games.Add(It.IsAny<Game>()), Times.Never);
