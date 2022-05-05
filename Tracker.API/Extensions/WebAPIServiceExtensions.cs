@@ -22,11 +22,7 @@ public static class WebAPIServiceExtensions
             {
                 config.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(Tracker.Core.Application)));
             });
-        
-        services.AddSingleton<IGameService>(new IGDBAPIService(
-            configuration["IGDB:ClientId"], 
-            configuration["IGDB:ClientSecret"]));
-        
+
         services.AddMediatR(Assembly.GetAssembly(typeof(Tracker.Core.Application)));
         services.AddAutoMapper(Assembly.GetAssembly(typeof(Tracker.Core.Application)));
 
