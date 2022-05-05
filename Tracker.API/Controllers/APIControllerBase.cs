@@ -7,5 +7,5 @@ namespace Tracker.API.Controllers;
 [Route("api/[controller]")]
 public abstract class APIControllerBase : ControllerBase
 {
-    protected IMediator _mediator => HttpContext.RequestServices.GetService<IMediator>() ?? throw new NullReferenceException();
+    protected IMediator Mediator => HttpContext.RequestServices.GetService<IMediator>() ?? throw new NullReferenceException();
 }
