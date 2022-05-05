@@ -53,7 +53,7 @@ public class AddTrackedGameTest
         
         var command = new AddTrackedGameCommand
         {
-            UserId = default,
+            RemoteUserId = "abcd",
             GameId = fakeGame.RemoteId,
             HoursPlayed = 200,
             Platform = "PC",
@@ -66,6 +66,8 @@ public class AddTrackedGameTest
             .ReturnsDbSet(new List<Game> { fakeGame });        
         _mockDatabase.Setup(db => db.TrackedGames)
             .ReturnsDbSet(new List<TrackedGame>());
+        _mockDatabase.Setup(db => db.Users)
+            .ReturnsDbSet(new List<User>() { new() { RemoteId = "abcd"} });
 
         // Execute
         await AddTrackedGameHandler.Handle(command, CancellationToken.None);
@@ -90,7 +92,7 @@ public class AddTrackedGameTest
         
         var command = new AddTrackedGameCommand
         {
-            UserId = default,
+            RemoteUserId = "abcd",
             GameId = fakeAPIGame.Id,
             HoursPlayed = 200,
             Platform = "PC",
@@ -103,6 +105,8 @@ public class AddTrackedGameTest
             .ReturnsDbSet(new List<Game>());        
         _mockDatabase.Setup(db => db.TrackedGames)
             .ReturnsDbSet(new List<TrackedGame>());
+        _mockDatabase.Setup(db => db.Users)
+            .ReturnsDbSet(new List<User>() { new() { RemoteId = "abcd"} });
         
         _mockGameService.Setup(service => service.GetGameById(command.GameId))
             .ReturnsAsync(fakeAPIGame);
@@ -123,7 +127,7 @@ public class AddTrackedGameTest
         // Setup
         var command = new AddTrackedGameCommand
         {
-            UserId = default,
+            RemoteUserId = "abcd",
             GameId = 42069,
             HoursPlayed = 200,
             Platform = "PC",
@@ -136,6 +140,8 @@ public class AddTrackedGameTest
             .ReturnsDbSet(new List<Game>());        
         _mockDatabase.Setup(db => db.TrackedGames)
             .ReturnsDbSet(new List<TrackedGame>());
+        _mockDatabase.Setup(db => db.Users)
+            .ReturnsDbSet(new List<User>() { new() { RemoteId = "abcd"} });
         
         _mockGameService.Setup(service => service.GetGameById(command.GameId))
             .ReturnsAsync((APIGame?) null);
@@ -149,7 +155,42 @@ public class AddTrackedGameTest
     }
     
     [TestMethod]
-    public void AddTrackedGame_UserNotFound()
+    public async Task AddTrackedGame_UserNotFound()
     {
+        // Setup
+        var fakeAPIGame = new APIGame()
+        {
+            Id = 42069,
+            Title = "Chaos Chef",
+            Platforms = new List<string> { "PC" }
+        };
+        
+        var command = new AddTrackedGameCommand
+        {
+            RemoteUserId = "abcd",
+            GameId = fakeAPIGame.Id,
+            HoursPlayed = 200,
+            Platform = "PC",
+            Format = GameFormat.Digital,
+            Status = GameStatus.Current,
+            Ownership = GameOwnership.Owned
+        };
+        
+        _mockDatabase.Setup(db => db.Games)
+            .ReturnsDbSet(new List<Game>());        
+        _mockDatabase.Setup(db => db.TrackedGames)
+            .ReturnsDbSet(new List<TrackedGame>());
+        _mockDatabase.Setup(db => db.Users)
+            .ReturnsDbSet(new List<User>());
+        
+        _mockGameService.Setup(service => service.GetGameById(command.GameId))
+            .ReturnsAsync(fakeAPIGame);
+        
+        // Execute & Verify
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddTrackedGameHandler.Handle(command, CancellationToken.None));
+        _mockGameService.Verify(service => service.GetGameById(It.IsAny<long>()), Times.Never);
+        _mockDatabase.Verify(database => database.TrackedGames.Add(It.IsAny<TrackedGame>()), Times.Never);
+        _mockDatabase.Verify(database => database.Games.Add(It.IsAny<Game>()), Times.Never);
+        _mockDatabase.Verify(database => database.SaveChangesAsync(CancellationToken.None), Times.Never);
     }
 }

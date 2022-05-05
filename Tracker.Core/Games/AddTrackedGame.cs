@@ -11,7 +11,7 @@ namespace Tracker.Core.Games;
 
 public class AddTrackedGameCommand : IRequest<Unit>
 {
-    public Guid UserId { get; set; }
+    public string RemoteUserId { get; set; }
     
     public long GameId { get; set; }
     
@@ -30,7 +30,7 @@ public class AddTrackedGameValidator : AbstractValidator<AddTrackedGameCommand>
 {
     public AddTrackedGameValidator()
     {
-        RuleFor(c => c.UserId).NotEmpty();
+        RuleFor(c => c.RemoteUserId).NotEmpty();
         RuleFor(c => c.GameId).NotEmpty();
         RuleFor(c => c.Platform).NotEmpty();
     }
@@ -51,8 +51,15 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit
 
     public async Task<Unit> Handle(AddTrackedGameCommand addTrackedGameCommand, CancellationToken cancellationToken)
     {
-        // TODO: Verify user id
-        
+        User? user = await _dbContext.Users
+            .AsNoTracking()
+            .Where(u => u.RemoteId == addTrackedGameCommand.RemoteUserId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (user == null)
+        {
+            throw new NotFoundException("User not found!");
+        }
         
         // Verify game id
         Game? game = await _dbContext.Games
@@ -73,7 +80,10 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit
             _dbContext.Games.Add(game);
         }
 
-        var trackedGame = new TrackedGame();
+        var trackedGame = new TrackedGame()
+        {
+            UserId = user.Id
+        };
         _mapper.Map<AddTrackedGameCommand, TrackedGame>(addTrackedGameCommand, trackedGame);
         _dbContext.TrackedGames.Add(trackedGame);
         
