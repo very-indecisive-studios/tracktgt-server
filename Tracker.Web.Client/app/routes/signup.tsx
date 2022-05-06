@@ -1,4 +1,4 @@
-import { Button, Container, PasswordInput, Text, TextInput, Title } from "@mantine/core";
+import { Button, Center, Container, createStyles, PasswordInput, Text, TextInput, Title } from "@mantine/core";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { Form, useActionData, useTransition } from "@remix-run/react";
 import { createUserSession, getUserId } from "~/utils/session.server";
@@ -103,23 +103,33 @@ export const action: ActionFunction = async ({ request }) => {
     }
 }
 
+const useStyles = createStyles((theme, _params, getRef) => ({
+    signUpContainer: {
+        width: "100vw",
+        height: "100vh"
+    }
+}));
+
 export default function SignUp() {
     const actionData = useActionData<ActionData>()
     const transition = useTransition()
+    const { classes } = useStyles();
 
     return (
         <>
-            <Container size={"xs"}>
-                <Title mb={24} order={1}>Create a tracktgt account</Title>
-                <Form method="post">
-                    <TextInput name="userName" label="Username" type="text" error={actionData?.userName}/>
-                    <TextInput mt={16} name="email" label="Email address" type="email" error={actionData?.email}/>
-                    <PasswordInput mt={16} name="password" label="Password" error={actionData?.password} />
-                    <PasswordInput mt={16} name="confirmPassword" label="Confirm Password" error={actionData?.confirmPassword} />
-                    <Button mt={16} type="submit" loading={transition.state === "submitting"}>Sign up</Button>
-                </Form>
-                <Text hidden={!(actionData?.formError)} color={"red"}>{actionData?.formError}</Text>
-            </Container>
+            <Center className={classes.signUpContainer}>
+                <Container size={"xs"}>
+                    <Title mb={24} order={1}>Create a tracktgt account</Title>
+                    <Form method="post">
+                        <TextInput name="userName" label="Username" type="text" error={actionData?.userName}/>
+                        <TextInput mt={16} name="email" label="Email address" type="email" error={actionData?.email}/>
+                        <PasswordInput mt={16} name="password" label="Password" error={actionData?.password} />
+                        <PasswordInput mt={16} name="confirmPassword" label="Confirm Password" error={actionData?.confirmPassword} />
+                        <Button mt={16} type="submit" loading={transition.state === "submitting"}>Sign up</Button>
+                    </Form>
+                    <Text hidden={!(actionData?.formError)} color={"red"}>{actionData?.formError}</Text>
+                </Container>
+            </Center>
         </>
     );
 }
