@@ -1,10 +1,4 @@
-﻿using System.Reflection;
-using FluentValidation.AspNetCore;
-using MediatR;
-using Sieve.Services;
-using Tracker.API.Middlewares;
-using Tracker.Service.Game;
-using Tracker.Service.User;
+﻿using Tracker.Service.Game;
 
 namespace Tracker.API.Extensions;
 
@@ -15,8 +9,5 @@ public static class ExternalAPIServiceExtentions
         services.AddSingleton<IGameService>(new IGDBAPIService(
             configuration["IGDB:ClientId"], 
             configuration["IGDB:ClientSecret"]));
-        
-        services.AddSingleton<IUserService>(new FirebaseAPIService(
-            configuration["Firebase:CredentialsPath"]));
     }
 }
