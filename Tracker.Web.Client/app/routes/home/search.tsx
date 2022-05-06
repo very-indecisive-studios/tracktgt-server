@@ -6,8 +6,7 @@ import {
     RegisterUserCommand,
     SearchGamesResult
 } from "../../../backend";
-import { createUserSession } from "~/utils/session.server";
-import { useLoaderData, useSearchParams } from "@remix-run/react";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 
 export const loader: LoaderFunction = async ({ request }) => {
     try {
@@ -27,15 +26,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 interface SearchResultItemProps {
-    title: string
+    id: number;
+    title: string;
 }
 
-function SearchResultItem({ title }: SearchResultItemProps) {
+function SearchResultItem({ id, title }: SearchResultItemProps) {
     return (
         <div style={{ width: "100%", margin: 'auto' }}>
             <Card shadow="xs" p="lg">
                 <Group>
-                    <Title order={4}>{title}</Title>
+                    <Title order={4}>
+                        <Link to={`/home/games/${id}`}>{title}</Link>
+                    </Title>
                 </Group>
             </Card>
         </div>
@@ -53,7 +55,7 @@ export default function Search() {
             <Title mb={16} order={2}>Search results for "{title}"</Title>
             <Stack>
                 {searchResults?.games?.map(g => (
-                    <SearchResultItem title={g.title ?? ""} />
+                    <SearchResultItem id={g.id ?? 0} title={g.title ?? ""} />
                 ))}
             </Stack>
         </Container>
