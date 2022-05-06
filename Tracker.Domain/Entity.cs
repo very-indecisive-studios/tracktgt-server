@@ -2,6 +2,8 @@
 
 namespace Tracker.Domain;
 
+#nullable disable
+
 public abstract class Entity
 {
     [Key]

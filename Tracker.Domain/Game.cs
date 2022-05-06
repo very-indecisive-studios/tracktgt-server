@@ -1,5 +1,7 @@
 ﻿namespace Tracker.Domain;
 
+#nullable disable
+
 public class Game : Entity
 {
     public long RemoteId { get; set; }

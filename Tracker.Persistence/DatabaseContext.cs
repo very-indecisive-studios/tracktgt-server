@@ -3,6 +3,8 @@ using Tracker.Domain;
 
 namespace Tracker.Persistence;
 
+#nullable disable
+
 public class DatabaseContext : DbContext
 {
     public virtual DbSet<User> Users { get; set; }

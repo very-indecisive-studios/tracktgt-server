@@ -1,5 +1,7 @@
 ﻿namespace Tracker.Domain;
 
+#nullable disable
+
 public enum GameFormat { Digital, Physical, Subscription }
 
 public enum GameStatus { Current, Playing, Paused, Planning  }

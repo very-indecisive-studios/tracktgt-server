@@ -1,5 +1,7 @@
 ﻿namespace Tracker.Domain;
 
+#nullable disable
+
 public class User : Entity
 {
     public string RemoteId { get; set; }
