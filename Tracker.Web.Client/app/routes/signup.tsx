@@ -1,10 +1,10 @@
-import { Button, Container, Text, TextInput, Title } from "@mantine/core";
+import { Button, Container, PasswordInput, Text, TextInput, Title } from "@mantine/core";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { Form, useActionData, useTransition } from "@remix-run/react";
 import { createUserSession, getUserId } from "~/utils/session.server";
 import { register } from "auth";
 import { z } from "zod";
-import {backendAPIClientInstance, BackendAPIException, CheckUserExistQuery, RegisterUserCommand} from "backend";
+import { backendAPIClientInstance, BackendAPIException, CheckUserExistQuery, RegisterUserCommand } from "backend";
 
 interface ActionData {
     userName?: string;
@@ -49,7 +49,6 @@ export const action: ActionFunction = async ({ request }) => {
     }
 
     const { email, password, userName } = parsedFormData.data;
-
 
     // Validate user name and email with server.
     try {
@@ -115,8 +114,8 @@ export default function SignUp() {
                 <Form method="post">
                     <TextInput name="userName" label="Username" type="text" error={actionData?.userName}/>
                     <TextInput mt={16} name="email" label="Email address" type="email" error={actionData?.email}/>
-                    <TextInput mt={16} name="password" label="Password" type="password" error={actionData?.password} />
-                    <TextInput mt={16} name="confirmPassword" label="Confirm Password" type="password" error={actionData?.confirmPassword} />
+                    <PasswordInput mt={16} name="password" label="Password" error={actionData?.password} />
+                    <PasswordInput mt={16} name="confirmPassword" label="Confirm Password" error={actionData?.confirmPassword} />
                     <Button mt={16} type="submit" loading={transition.state === "submitting"}>Sign up</Button>
                 </Form>
                 <Text hidden={!(actionData?.formError)} color={"red"}>{actionData?.formError}</Text>
