@@ -1,4 +1,4 @@
-import { Button, Header, Image, Text, Title, useMantineTheme, createStyles, Autocomplete } from "@mantine/core";
+import { Button, Header, Image, Text, Title, useMantineTheme, createStyles, Autocomplete, Footer, Group } from "@mantine/core";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { ArrowRight } from "tabler-icons-react";
@@ -81,6 +81,13 @@ export default function Index() {
 			</div>
 
 			<Hero/>
+
+			<Footer height={60} p="md">
+				<Group>
+					<Image width={32} height={32} src={"/vis.png"} />
+					<Text size={"sm"}>© Very Indecisive Studios  •  All rights reserved</Text>
+				</Group>
+			</Footer>
 		</>
 	);
 }
