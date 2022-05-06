@@ -8,8 +8,9 @@ namespace Tracker.Service.Test;
 public class GameServiceTest
 {
     private IGameService _gameService = new IGDBAPIService(
-        "",
-        "");
+        "z7yfn6x82euljmvkby8pfq6r4g2std",
+        "o7zffkbnxe417q0vgmkpub1ss4g0z5"
+    );
 
     [TestMethod]
     public async Task SearchGameTest()

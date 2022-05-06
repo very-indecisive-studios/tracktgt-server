@@ -13,13 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Core", "Tracker.Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Core.Test", "Tracker.Core.Test\Tracker.Core.Test.csproj", "{3AAEE060-3C93-4250-BC5D-75E520378F57}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Web.API", "Tracker.Web.API\Tracker.Web.API.csproj", "{F20A6CBB-E841-436C-89E5-5428D52283BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.API", "Tracker.API\Tracker.API.csproj", "{F20A6CBB-E841-436C-89E5-5428D52283BB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Service.Test", "Tracker.Service.Test\Tracker.Service.Test.csproj", "{ABA1577F-810C-4EE4-B954-4AA282EDAFFD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Service.Auth", "Tracker.Service.Auth\Tracker.Service.Auth.csproj", "{05695602-51D9-4637-A933-1A16DF99144B}"
-EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Tracker.Web.Client", "Tracker.Web.Client\Tracker.Web.Client.esproj", "{445DAFB5-188B-42B5-BDEB-BF70B5916503}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,12 +57,6 @@ Global
 		{05695602-51D9-4637-A933-1A16DF99144B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05695602-51D9-4637-A933-1A16DF99144B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05695602-51D9-4637-A933-1A16DF99144B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{445DAFB5-188B-42B5-BDEB-BF70B5916503}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{445DAFB5-188B-42B5-BDEB-BF70B5916503}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{445DAFB5-188B-42B5-BDEB-BF70B5916503}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{445DAFB5-188B-42B5-BDEB-BF70B5916503}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{445DAFB5-188B-42B5-BDEB-BF70B5916503}.Release|Any CPU.Build.0 = Release|Any CPU
-		{445DAFB5-188B-42B5-BDEB-BF70B5916503}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

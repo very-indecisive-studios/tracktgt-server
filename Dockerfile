@@ -5,7 +5,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Tracker.API/Tracker.API.csproj", "Tracker.API/"]
+COPY ["./Tracker.API/Tracker.API.csproj", "Tracker.API/"]
 RUN dotnet restore "Tracker.API/Tracker.API.csproj"
 COPY . .
 WORKDIR "/src/Tracker.API"
