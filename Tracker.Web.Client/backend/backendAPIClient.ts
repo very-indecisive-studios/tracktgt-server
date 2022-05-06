@@ -281,7 +281,7 @@ export class BackendAPIClient extends ExtBackendAPIClient {
 
         let options_: RequestInit = {
             body: content_,
-            method: "POST",
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -500,8 +500,12 @@ export enum GameOwnership {
 
 export class GetGameResult implements IGetGameResult {
     id?: number;
+    coverImageURL?: string;
     title?: string;
+    summary?: string;
+    rating?: number;
     platforms?: string[];
+    companies?: string[];
 
     constructor(data?: IGetGameResult) {
         if (data) {
@@ -515,11 +519,19 @@ export class GetGameResult implements IGetGameResult {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.coverImageURL = _data["coverImageURL"];
             this.title = _data["title"];
+            this.summary = _data["summary"];
+            this.rating = _data["rating"];
             if (Array.isArray(_data["platforms"])) {
                 this.platforms = [] as any;
                 for (let item of _data["platforms"])
                     this.platforms!.push(item);
+            }
+            if (Array.isArray(_data["companies"])) {
+                this.companies = [] as any;
+                for (let item of _data["companies"])
+                    this.companies!.push(item);
             }
         }
     }
@@ -534,11 +546,19 @@ export class GetGameResult implements IGetGameResult {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["coverImageURL"] = this.coverImageURL;
         data["title"] = this.title;
+        data["summary"] = this.summary;
+        data["rating"] = this.rating;
         if (Array.isArray(this.platforms)) {
             data["platforms"] = [];
             for (let item of this.platforms)
                 data["platforms"].push(item);
+        }
+        if (Array.isArray(this.companies)) {
+            data["companies"] = [];
+            for (let item of this.companies)
+                data["companies"].push(item);
         }
         return data;
     }
@@ -546,8 +566,12 @@ export class GetGameResult implements IGetGameResult {
 
 export interface IGetGameResult {
     id?: number;
+    coverImageURL?: string;
     title?: string;
+    summary?: string;
+    rating?: number;
     platforms?: string[];
+    companies?: string[];
 }
 
 export class SearchGamesResult implements ISearchGamesResult {

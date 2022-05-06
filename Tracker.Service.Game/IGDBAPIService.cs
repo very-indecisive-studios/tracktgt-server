@@ -47,7 +47,7 @@ public class IGDBAPIService : IGameService
         // TODO: Complete query.
         var result = await _client.QueryAsync<IGDBLib.Models.Game>(
             IGDBLib.IGDBClient.Endpoints.Games,
-            $"fields name,platforms.*; where id = ({id});"
+            $"fields name,platforms.*,summary,total_rating,cover.*,involved_companies.company.*; where id = ({id});"
         );
 
         if (result.Length > 0)
@@ -60,12 +60,27 @@ public class IGDBAPIService : IGameService
                 {
                     platforms.Add(platform.Abbreviation ?? platform.Name);
                 }
+
+                var coverURL = game.Cover != null ? "https:" + game.Cover.Value.Url : null;
+
+                var companies = new List<string>();
+                if (game.InvolvedCompanies != null)
+                {
+                    foreach (var company in game.InvolvedCompanies.Values)
+                    {
+                        companies.Add(company.Company.Value.Name);
+                    }
+                }
                 
                 return new APIGame()
                 {
                     Id = game.Id.Value,
+                    CoverImageURL = coverURL,
                     Title = game.Name,
+                    Summary = game.Summary,
+                    Rating = game.TotalRating ?? 0,
                     Platforms = platforms,
+                    Companies = companies
                 };
             }
         }

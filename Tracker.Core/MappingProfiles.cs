@@ -19,7 +19,15 @@ public class MappingProfiles : Profile
                 options => options.Ignore())
             .ForMember(
                 game => game.RemoteId,
-                options => options.MapFrom(apiGame => apiGame.Id));
+                options => options.MapFrom(apiGame => apiGame.Id))
+            .ForMember(
+                game => game.PlatformsString,
+                options => options.MapFrom(apiGame => string.Join(";", apiGame.Platforms))
+            )
+            .ForMember(
+                game => game.CompaniesString,
+                options => options.MapFrom(apiGame => string.Join(";", apiGame.Companies))
+            );
         
         // AddGame
         CreateMap<AddTrackedGameCommand, TrackedGame>();
@@ -33,7 +41,15 @@ public class MappingProfiles : Profile
                 options => options.DoNotValidate())
             .ForMember(
                 result => result.Id,
-                options => options.MapFrom(game => game.RemoteId));
+                options => options.MapFrom(game => game.RemoteId))
+            .ForMember(
+                result => result.Platforms,
+                options => options.MapFrom(game => game.PlatformsString.Split(';', StringSplitOptions.None))
+            )
+            .ForMember(
+                result => result.Companies,
+                options => options.MapFrom(game => game.CompaniesString.Split(';', StringSplitOptions.None))
+            );
         #endregion
 
         #region Users
