@@ -6,11 +6,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
       <UserSecretsId>aaf2b593-7da8-4758-bb58-a67ea9e7093d</UserSecretsId>
+      <RootNamespace>Tracker.API</RootNamespace>
   </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Tracker.Core\Tracker.Core.csproj" />
-      <ProjectReference Include="..\Tracker.Service.User\Tracker.Service.User.csproj" />
+      <ProjectReference Include="..\Tracker.Service.Auth\Tracker.Service.Auth.csproj" />
     </ItemGroup>
 
     <ItemGroup>
