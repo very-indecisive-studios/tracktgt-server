@@ -9,22 +9,15 @@ using Tracker.Service.Game;
 
 namespace Tracker.Core.Games;
 
-public class AddTrackedGameCommand : IRequest<Unit>
-{
-    public string RemoteUserId { get; set; }
-    
-    public long GameId { get; set; }
-    
-    public float HoursPlayed { get; set; }
-    
-    public string Platform { get; set; }
-    
-    public GameFormat Format { get; set; }
-    
-    public GameStatus Status { get; set; }
-    
-    public GameOwnership Ownership { get; set; }
-}
+public record AddTrackedGameCommand(
+    string RemoteUserId,
+    long GameId,
+    float HoursPlayed,
+    string Platform,
+    GameFormat Format,
+    GameStatus Status,
+    GameOwnership Ownership
+) : IRequest<Unit>;
 
 public class AddTrackedGameValidator : AbstractValidator<AddTrackedGameCommand>
 {
@@ -33,6 +26,14 @@ public class AddTrackedGameValidator : AbstractValidator<AddTrackedGameCommand>
         RuleFor(c => c.RemoteUserId).NotEmpty();
         RuleFor(c => c.GameId).NotEmpty();
         RuleFor(c => c.Platform).NotEmpty();
+    }
+}
+
+public static class AddTrackedGameMappings
+{
+    public static void Map(Profile profile)
+    {
+        profile.CreateMap<AddTrackedGameCommand, TrackedGame>();
     }
 }
 

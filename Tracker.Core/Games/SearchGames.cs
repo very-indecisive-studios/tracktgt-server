@@ -5,10 +5,7 @@ using Tracker.Service.Game;
 
 namespace Tracker.Core.Games;
 
-public class SearchGamesQuery : IRequest<SearchGamesResult>
-{
-    public string GameTitle { get; set; }
-}
+public record SearchGamesQuery(string GameTitle) : IRequest<SearchGamesResult>;
 
 public class SearchGamesValidator : AbstractValidator<SearchGamesQuery>
 {
@@ -18,18 +15,24 @@ public class SearchGamesValidator : AbstractValidator<SearchGamesQuery>
     }
 }
 
-public class SearchGamesResult
+public record SearchGamesResult(List<SearchGamesResult.SearchGameResult> Games)
 {
     public class SearchGameResult
     {
         public long Id { get; set; }
 
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
-        public List<string> Platforms { get; set; }
+        public List<string>? Platforms { get; set; }
     }
-    
-    public List<SearchGameResult> Games { get; set; }
+}
+
+public static class SearchGamesMappings
+{
+    public static void Map(Profile profile)
+    {
+        profile.CreateMap<APIGame, SearchGamesResult.SearchGameResult>();
+    }
 }
 
 public class SearchGamesHandler : IRequestHandler<SearchGamesQuery, SearchGamesResult>
@@ -47,6 +50,6 @@ public class SearchGamesHandler : IRequestHandler<SearchGamesQuery, SearchGamesR
     {
         var games = await _gameService.SearchGameByTitle(searchGamesQuery.GameTitle);
 
-        return new SearchGamesResult { Games = games.Select(_mapper.Map<APIGame, SearchGamesResult.SearchGameResult>).ToList() };
+        return new SearchGamesResult(games.Select(_mapper.Map<APIGame, SearchGamesResult.SearchGameResult>).ToList());
     }
 }

@@ -23,8 +23,12 @@ public static class WebAPIServiceExtensions
                 config.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(Tracker.Core.Application)));
             });
 
-        services.AddMediatR(Assembly.GetAssembly(typeof(Tracker.Core.Application)));
-        services.AddAutoMapper(Assembly.GetAssembly(typeof(Tracker.Core.Application)));
+        var coreAssembly = Assembly.GetAssembly(typeof(Tracker.Core.Application));
+        if (coreAssembly != null)
+        {
+            services.AddMediatR(coreAssembly);
+            services.AddAutoMapper(coreAssembly);
+        }
 
         services.AddScoped<ISieveProcessor, SieveProcessor>();
     }

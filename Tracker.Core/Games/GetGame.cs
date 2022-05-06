@@ -9,10 +9,7 @@ using Tracker.Service.Game;
 
 namespace Tracker.Core.Games;
 
-public class GetGameQuery : IRequest<GetGameResult>
-{
-    public long GameId { get; set; }
-}
+public record GetGameQuery(long GameId) : IRequest<GetGameResult>;
 
 public class GetGameValidator : AbstractValidator<GetGameQuery>
 {
@@ -22,21 +19,35 @@ public class GetGameValidator : AbstractValidator<GetGameQuery>
     }
 }
 
-public class GetGameResult
+public record GetGameResult(
+    long Id,
+    string CoverImageURL,
+    string Title,
+    string Summary,
+    double Rating,
+    List<string> Platforms,
+    List<string> Companies
+);
+
+public static class GetGameMappings
 {
-    public long Id { get; set; }
-    
-    public string CoverImageURL { get; set; }
-    
-    public string Title { get; set; }
-    
-    public string Summary { get; set; }
-    
-    public double Rating { get; set; }
-    
-    public List<string> Platforms { get; set; }
-    
-    public List<string> Companies { get; set; }
+    public static void Map(Profile profile)
+    {
+        profile.CreateMap<Game, GetGameResult>()
+            .ForSourceMember(game => game.Id,
+                options => options.DoNotValidate())
+            .ForMember(
+                result => result.Id,
+                options => options.MapFrom(game => game.RemoteId))
+            .ForMember(
+                result => result.Platforms,
+                options => options.MapFrom(game => game.PlatformsString.Split(';', StringSplitOptions.None))
+            )
+            .ForMember(
+                result => result.Companies,
+                options => options.MapFrom(game => game.CompaniesString.Split(';', StringSplitOptions.None))
+            );
+    }
 }
 
 public class GetGameHandler : IRequestHandler<GetGameQuery, GetGameResult>

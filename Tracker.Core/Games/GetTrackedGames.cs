@@ -25,11 +25,11 @@ public class GetTrackedGames
         {
             public long GameId { get; set; }
             
-            public string GameTitle { get; set; }
+            public string? GameTitle { get; set; }
             
             public float HoursPlayed { get; set; }
     
-            public string Platform { get; set; }
+            public string? Platform { get; set; }
     
             public GameFormat Format { get; set; }
 
@@ -38,13 +38,14 @@ public class GetTrackedGames
             public GameOwnership Ownership { get; set; }
         }
 
-        public List<TrackedGameResult> games { get; set; }
+        public List<TrackedGameResult>? Games { get; set; }
     }
 
     public class Handler : IRequestHandler<Query, Result>
     {
         public async Task<Result> Handle(Query query, CancellationToken cancellationToken)
         {
+            await Task.Delay(1, cancellationToken);
             throw new NotImplementedException();
         }
     }

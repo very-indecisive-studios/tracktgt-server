@@ -5,12 +5,10 @@ using Tracker.Persistence;
 
 namespace Tracker.Core.Users;
 
-public class CheckUserExistQuery : IRequest<CheckUserExistResult>
-{
-    public string UserName { get; set; }
-    
-    public string Email { get; set; }
-}
+public record CheckUserExistQuery(
+    string UserName,
+    string Email
+) : IRequest<CheckUserExistResult>;
 
 public class CheckUserExistValidator : AbstractValidator<CheckUserExistQuery>
 {
@@ -21,12 +19,7 @@ public class CheckUserExistValidator : AbstractValidator<CheckUserExistQuery>
     }
 }
 
-public class CheckUserExistResult
-{
-    public bool IsUserNameTaken { get; set; }
-    
-    public bool IsEmailTaken { get; set; }
-}
+public record CheckUserExistResult(bool IsUserNameTaken, bool IsEmailTaken);
 
 public class CheckUserExistHandler : IRequestHandler<CheckUserExistQuery, CheckUserExistResult>
 {
@@ -47,10 +40,6 @@ public class CheckUserExistHandler : IRequestHandler<CheckUserExistQuery, CheckU
             .Where(u => u.Email.Equals(query.Email))
             .AnyAsync(cancellationToken);
 
-        return new CheckUserExistResult()
-        {
-            IsUserNameTaken = isUserNameTaken,
-            IsEmailTaken = isEmailTaken
-        };
+        return new CheckUserExistResult(isUserNameTaken, isEmailTaken);
     }
 }

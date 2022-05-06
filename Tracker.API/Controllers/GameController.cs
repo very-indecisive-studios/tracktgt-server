@@ -28,7 +28,7 @@ public class GameController : APIControllerBase
     [HttpGet("{id:long}", Name = nameof(GetGame))]
     public Task<GetGameResult> GetGame(long id)
     {
-        return Mediator.Send(new GetGameQuery { GameId = id});
+        return Mediator.Send(new GetGameQuery(id));
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -40,6 +40,6 @@ public class GameController : APIControllerBase
     [HttpGet("search", Name = nameof(SearchGames))]
     public Task<SearchGamesResult> SearchGames([FromQuery] string title)
     {
-        return Mediator.Send(new SearchGamesQuery { GameTitle = title});
+        return Mediator.Send(new SearchGamesQuery(title));
     }
 }

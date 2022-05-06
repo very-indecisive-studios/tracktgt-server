@@ -13,24 +13,24 @@ namespace Tracker.Core.Test.Games;
 [TestClass]
 public class SearchGamesTest
 {
-    private Mock<IGameService> _mockGameService { get; set; }
+    private Mock<IGameService>? MockGameService { get; set; }
 
-    private IMapper _mapper { get; set; }
+    private IMapper? Mapper { get; set; }
     
-    private SearchGamesHandler SearchGamesHandler { get; set; }
+    private SearchGamesHandler? SearchGamesHandler { get; set; }
     
     [TestInitialize]
     public void TestClassInit()
     {
-        _mockGameService = new Mock<IGameService>();
+        MockGameService = new Mock<IGameService>();
 
         var mappingConfig = new MapperConfiguration(mc =>
         {
             mc.AddProfile<MappingProfiles>();
         });
-        _mapper = mappingConfig.CreateMapper();
+        Mapper = mappingConfig.CreateMapper();
 
-        SearchGamesHandler = new SearchGamesHandler(_mockGameService.Object, _mapper);
+        SearchGamesHandler = new SearchGamesHandler(MockGameService.Object, Mapper);
     }
 
     [TestMethod]
@@ -55,17 +55,14 @@ public class SearchGamesTest
             }
         };
         
-        _mockGameService
+        MockGameService!
             .Setup(service => service.SearchGameByTitle(
                 It.Is<string>(s => "chaos chef".Contains(s.ToLower()))))
             .ReturnsAsync(fakeAPIGameList);
         
-        var result = await SearchGamesHandler.Handle(new SearchGamesQuery()
-        {
-            GameTitle = gameTitle
-        }, CancellationToken.None);
+        var result = await SearchGamesHandler!.Handle(new SearchGamesQuery(gameTitle), CancellationToken.None);
         
-        _mockGameService.Verify(service => service.SearchGameByTitle(gameTitle), Times.Once);
+        MockGameService.Verify(service => service.SearchGameByTitle(gameTitle), Times.Once);
         Assert.AreEqual(2,result.Games.Count);
         Assert.IsNotNull(result.Games.Find(g => g.Id == fakeAPIGameList[0].Id));
         Assert.IsNotNull(result.Games.Find(g => g.Id == fakeAPIGameList[1].Id));
@@ -77,16 +74,13 @@ public class SearchGamesTest
     [DataRow("risa_smash")]
     public async Task SearchGame_APINoHit(string gameTitle)
     {
-        _mockGameService
+        MockGameService!
             .Setup(service => service.SearchGameByTitle(It.IsAny<string>()))
             .ReturnsAsync(new List<APIGame>());
         
-        var result = await SearchGamesHandler.Handle(new SearchGamesQuery()
-        {
-            GameTitle = gameTitle
-        }, CancellationToken.None);
+        var result = await SearchGamesHandler!.Handle(new SearchGamesQuery(gameTitle), CancellationToken.None);
         
-        _mockGameService.Verify(service => service.SearchGameByTitle(gameTitle), Times.Once);
+        MockGameService.Verify(service => service.SearchGameByTitle(gameTitle), Times.Once);
         Assert.AreEqual(0,result.Games.Count);
     }
 }

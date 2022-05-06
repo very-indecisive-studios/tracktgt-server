@@ -8,14 +8,11 @@ using Tracker.Persistence;
 
 namespace Tracker.Core.Users;
 
-public class RegisterUserCommand : IRequest<Unit>
-{
-    public string RemoteUserId { get; set; }
-
-    public string Email { get; set; }
-
-    public string UserName { get; set; }
-}
+public record RegisterUserCommand(
+    string RemoteUserId,
+    string Email,
+    string UserName
+) : IRequest<Unit>;
 
 public class RegisterUserValidator : AbstractValidator<RegisterUserCommand>
 {

@@ -29,27 +29,9 @@ public class MappingProfiles : Profile
                 options => options.MapFrom(apiGame => string.Join(";", apiGame.Companies))
             );
         
-        // AddGame
-        CreateMap<AddTrackedGameCommand, TrackedGame>();
-        
-        // SearchGame
-        CreateMap<APIGame, SearchGamesResult.SearchGameResult>();
-
-        // GetGame
-        CreateMap<Game, GetGameResult>()
-            .ForSourceMember(game => game.Id,
-                options => options.DoNotValidate())
-            .ForMember(
-                result => result.Id,
-                options => options.MapFrom(game => game.RemoteId))
-            .ForMember(
-                result => result.Platforms,
-                options => options.MapFrom(game => game.PlatformsString.Split(';', StringSplitOptions.None))
-            )
-            .ForMember(
-                result => result.Companies,
-                options => options.MapFrom(game => game.CompaniesString.Split(';', StringSplitOptions.None))
-            );
+        AddTrackedGameMappings.Map(this);
+        SearchGamesMappings.Map(this);
+        GetGameMappings.Map(this);
         #endregion
 
         #region Users
