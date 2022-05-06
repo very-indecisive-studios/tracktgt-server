@@ -26,7 +26,7 @@ public class UserController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpPost("checkUserExist",Name = nameof(CheckUserExist))]
+    [HttpGet("checkUserExist",Name = nameof(CheckUserExist))]
     public Task<CheckUserExistResult> CheckUserExist(CheckUserExistQuery query)
     {
         return Mediator.Send(query);
