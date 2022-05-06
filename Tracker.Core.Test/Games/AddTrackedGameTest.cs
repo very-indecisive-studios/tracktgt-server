@@ -81,13 +81,16 @@ public class AddTrackedGameTest
     public async Task AddTrackedGame_NoCached_APIHit()
     {
         // Setup
-        var fakeAPIGame = new APIGame()
-        {
-            Id = 42069,
-            Title = "Chaos Chef",
-            Platforms = new List<string> { "PC" }
-        };
-        
+        var fakeAPIGame = new APIGame(
+            42069,
+            "",
+            "Chaos Chef",
+            "Won Game of the Year",
+            100,
+            new List<string> { "PC" },
+            new List<string> { "Very Indecisive Studios" }
+        );
+
         var command = new AddTrackedGameCommand(
             "abcd",
             fakeAPIGame.Id,
@@ -154,12 +157,16 @@ public class AddTrackedGameTest
     public async Task AddTrackedGame_UserNotFound()
     {
         // Setup
-        var fakeAPIGame = new APIGame()
-        {
-            Id = 42069,
-            Title = "Chaos Chef",
-            Platforms = new List<string> { "PC" }
-        };
+        var fakeAPIGame = new APIGame(
+            42069,
+            "",
+            "Chaos Chef",
+            "Won Game of the Year",
+            100,
+            new List<string> { "PC" },
+            new List<string> { "Very Indecisive Studios" }
+        );
+
 
         var command = new AddTrackedGameCommand(
             "abcd",

@@ -21,9 +21,9 @@ public class GetGameValidator : AbstractValidator<GetGameQuery>
 
 public record GetGameResult(
     long Id,
-    string CoverImageURL,
-    string Title,
-    string Summary,
+    string? CoverImageURL,
+    string? Title,
+    string? Summary,
     double Rating,
     List<string> Platforms,
     List<string> Companies

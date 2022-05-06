@@ -11,14 +11,14 @@ public class IGDBAPIService : IGameService
         _client = new IGDBLib.IGDBClient(clientId, clientSecret);
     }
 
-    public async Task<List<APIGame>> SearchGameByTitle(string title)
+    public async Task<List<APIGameBasic>> SearchGameByTitle(string title)
     {
         var result = await _client.QueryAsync<IGDBLib.Models.Game>(
             IGDBLib.IGDBClient.Endpoints.Games,
             $"search \"{title.ToLower()}\"; fields name,platforms.*;"
         );
 
-        List<APIGame> list = new();
+        List<APIGameBasic> list = new();
         
         foreach (var game in result)
         {
@@ -29,13 +29,12 @@ public class IGDBAPIService : IGameService
                 {
                     platforms.Add(platform.Abbreviation ?? platform.Name);
                 }
-                
-                list.Add(new()
-                {
-                    Id = game.Id.Value,
-                    Title = game.Name,
-                    Platforms = platforms
-                });
+
+                list.Add(new(
+                    game.Id.Value,
+                    game.Name,
+                    platforms
+                ));
             }
         }
 
@@ -61,7 +60,7 @@ public class IGDBAPIService : IGameService
                     platforms.Add(platform.Abbreviation ?? platform.Name);
                 }
 
-                var coverURL = game.Cover != null ? "https:" + game.Cover.Value.Url : null;
+                var coverURL = game.Cover != null ? "https:" + game.Cover.Value.Url : "";
 
                 var companies = new List<string>();
                 if (game.InvolvedCompanies != null)
@@ -71,17 +70,16 @@ public class IGDBAPIService : IGameService
                         companies.Add(company.Company.Value.Name);
                     }
                 }
-                
-                return new APIGame()
-                {
-                    Id = game.Id.Value,
-                    CoverImageURL = coverURL,
-                    Title = game.Name,
-                    Summary = game.Summary,
-                    Rating = game.TotalRating ?? 0,
-                    Platforms = platforms,
-                    Companies = companies
-                };
+
+                return new APIGame(
+                    game.Id.Value,
+                    coverURL,
+                    game.Name,
+                    game.Summary,
+                    game.TotalRating ?? 0,
+                    platforms,
+                    companies
+                );
             }
         }
 

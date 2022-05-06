@@ -17,21 +17,14 @@ public class SearchGamesValidator : AbstractValidator<SearchGamesQuery>
 
 public record SearchGamesResult(List<SearchGamesResult.SearchGameResult> Games)
 {
-    public class SearchGameResult
-    {
-        public long Id { get; set; }
-
-        public string? Title { get; set; }
-
-        public List<string>? Platforms { get; set; }
-    }
+    public record SearchGameResult(long Id, string Title, List<string> Platforms);
 }
 
 public static class SearchGamesMappings
 {
     public static void Map(Profile profile)
     {
-        profile.CreateMap<APIGame, SearchGamesResult.SearchGameResult>();
+        profile.CreateMap<APIGameBasic, SearchGamesResult.SearchGameResult>();
     }
 }
 
@@ -50,6 +43,6 @@ public class SearchGamesHandler : IRequestHandler<SearchGamesQuery, SearchGamesR
     {
         var games = await _gameService.SearchGameByTitle(searchGamesQuery.GameTitle);
 
-        return new SearchGamesResult(games.Select(_mapper.Map<APIGame, SearchGamesResult.SearchGameResult>).ToList());
+        return new SearchGamesResult(games.Select(_mapper.Map<APIGameBasic, SearchGamesResult.SearchGameResult>).ToList());
     }
 }

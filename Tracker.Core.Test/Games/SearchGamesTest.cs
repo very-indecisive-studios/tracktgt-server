@@ -39,20 +39,10 @@ public class SearchGamesTest
     [DataRow("chaos chef")]
     public async Task SearchGame_APIHit(string gameTitle)
     {
-        var fakeAPIGameList = new List<APIGame>
+        var fakeAPIGameList = new List<APIGameBasic>
         {
-            new()
-            {
-                Id = 42069,
-                Platforms = new List<string> { "PC" },
-                Title = "Chaos Chef"
-            },
-            new()
-            {
-                Id = 12345,
-                Platforms = new List<string> { "PC" },
-                Title = "Chaos Chef Ultimate"
-            }
+            new(42069, "Chaos Chef", new List<string> { "PC" }),
+            new(12345, "Chaos Chef Ultimate", new List<string> { "PC", "PS5" })
         };
         
         MockGameService!
@@ -76,7 +66,7 @@ public class SearchGamesTest
     {
         MockGameService!
             .Setup(service => service.SearchGameByTitle(It.IsAny<string>()))
-            .ReturnsAsync(new List<APIGame>());
+            .ReturnsAsync(new List<APIGameBasic>());
         
         var result = await SearchGamesHandler!.Handle(new SearchGamesQuery(gameTitle), CancellationToken.None);
         

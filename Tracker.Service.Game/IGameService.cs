@@ -2,7 +2,7 @@
 
 public interface IGameService
 {
-    Task<List<APIGame>> SearchGameByTitle(string title);
+    Task<List<APIGameBasic>> SearchGameByTitle(string title);
 
     Task<APIGame?> GetGameById(long id);
 }
