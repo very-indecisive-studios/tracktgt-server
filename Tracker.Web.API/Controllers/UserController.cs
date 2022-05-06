@@ -19,4 +19,16 @@ public class UserController : APIControllerBase
     {
         return Mediator.Send(command);
     }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpPost("checkUserExist",Name = nameof(CheckUserExist))]
+    public Task<CheckUserExistResult> CheckUserExist(CheckUserExistQuery query)
+    {
+        return Mediator.Send(query);
+    }
 }

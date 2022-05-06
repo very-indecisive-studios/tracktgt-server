@@ -272,6 +272,67 @@ export class BackendAPIClient extends ExtBackendAPIClient {
         }
         return Promise.resolve<BackendAPIResponse<Unit>>(new BackendAPIResponse(status, _headers, null as any));
     }
+
+    user_CheckUserExist(query: CheckUserExistQuery): Promise<BackendAPIResponse<CheckUserExistResult>> {
+        let url_ = this.baseUrl + "/api/user/checkuserexist";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(query);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUser_CheckUserExist(_response);
+        });
+    }
+
+    protected processUser_CheckUserExist(response: Response): Promise<BackendAPIResponse<CheckUserExistResult>> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CheckUserExistResult.fromJS(resultData200);
+            return new BackendAPIResponse(status, _headers, result200);
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = ProblemDetails.fromJS(resultData401);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result403);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BackendAPIResponse<CheckUserExistResult>>(new BackendAPIResponse(status, _headers, null as any));
+    }
 }
 
 /** Represents a void type, since Void is not a valid return type in C#. */
@@ -627,6 +688,86 @@ export interface IRegisterUserCommand {
     remoteUserId?: string;
     email?: string;
     userName?: string;
+}
+
+export class CheckUserExistResult implements ICheckUserExistResult {
+    isUserNameTaken?: boolean;
+    isEmailTaken?: boolean;
+
+    constructor(data?: ICheckUserExistResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isUserNameTaken = _data["isUserNameTaken"];
+            this.isEmailTaken = _data["isEmailTaken"];
+        }
+    }
+
+    static fromJS(data: any): CheckUserExistResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new CheckUserExistResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isUserNameTaken"] = this.isUserNameTaken;
+        data["isEmailTaken"] = this.isEmailTaken;
+        return data;
+    }
+}
+
+export interface ICheckUserExistResult {
+    isUserNameTaken?: boolean;
+    isEmailTaken?: boolean;
+}
+
+export class CheckUserExistQuery implements ICheckUserExistQuery {
+    userName?: string;
+    email?: string;
+
+    constructor(data?: ICheckUserExistQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userName = _data["userName"];
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): CheckUserExistQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new CheckUserExistQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName;
+        data["email"] = this.email;
+        return data;
+    }
+}
+
+export interface ICheckUserExistQuery {
+    userName?: string;
+    email?: string;
 }
 
 export class BackendAPIResponse<TResult> {

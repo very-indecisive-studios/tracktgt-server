@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Tracker.Core.Exceptions;
 using Tracker.Domain;
 using Tracker.Persistence;
 
@@ -38,6 +40,19 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Unit>
     
     public async Task<Unit> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
     {
+        var isUserNameTaken = await _dbContext.Users
+            .Where(u => u.UserName.Equals(command.UserName))
+            .AnyAsync(cancellationToken);
+        
+        var isEmailTaken = await _dbContext.Users
+            .Where(u => u.Email.Equals(command.Email))
+            .AnyAsync(cancellationToken);
+
+        if (isUserNameTaken && isEmailTaken)
+        {
+            throw new UserExistsException();
+        }
+        
         _dbContext.Users.Add(_mapper.Map<RegisterUserCommand, User>(command));
         await _dbContext.SaveChangesAsync(cancellationToken);
         
