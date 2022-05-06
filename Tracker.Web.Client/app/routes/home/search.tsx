@@ -49,8 +49,8 @@ export default function Search() {
 
 
     return (
-        <Container>
-            <Title my={16} order={2}>Search results for "{title}"</Title>
+        <Container py={16}>
+            <Title mb={16} order={2}>Search results for "{title}"</Title>
             <Stack>
                 {searchResults?.games?.map(g => (
                     <SearchResultItem title={g.title ?? ""} />

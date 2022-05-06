@@ -14,6 +14,8 @@ import {
 } from '@mantine/core';
 import { Search } from "tabler-icons-react";
 import AppNavbar from "~/components/AppNavbar";
+import { Outlet } from "@remix-run/react";
+import SearchBar from "~/components/SearchBar";
 
 export const loader: LoaderFunction = async ({request}) => {
     // Redirect to login if user is signed in.
@@ -49,7 +51,7 @@ export default function Home() {
                                     <Image fit={"contain"} height={32} width={64} src="/logo_icon.svg">tracktgt</Image>
                                 </Grid.Col>
                                 <Grid.Col span={6}>
-                                    <TextInput placeholder={"Search"}  icon={<Search size={24} />} />
+                                    <SearchBar />
                                 </Grid.Col>
                                 <Grid.Col span={3}>
                                 </Grid.Col>
@@ -76,7 +78,7 @@ export default function Home() {
                     </Header>
                 }
             >
-                <Text>Resize app to see responsive navbar in action</Text>
+                <Outlet />
             </AppShell>
         </>
     );

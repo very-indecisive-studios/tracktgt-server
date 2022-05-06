@@ -1,6 +1,6 @@
 ﻿import { forwardRef } from "react";
 import { Avatar, Grid, Group, Menu, Navbar, UnstyledButton, Text, ThemeIcon, Divider } from "@mantine/core";
-import { Book2, ChevronRight, DeviceGamepad, DeviceTv, Logout, Social } from "tabler-icons-react";
+import { Book2, ChevronRight, DeviceGamepad, DeviceTv, Logout, Search, Social } from "tabler-icons-react";
 import { Link } from "@remix-run/react";
 
 interface NavbarLinkProps {
@@ -113,10 +113,11 @@ export default function AppNavbar({ opened, userName, profileImageURL }: AppNavb
         <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{sm: 200, lg: 300}}>
             <Navbar p="xs" width={{ base: 300 }}>
                 <Navbar.Section grow mt="xs">
-                    <NavbarLink to={"/feed"} icon={<Social size={24} />} label={"Feed"} color={"green"}  />
-                    <NavbarLink to={"/games"} icon={<DeviceGamepad size={24} />} label={"Games"} color={"blue"}  />
-                    <NavbarLink to={"/shows"} icon={<DeviceTv size={24} />} label={"Shows"} color={"red"}  />
-                    <NavbarLink to={"/books"} icon={<Book2 size={24} />} label={"Books"} color={"yellow"}  />
+                    <NavbarLink to={"/home/feed"} icon={<Social size={18} />} label={"Feed"} color={"green"}  />
+                    <NavbarLink to={"/home/search"} icon={<Search size={18} />} label={"Search"} color={"indigo"}  />
+                    <NavbarLink to={"/home/games"} icon={<DeviceGamepad size={18} />} label={"Games"} color={"blue"}  />
+                    <NavbarLink to={"/home/shows"} icon={<DeviceTv size={18} />} label={"Shows"} color={"red"}  />
+                    <NavbarLink to={"/home/books"} icon={<Book2 size={18} />} label={"Books"} color={"yellow"}  />
                 </Navbar.Section>
                 <Divider my="sm" />
                 <Navbar.Section>
