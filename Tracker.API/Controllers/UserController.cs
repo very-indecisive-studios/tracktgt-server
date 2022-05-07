@@ -1,6 +1,5 @@
 ﻿using System.Net.Mime;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tracker.Core.Users;
 
@@ -26,8 +25,8 @@ public class UserController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("checkUserExist",Name = nameof(CheckUserExist))]
-    public Task<CheckUserExistResult> CheckUserExist(CheckUserExistQuery query)
+    [HttpGet("checkUserExist", Name = nameof(CheckUserExist))]
+    public Task<CheckUserExistResult> CheckUserExist([FromQuery] CheckUserExistQuery query)
     {
         return Mediator.Send(query);
     }
