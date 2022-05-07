@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Core.Test", "Tracke
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.API", "Tracker.API\Tracker.API.csproj", "{F20A6CBB-E841-436C-89E5-5428D52283BB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Service.Test", "Tracker.Service.Test\Tracker.Service.Test.csproj", "{ABA1577F-810C-4EE4-B954-4AA282EDAFFD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{F20A6CBB-E841-436C-89E5-5428D52283BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F20A6CBB-E841-436C-89E5-5428D52283BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F20A6CBB-E841-436C-89E5-5428D52283BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABA1577F-810C-4EE4-B954-4AA282EDAFFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABA1577F-810C-4EE4-B954-4AA282EDAFFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABA1577F-810C-4EE4-B954-4AA282EDAFFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABA1577F-810C-4EE4-B954-4AA282EDAFFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
