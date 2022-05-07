@@ -18,12 +18,12 @@ public static class LoggerHostExtensions
 
         if (env.IsProduction())
         {
-            logger.MinimumLevel.Error();
+            logger.MinimumLevel.Information();
         }
         
         if (env.IsDevelopment())
         {
-            logger.MinimumLevel.Information();
+            logger.MinimumLevel.Debug();
         }
 
         Log.Logger = logger.CreateLogger();     
