@@ -20,7 +20,7 @@ public class SearchGamesTest
     private SearchGamesHandler? SearchGamesHandler { get; set; }
     
     [TestInitialize]
-    public void TestClassInit()
+    public void TestCaseInit()
     {
         MockGameService = new Mock<IGameService>();
 
@@ -54,8 +54,8 @@ public class SearchGamesTest
         
         MockGameService.Verify(service => service.SearchGameByTitle(gameTitle), Times.Once);
         Assert.AreEqual(2,result.Games.Count);
-        Assert.IsNotNull(result.Games.Find(g => g.Id == fakeAPIGameList[0].Id));
-        Assert.IsNotNull(result.Games.Find(g => g.Id == fakeAPIGameList[1].Id));
+        Assert.IsNotNull(result.Games.Find(g => g.RemoteId == fakeAPIGameList[0].Id));
+        Assert.IsNotNull(result.Games.Find(g => g.RemoteId == fakeAPIGameList[1].Id));
     }
     
     [TestMethod]

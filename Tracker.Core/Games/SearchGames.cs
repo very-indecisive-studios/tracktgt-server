@@ -15,16 +15,19 @@ public class SearchGamesValidator : AbstractValidator<SearchGamesQuery>
     }
 }
 
-public record SearchGamesResult(List<SearchGamesResult.SearchGameResult> Games)
+public record SearchGamesResult(List<SearchGamesResult.SearchGamesItemResult> Games)
 {
-    public record SearchGameResult(long Id, string Title, List<string> Platforms);
+    public record SearchGamesItemResult(long RemoteId, string Title, List<string> Platforms);
 }
 
 public static class SearchGamesMappings
 {
     public static void Map(Profile profile)
     {
-        profile.CreateMap<APIGameBasic, SearchGamesResult.SearchGameResult>();
+        profile.CreateMap<APIGameBasic, SearchGamesResult.SearchGamesItemResult>()
+            .ForCtorParam(
+                "RemoteId",
+                options => options.MapFrom(apiGame => apiGame.Id));
     }
 }
 
@@ -43,6 +46,6 @@ public class SearchGamesHandler : IRequestHandler<SearchGamesQuery, SearchGamesR
     {
         var games = await _gameService.SearchGameByTitle(searchGamesQuery.GameTitle);
 
-        return new SearchGamesResult(games.Select(_mapper.Map<APIGameBasic, SearchGamesResult.SearchGameResult>).ToList());
+        return new SearchGamesResult(games.Select(_mapper.Map<APIGameBasic, SearchGamesResult.SearchGamesItemResult>).ToList());
     }
 }
