@@ -2,17 +2,17 @@
 
 #nullable disable
 
-public enum GameFormat { Digital, Physical, Subscription }
+public enum GameFormat { Digital, Physical }
 
 public enum GameStatus { Current, Playing, Paused, Planning  }
 
-public enum GameOwnership { Owned, Loan, Wishlist }
+public enum GameOwnership { Owned, Loan, Wishlist, Subscription }
 
 public class TrackedGame : Entity
 {
-    public Guid UserId { get; set; }
+    public string RemoteUserId { get; set; }
     
-    public long RemoteId { get; set; }
+    public long RemoteGameId { get; set; }
     
     public float HoursPlayed { get; set; }
     
