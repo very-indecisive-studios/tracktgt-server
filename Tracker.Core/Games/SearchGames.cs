@@ -17,7 +17,7 @@ public class SearchGamesValidator : AbstractValidator<SearchGamesQuery>
 
 public record SearchGamesResult(List<SearchGamesResult.SearchGamesItemResult> Games)
 {
-    public record SearchGamesItemResult(long RemoteId, string Title, List<string> Platforms);
+    public record SearchGamesItemResult(long RemoteId, string Title, string CoverImageURL, List<string> Platforms);
 }
 
 public static class SearchGamesMappings

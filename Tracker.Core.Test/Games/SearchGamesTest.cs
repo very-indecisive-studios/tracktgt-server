@@ -41,8 +41,8 @@ public class SearchGamesTest
     {
         var fakeAPIGameList = new List<APIGameBasic>
         {
-            new(42069, "Chaos Chef", new List<string> { "PC" }),
-            new(12345, "Chaos Chef Ultimate", new List<string> { "PC", "PS5" })
+            new(42069, "http://image.example.com", "Chaos Chef", new List<string> { "PC" }),
+            new(12345, "http://image2.example.com", "Chaos Chef Ultimate", new List<string> { "PC", "PS5" })
         };
         
         MockGameService!

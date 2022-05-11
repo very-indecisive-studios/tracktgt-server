@@ -15,7 +15,7 @@ public class IGDBAPIService : IGameService
     {
         var result = await _client.QueryAsync<IGDBLib.Models.Game>(
             IGDBLib.IGDBClient.Endpoints.Games,
-            $"search \"{title.ToLower()}\"; fields name,platforms.*;"
+            $"search \"{title.ToLower()}\"; fields name,cover.*,platforms.*;"
         );
 
         List<APIGameBasic> list = new();
@@ -29,9 +29,16 @@ public class IGDBAPIService : IGameService
                 {
                     platforms.Add(platform.Abbreviation ?? platform.Name);
                 }
+                
+                var coverURL = game.Cover != null ? "https:" + game.Cover.Value.Url : "";
+                if (coverURL.Length > 0)
+                {
+                    coverURL = coverURL.Replace("t_thumb", "t_cover_big");
+                }
 
                 list.Add(new(
                     game.Id.Value,
+                    coverURL,
                     game.Name,
                     platforms
                 ));
@@ -61,7 +68,11 @@ public class IGDBAPIService : IGameService
                 }
 
                 var coverURL = game.Cover != null ? "https:" + game.Cover.Value.Url : "";
-
+                if (coverURL.Length > 0)
+                {
+                    coverURL = coverURL.Replace("t_thumb", "t_cover_big");
+                }
+                
                 var companies = new List<string>();
                 if (game.InvolvedCompanies != null)
                 {
