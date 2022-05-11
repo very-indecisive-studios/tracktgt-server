@@ -25,7 +25,7 @@ public class AddTrackedGameTest
     private AddTrackedGameHandler? AddTrackedGameHandler { get; set; }
     
     [TestInitialize]
-    public void TestClassInit()
+    public void TestCaseInit()
     {
         MockGameService = new Mock<IGameService>();
      
@@ -108,7 +108,7 @@ public class AddTrackedGameTest
         MockDatabase.Setup(db => db.Users)
             .ReturnsDbSet(new List<User>() { new() { RemoteId = "abcd"} });
         
-        MockGameService!.Setup(service => service.GetGameById(command.GameId))
+        MockGameService!.Setup(service => service.GetGameById(command.RemoteGameId))
             .ReturnsAsync(fakeAPIGame);
         
         // Execute
@@ -142,7 +142,7 @@ public class AddTrackedGameTest
         MockDatabase.Setup(db => db.Users)
             .ReturnsDbSet(new List<User>() { new() { RemoteId = "abcd"} });
         
-        MockGameService!.Setup(service => service.GetGameById(command.GameId))
+        MockGameService!.Setup(service => service.GetGameById(command.RemoteGameId))
             .ReturnsAsync((APIGame?) null);
         
         // Execute & Verify
@@ -185,7 +185,7 @@ public class AddTrackedGameTest
         MockDatabase.Setup(db => db.Users)
             .ReturnsDbSet(new List<User>());
         
-        MockGameService!.Setup(service => service.GetGameById(command.GameId))
+        MockGameService!.Setup(service => service.GetGameById(command.RemoteGameId))
             .ReturnsAsync(fakeAPIGame);
         
         // Execute & Verify

@@ -11,24 +11,6 @@ public class MappingProfiles : Profile
     public MappingProfiles()
     {
         #region Games
-        // GameService
-        CreateMap<APIGame, Game>()
-            .ForSourceMember(apiGame => apiGame.Id,
-                options => options.DoNotValidate())
-            .ForMember(game => game.Id,
-                options => options.Ignore())
-            .ForMember(
-                game => game.RemoteId,
-                options => options.MapFrom(apiGame => apiGame.Id))
-            .ForMember(
-                game => game.PlatformsString,
-                options => options.MapFrom(apiGame => string.Join(";", apiGame.Platforms))
-            )
-            .ForMember(
-                game => game.CompaniesString,
-                options => options.MapFrom(apiGame => string.Join(";", apiGame.Companies))
-            );
-        
         AddTrackedGameMappings.Map(this);
         SearchGamesMappings.Map(this);
         GetGameMappings.Map(this);

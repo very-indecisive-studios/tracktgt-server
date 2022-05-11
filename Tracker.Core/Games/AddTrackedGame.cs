@@ -11,7 +11,7 @@ namespace Tracker.Core.Games;
 
 public record AddTrackedGameCommand(
     string RemoteUserId,
-    long GameId,
+    long RemoteGameId,
     float HoursPlayed,
     string Platform,
     GameFormat Format,
@@ -24,7 +24,7 @@ public class AddTrackedGameValidator : AbstractValidator<AddTrackedGameCommand>
     public AddTrackedGameValidator()
     {
         RuleFor(c => c.RemoteUserId).NotEmpty();
-        RuleFor(c => c.GameId).NotEmpty();
+        RuleFor(c => c.RemoteGameId).NotEmpty();
         RuleFor(c => c.Platform).NotEmpty();
     }
 }
@@ -65,12 +65,12 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit
         // Verify game id
         Game? game = await _dbContext.Games
             .AsNoTracking()
-            .Where(g => g.RemoteId == addTrackedGameCommand.GameId)
+            .Where(g => g.RemoteId == addTrackedGameCommand.RemoteGameId)
             .FirstOrDefaultAsync(cancellationToken);
         // Fetch from external and store in db
         if (game == null)
         {
-            APIGame? apiGame = await _gameService.GetGameById(addTrackedGameCommand.GameId);
+            APIGame? apiGame = await _gameService.GetGameById(addTrackedGameCommand.RemoteGameId);
 
             if (apiGame == null)
             {
@@ -81,11 +81,7 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit
             _dbContext.Games.Add(game);
         }
 
-        var trackedGame = new TrackedGame()
-        {
-            UserId = user.Id
-        };
-        _mapper.Map<AddTrackedGameCommand, TrackedGame>(addTrackedGameCommand, trackedGame);
+        var trackedGame = _mapper.Map<AddTrackedGameCommand, TrackedGame>(addTrackedGameCommand);
         _dbContext.TrackedGames.Add(trackedGame);
         
         await _dbContext.SaveChangesAsync(cancellationToken);
