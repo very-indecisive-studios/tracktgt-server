@@ -59,9 +59,9 @@ public class UpdateTrackedGameTest
         var fakeGameRemoteId = 69;
         var fakeHoursPlayed = 10;
         var fakePlatform = "PC";
-        var fakeFormat = GameFormat.Digital;
-        var fakeStatus = GameStatus.Planning;
-        var fakeOwnership = GameOwnership.Wishlist;
+        var fakeFormat = TrackedGameFormat.Digital;
+        var fakeStatus = TrackedGameStatus.Planning;
+        var fakeOwnership = TrackedGameOwnership.Wishlist;
         InMemDatabase!.TrackedGames.Add(new TrackedGame
         {
             UserRemoteId = fakeUserRemoteId,
@@ -76,9 +76,9 @@ public class UpdateTrackedGameTest
 
         var newFakeHoursPlayed = 25;
         var newFakePlatform = "Switch";
-        var newFakeFormat = GameFormat.Physical;
-        var newFakeStatus = GameStatus.Playing;
-        var newFakeOwnership = GameOwnership.Owned;
+        var newFakeFormat = TrackedGameFormat.Physical;
+        var newFakeStatus = TrackedGameStatus.Playing;
+        var newFakeOwnership = TrackedGameOwnership.Owned;
         var command = new UpdateTrackedGameCommand(fakeUserRemoteId, fakeGameRemoteId, newFakeHoursPlayed,
             newFakePlatform, newFakeFormat, newFakeStatus, newFakeOwnership);
         
@@ -109,9 +109,9 @@ public class UpdateTrackedGameTest
         
         var newFakeHoursPlayed = 25;
         var newFakePlatform = "Switch";
-        var newFakeFormat = GameFormat.Physical;
-        var newFakeStatus = GameStatus.Playing;
-        var newFakeOwnership = GameOwnership.Owned;
+        var newFakeFormat = TrackedGameFormat.Physical;
+        var newFakeStatus = TrackedGameStatus.Playing;
+        var newFakeOwnership = TrackedGameOwnership.Owned;
         
         var commandDiffUser = new UpdateTrackedGameCommand(fakeDiffUserRemoteId, fakeGameRemoteId, newFakeHoursPlayed,
             newFakePlatform, newFakeFormat, newFakeStatus, newFakeOwnership);

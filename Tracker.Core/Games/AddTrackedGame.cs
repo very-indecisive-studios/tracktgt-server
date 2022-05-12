@@ -14,9 +14,9 @@ public record AddTrackedGameCommand(
     long GameRemoteId,
     float HoursPlayed,
     string Platform,
-    GameFormat Format,
-    GameStatus Status,
-    GameOwnership Ownership
+    TrackedGameFormat Format,
+    TrackedGameStatus Status,
+    TrackedGameOwnership Ownership
 ) : IRequest<Unit>;
 
 public class AddTrackedGameValidator : AbstractValidator<AddTrackedGameCommand>

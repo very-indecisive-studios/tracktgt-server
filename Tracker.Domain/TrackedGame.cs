@@ -2,11 +2,11 @@
 
 #nullable disable
 
-public enum GameFormat { Digital, Physical }
+public enum TrackedGameFormat { Digital, Physical }
 
-public enum GameStatus { Completed, Playing, Paused, Planning  }
+public enum TrackedGameStatus { Completed, Playing, Paused, Planning  }
 
-public enum GameOwnership { Owned, Loan, Wishlist, Subscription }
+public enum TrackedGameOwnership { Owned, Loan, Wishlist, Subscription }
 
 public class TrackedGame : Entity
 {
@@ -18,9 +18,9 @@ public class TrackedGame : Entity
     
     public string Platform { get; set; }
     
-    public GameFormat Format { get; set; }
+    public TrackedGameFormat? Format { get; set; }
 
-    public GameStatus Status { get; set; }
+    public TrackedGameStatus Status { get; set; }
     
-    public GameOwnership Ownership { get; set; }
+    public TrackedGameOwnership Ownership { get; set; }
 }

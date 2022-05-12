@@ -18,7 +18,7 @@ public class GetTrackedGamesQuery : PagedListRequest, IRequest<PagedListResult<G
 
     public string UserRemoteId { get; }
     
-    public GameStatus? GameStatus { get; init; } = null;
+    public TrackedGameStatus? GameStatus { get; init; } = null;
     
     public bool SortByHoursPlayed { get; init; } = false;
     
@@ -41,9 +41,9 @@ public record GetTrackedGamesItemResult(
     long GameRemoteId,
     float HoursPlayed,
     string Platform,
-    GameFormat Format,
-    GameStatus Status,
-    GameOwnership Ownership
+    TrackedGameFormat Format,
+    TrackedGameStatus Status,
+    TrackedGameOwnership Ownership
 );
 
 public static class GetTrackedGamesMappings

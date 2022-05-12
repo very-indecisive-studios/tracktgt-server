@@ -62,9 +62,9 @@ public class AddTrackedGameTest
             fakeGame.RemoteId,
             200,
             "PC",
-            GameFormat.Digital,
-            GameStatus.Planning,
-            GameOwnership.Owned
+            TrackedGameFormat.Digital,
+            TrackedGameStatus.Planning,
+            TrackedGameOwnership.Owned
         );
         
         MockDatabase!.Setup(db => db.Games)
@@ -103,9 +103,9 @@ public class AddTrackedGameTest
             fakeAPIGame.Id,
             200,
             "PC",
-            GameFormat.Digital,
-            GameStatus.Planning,
-            GameOwnership.Owned
+            TrackedGameFormat.Digital,
+            TrackedGameStatus.Planning,
+            TrackedGameOwnership.Owned
         );
         
         MockDatabase!.Setup(db => db.Games)
@@ -137,9 +137,9 @@ public class AddTrackedGameTest
             42069,
             200,
             "PC",
-            GameFormat.Digital,
-            GameStatus.Planning,
-            GameOwnership.Owned
+            TrackedGameFormat.Digital,
+            TrackedGameStatus.Planning,
+            TrackedGameOwnership.Owned
         );
         
         MockDatabase!.Setup(db => db.Games)
@@ -180,9 +180,9 @@ public class AddTrackedGameTest
             fakeAPIGame.Id,
             200,
             "PC",
-            GameFormat.Digital,
-            GameStatus.Planning,
-            GameOwnership.Owned
+            TrackedGameFormat.Digital,
+            TrackedGameStatus.Planning,
+            TrackedGameOwnership.Owned
         );
 
         MockDatabase!.Setup(db => db.Games)

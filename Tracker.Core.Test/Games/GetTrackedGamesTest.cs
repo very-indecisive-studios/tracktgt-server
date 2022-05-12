@@ -40,9 +40,9 @@ public class GetTrackedGamesTest
                 GameRemoteId = 0,
                 HoursPlayed = 100,
                 Platform = "PSP",
-                Format = GameFormat.Digital,
-                Status = GameStatus.Playing,
-                Ownership = GameOwnership.Wishlist
+                Format = TrackedGameFormat.Digital,
+                Status = TrackedGameStatus.Playing,
+                Ownership = TrackedGameOwnership.Wishlist
             },
             new()
             {
@@ -50,9 +50,9 @@ public class GetTrackedGamesTest
                 GameRemoteId = 1,
                 HoursPlayed = 90,
                 Platform = "PC",
-                Format = GameFormat.Digital,
-                Status = GameStatus.Playing,
-                Ownership = GameOwnership.Subscription
+                Format = TrackedGameFormat.Digital,
+                Status = TrackedGameStatus.Playing,
+                Ownership = TrackedGameOwnership.Subscription
             },
             new()
             {
@@ -60,9 +60,9 @@ public class GetTrackedGamesTest
                 GameRemoteId = 2,
                 HoursPlayed = 80,
                 Platform = "XONE",
-                Format = GameFormat.Physical,
-                Status = GameStatus.Paused,
-                Ownership = GameOwnership.Owned
+                Format = TrackedGameFormat.Physical,
+                Status = TrackedGameStatus.Paused,
+                Ownership = TrackedGameOwnership.Owned
             },
             new()
             {
@@ -70,9 +70,9 @@ public class GetTrackedGamesTest
                 GameRemoteId = 3,
                 HoursPlayed = 70,
                 Platform = "Switch",
-                Format = GameFormat.Physical,
-                Status = GameStatus.Planning,
-                Ownership = GameOwnership.Loan
+                Format = TrackedGameFormat.Physical,
+                Status = TrackedGameStatus.Planning,
+                Ownership = TrackedGameOwnership.Loan
             },
             new()
             {
@@ -80,9 +80,9 @@ public class GetTrackedGamesTest
                 GameRemoteId = 4,
                 HoursPlayed = 60,
                 Platform = "PC",
-                Format = GameFormat.Digital,
-                Status = GameStatus.Planning,
-                Ownership = GameOwnership.Owned
+                Format = TrackedGameFormat.Digital,
+                Status = TrackedGameStatus.Planning,
+                Ownership = TrackedGameOwnership.Owned
             },
             new()
             {
@@ -90,9 +90,9 @@ public class GetTrackedGamesTest
                 GameRemoteId = 5,
                 HoursPlayed = 50,
                 Platform = "PS4",
-                Format = GameFormat.Physical,
-                Status = GameStatus.Completed,
-                Ownership = GameOwnership.Loan
+                Format = TrackedGameFormat.Physical,
+                Status = TrackedGameStatus.Completed,
+                Ownership = TrackedGameOwnership.Loan
             },
             new()
             {
@@ -100,9 +100,9 @@ public class GetTrackedGamesTest
                 GameRemoteId = 6,
                 HoursPlayed = 25,
                 Platform = "PC",
-                Format = GameFormat.Physical,
-                Status = GameStatus.Paused,
-                Ownership = GameOwnership.Loan
+                Format = TrackedGameFormat.Physical,
+                Status = TrackedGameStatus.Paused,
+                Ownership = TrackedGameOwnership.Loan
             }
         };
 
@@ -151,19 +151,19 @@ public class GetTrackedGamesTest
         // Setup
         var queryCompleted = new GetTrackedGamesQuery(FakeUserRemoteId)
         {
-            GameStatus = GameStatus.Completed,
+            GameStatus = TrackedGameStatus.Completed,
         };
         var queryPlaying = new GetTrackedGamesQuery(FakeUserRemoteId)
         {
-            GameStatus = GameStatus.Playing,
+            GameStatus = TrackedGameStatus.Playing,
         };
         var queryPaused = new GetTrackedGamesQuery(FakeUserRemoteId)
         {
-            GameStatus = GameStatus.Paused,
+            GameStatus = TrackedGameStatus.Paused,
         };
         var queryPlanning = new GetTrackedGamesQuery(FakeUserRemoteId)
         {
-            GameStatus = GameStatus.Planning,
+            GameStatus = TrackedGameStatus.Planning,
         };
 
         // Execute
@@ -229,8 +229,8 @@ public class GetTrackedGamesTest
 
         // Verify
         Assert.AreEqual(result.TotalCount, 6);
-        Assert.AreEqual(result.Items.First().Format, GameFormat.Digital);
-        Assert.AreEqual(result.Items.Last().Format, GameFormat.Physical);
+        Assert.AreEqual(result.Items.First().Format, TrackedGameFormat.Digital);
+        Assert.AreEqual(result.Items.Last().Format, TrackedGameFormat.Physical);
     }
 
     [TestMethod]
@@ -247,7 +247,7 @@ public class GetTrackedGamesTest
 
         // Verify
         Assert.AreEqual(result.TotalCount, 6);
-        Assert.AreEqual(result.Items.First().Ownership, GameOwnership.Owned);
-        Assert.AreEqual(result.Items.Last().Ownership, GameOwnership.Subscription);
+        Assert.AreEqual(result.Items.First().Ownership, TrackedGameOwnership.Owned);
+        Assert.AreEqual(result.Items.Last().Ownership, TrackedGameOwnership.Subscription);
     }
 }
