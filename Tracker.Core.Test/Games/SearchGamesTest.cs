@@ -19,7 +19,7 @@ public class SearchGamesTest
     
     private static SearchGamesHandler? SearchGamesHandler { get; set; }
 
-    [TestInitialize]
+    [ClassInitialize]
     public static void TestClassInit(TestContext context)
     {
         MockGameService = new Mock<IGameService>();
