@@ -10,9 +10,9 @@ public enum GameOwnership { Owned, Loan, Wishlist, Subscription }
 
 public class TrackedGame : Entity
 {
-    public string RemoteUserId { get; set; }
+    public string UserRemoteId { get; set; }
     
-    public long RemoteGameId { get; set; }
+    public long GameRemoteId { get; set; }
     
     public float HoursPlayed { get; set; }
     

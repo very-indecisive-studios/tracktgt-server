@@ -10,8 +10,8 @@ using Tracker.Service.Game;
 namespace Tracker.Core.Games;
 
 public record AddTrackedGameCommand(
-    string RemoteUserId,
-    long RemoteGameId,
+    string UserRemoteId,
+    long GameRemoteId,
     float HoursPlayed,
     string Platform,
     GameFormat Format,
@@ -23,8 +23,8 @@ public class AddTrackedGameValidator : AbstractValidator<AddTrackedGameCommand>
 {
     public AddTrackedGameValidator()
     {
-        RuleFor(c => c.RemoteUserId).NotEmpty();
-        RuleFor(c => c.RemoteGameId).NotEmpty();
+        RuleFor(c => c.UserRemoteId).NotEmpty();
+        RuleFor(c => c.GameRemoteId).NotEmpty();
         RuleFor(c => c.Platform).NotEmpty();
     }
 }
@@ -34,6 +34,8 @@ public static class AddTrackedGameMappings
     public static void Map(Profile profile)
     {
         profile.CreateMap<AddTrackedGameCommand, TrackedGame>();
+        
+        // APIGame => Game mapping exists in GetGame use case.
     }
 }
 
@@ -52,32 +54,33 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit
 
     public async Task<Unit> Handle(AddTrackedGameCommand addTrackedGameCommand, CancellationToken cancellationToken)
     {
-        User? user = await _dbContext.Users
+        // Verify user.
+        bool isUserExists = await _dbContext.Users
             .AsNoTracking()
-            .Where(u => u.RemoteId == addTrackedGameCommand.RemoteUserId)
-            .FirstOrDefaultAsync(cancellationToken);
+            .Where(u => u.RemoteId == addTrackedGameCommand.UserRemoteId)
+            .AnyAsync(cancellationToken);
 
-        if (user == null)
+        if (!isUserExists)
         {
             throw new NotFoundException("User not found!");
         }
         
-        // Verify game id
-        Game? game = await _dbContext.Games
+        // Verify game id.
+        bool isGameExists = await _dbContext.Games
             .AsNoTracking()
-            .Where(g => g.RemoteId == addTrackedGameCommand.RemoteGameId)
-            .FirstOrDefaultAsync(cancellationToken);
-        // Fetch from external and store in db
-        if (game == null)
+            .Where(g => g.RemoteId == addTrackedGameCommand.GameRemoteId)
+            .AnyAsync(cancellationToken);
+        // Fetch from external API and store in db if game not cached
+        if (!isGameExists)
         {
-            APIGame? apiGame = await _gameService.GetGameById(addTrackedGameCommand.RemoteGameId);
+            APIGame? apiGame = await _gameService.GetGameById(addTrackedGameCommand.GameRemoteId);
 
             if (apiGame == null)
             {
                 throw new NotFoundException("Game not found!");
             }
 
-            game = _mapper.Map<APIGame, Game>(apiGame);
+            Game game = _mapper.Map<APIGame, Game>(apiGame);
             _dbContext.Games.Add(game);
         }
 

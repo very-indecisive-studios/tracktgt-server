@@ -108,7 +108,7 @@ public class AddTrackedGameTest
         MockDatabase.Setup(db => db.Users)
             .ReturnsDbSet(new List<User>() { new() { RemoteId = "abcd"} });
         
-        MockGameService!.Setup(service => service.GetGameById(command.RemoteGameId))
+        MockGameService!.Setup(service => service.GetGameById(command.GameRemoteId))
             .ReturnsAsync(fakeAPIGame);
         
         // Execute
@@ -142,7 +142,7 @@ public class AddTrackedGameTest
         MockDatabase.Setup(db => db.Users)
             .ReturnsDbSet(new List<User>() { new() { RemoteId = "abcd"} });
         
-        MockGameService!.Setup(service => service.GetGameById(command.RemoteGameId))
+        MockGameService!.Setup(service => service.GetGameById(command.GameRemoteId))
             .ReturnsAsync((APIGame?) null);
         
         // Execute & Verify
@@ -185,7 +185,7 @@ public class AddTrackedGameTest
         MockDatabase.Setup(db => db.Users)
             .ReturnsDbSet(new List<User>());
         
-        MockGameService!.Setup(service => service.GetGameById(command.RemoteGameId))
+        MockGameService!.Setup(service => service.GetGameById(command.GameRemoteId))
             .ReturnsAsync(fakeAPIGame);
         
         // Execute & Verify
