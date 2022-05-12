@@ -17,7 +17,7 @@ public record AddTrackedGameCommand(
     GameFormat Format,
     GameStatus Status,
     GameOwnership Ownership
-) : IRequest<MediatR.Unit>;
+) : IRequest<Unit>;
 
 public class AddTrackedGameValidator : AbstractValidator<AddTrackedGameCommand>
 {
@@ -39,7 +39,7 @@ public static class AddTrackedGameMappings
     }
 }
 
-public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, MediatR.Unit>
+public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit>
 {
     private readonly DatabaseContext _dbContext;
     private readonly IGameService _gameService;
@@ -52,12 +52,12 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Medi
         _mapper = mapper;
     }
 
-    public async Task<MediatR.Unit> Handle(AddTrackedGameCommand addTrackedGameCommand, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(AddTrackedGameCommand command, CancellationToken cancellationToken)
     {
         // Verify user.
         bool isUserExists = await _dbContext.Users
             .AsNoTracking()
-            .Where(u => u.RemoteId == addTrackedGameCommand.UserRemoteId)
+            .Where(u => u.RemoteId == command.UserRemoteId)
             .AnyAsync(cancellationToken);
 
         if (!isUserExists)
@@ -65,15 +65,26 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Medi
             throw new NotFoundException("User not found!");
         }
         
+        // Verify if tracked game already exist.
+        bool isTrackedGameExists = await _dbContext.TrackedGames
+            .AsNoTracking()
+            .Where(tg => tg.GameRemoteId == command.GameRemoteId && tg.UserRemoteId == command.UserRemoteId)
+            .AnyAsync(cancellationToken);
+
+        if (isTrackedGameExists)
+        {
+            throw new ExistsException("Tracked game already exists!");
+        }
+        
         // Verify game id.
         bool isGameExists = await _dbContext.Games
             .AsNoTracking()
-            .Where(g => g.RemoteId == addTrackedGameCommand.GameRemoteId)
+            .Where(g => g.RemoteId == command.GameRemoteId)
             .AnyAsync(cancellationToken);
         // Fetch from external API and store in db if game not cached
         if (!isGameExists)
         {
-            APIGame? apiGame = await _gameService.GetGameById(addTrackedGameCommand.GameRemoteId);
+            APIGame? apiGame = await _gameService.GetGameById(command.GameRemoteId);
 
             if (apiGame == null)
             {
@@ -84,11 +95,11 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Medi
             _dbContext.Games.Add(game);
         }
 
-        var trackedGame = _mapper.Map<AddTrackedGameCommand, TrackedGame>(addTrackedGameCommand);
+        var trackedGame = _mapper.Map<AddTrackedGameCommand, TrackedGame>(command);
         _dbContext.TrackedGames.Add(trackedGame);
         
         await _dbContext.SaveChangesAsync(cancellationToken);
         
-        return MediatR.Unit.Value;
+        return Unit.Value;
     }
 }

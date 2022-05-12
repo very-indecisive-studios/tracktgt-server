@@ -47,7 +47,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Unit>
 
         if (isUserNameTaken && isEmailTaken)
         {
-            throw new UserExistsException();
+            throw new ExistsException("User already exists!");
         }
         
         _dbContext.Users.Add(_mapper.Map<RegisterUserCommand, User>(command));
