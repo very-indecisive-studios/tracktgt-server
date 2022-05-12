@@ -4,7 +4,7 @@
 
 public enum GameFormat { Digital, Physical }
 
-public enum GameStatus { Current, Playing, Paused, Planning  }
+public enum GameStatus { Completed, Playing, Paused, Planning  }
 
 public enum GameOwnership { Owned, Loan, Wishlist, Subscription }
 

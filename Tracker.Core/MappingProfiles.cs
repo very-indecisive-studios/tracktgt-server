@@ -12,6 +12,7 @@ public class MappingProfiles : Profile
     {
         #region Games
         AddTrackedGameMappings.Map(this);
+        GetTrackedGamesMappings.Map(this);
         SearchGamesMappings.Map(this);
         GetGameMappings.Map(this);
         #endregion

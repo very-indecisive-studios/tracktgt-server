@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Tracker.Core.Shared;
+namespace Tracker.Core.Common;
 
 public class PagedListResult<T>
 {

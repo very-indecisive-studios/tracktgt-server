@@ -1,52 +1,91 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Tracker.Core.Common;
 using Tracker.Domain;
+using Tracker.Persistence;
 
 namespace Tracker.Core.Games;
 
-public class GetTrackedGames
+public class GetTrackedGamesQuery : PagedListRequest, IRequest<PagedListResult<GetTrackedGamesItemResult>>
 {
-    public class Query : IRequest<Result>
+    public GetTrackedGamesQuery(string userRemoteId)
     {
-        public Guid UserId { get; set; }
+        UserRemoteId = userRemoteId;
     }
 
-    public class Validator : AbstractValidator<Query>
+    public string UserRemoteId { get; }
+    
+    public GameStatus? GameStatus { get; init; } = null;
+    
+    public bool SortByHoursPlayed { get; init; } = false;
+    
+    public bool SortByPlatform { get; init; } = false;
+    
+    public bool SortByFormat { get; init; } = false;
+    
+    public bool SortByOwnership { get; init; } = false;
+}
+
+public class GetTrackedGamesValidator : AbstractValidator<GetTrackedGamesQuery>
+{
+    public GetTrackedGamesValidator()
     {
-        public Validator()
-        {
-            RuleFor(q => q.UserId).NotEmpty();
-        }
+        RuleFor(q => q.UserRemoteId).NotEmpty();
+    }    
+}
+
+public record GetTrackedGamesItemResult(
+    long GameRemoteId,
+    float HoursPlayed,
+    string Platform,
+    GameFormat Format,
+    GameStatus Status,
+    GameOwnership Ownership
+);
+
+public static class GetTrackedGamesMappings
+{
+    public static void Map(Profile profile)
+    {
+        profile.CreateMap<TrackedGame, GetTrackedGamesItemResult>();
     }
+}
 
-    public class Result
+public class GetTrackedGamesHandler : IRequestHandler<GetTrackedGamesQuery, PagedListResult<GetTrackedGamesItemResult>>
+{
+    private readonly DatabaseContext _databaseContext;
+    private readonly IMapper _mapper;
+
+    public GetTrackedGamesHandler(DatabaseContext databaseContext, IMapper mapper)
     {
-        public class TrackedGameResult
-        {
-            public long GameId { get; set; }
-            
-            public string? GameTitle { get; set; }
-            
-            public float HoursPlayed { get; set; }
-    
-            public string? Platform { get; set; }
-    
-            public GameFormat Format { get; set; }
-
-            public GameStatus Status { get; set; }
-    
-            public GameOwnership Ownership { get; set; }
-        }
-
-        public List<TrackedGameResult>? Games { get; set; }
+        _databaseContext = databaseContext;
+        _mapper = mapper;
     }
-
-    public class Handler : IRequestHandler<Query, Result>
+    
+    public async Task<PagedListResult<GetTrackedGamesItemResult>> Handle(GetTrackedGamesQuery query, CancellationToken cancellationToken)
     {
-        public async Task<Result> Handle(Query query, CancellationToken cancellationToken)
-        {
-            await Task.Delay(1, cancellationToken);
-            throw new NotImplementedException();
-        }
+        var queryable = _databaseContext.TrackedGames
+            .AsNoTracking()
+            .Where(tg => tg.UserRemoteId == query.UserRemoteId);
+
+        if (query.GameStatus != null) queryable = queryable.Where(tg => tg.Status == query.GameStatus);
+        if (query.SortByHoursPlayed) queryable = queryable.OrderBy(tg => tg.HoursPlayed);
+        if (query.SortByPlatform) queryable = queryable.OrderBy(tg => tg.Platform);
+        if (query.SortByFormat) queryable = queryable.OrderBy(tg => tg.Format);
+        if (query.SortByOwnership) queryable = queryable.OrderBy(tg => tg.Ownership);
+
+        var projectedQueryable = queryable.ProjectTo<GetTrackedGamesItemResult>(_mapper.ConfigurationProvider);
+        
+        var pagedList = await PagedListResult<GetTrackedGamesItemResult>.CreateAsync(
+            projectedQueryable,
+            query.Page,
+            query.PageSize,
+            cancellationToken
+        );
+
+        return pagedList;
     }
 }
