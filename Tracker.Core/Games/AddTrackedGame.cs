@@ -17,7 +17,7 @@ public record AddTrackedGameCommand(
     GameFormat Format,
     GameStatus Status,
     GameOwnership Ownership
-) : IRequest<Unit>;
+) : IRequest<MediatR.Unit>;
 
 public class AddTrackedGameValidator : AbstractValidator<AddTrackedGameCommand>
 {
@@ -39,7 +39,7 @@ public static class AddTrackedGameMappings
     }
 }
 
-public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit>
+public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, MediatR.Unit>
 {
     private readonly DatabaseContext _dbContext;
     private readonly IGameService _gameService;
@@ -52,7 +52,7 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit
         _mapper = mapper;
     }
 
-    public async Task<Unit> Handle(AddTrackedGameCommand addTrackedGameCommand, CancellationToken cancellationToken)
+    public async Task<MediatR.Unit> Handle(AddTrackedGameCommand addTrackedGameCommand, CancellationToken cancellationToken)
     {
         // Verify user.
         bool isUserExists = await _dbContext.Users
@@ -89,6 +89,6 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit
         
         await _dbContext.SaveChangesAsync(cancellationToken);
         
-        return Unit.Value;
+        return MediatR.Unit.Value;
     }
 }

@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Tracker.Core.Games;
+using Unit = MediatR.Unit;
 
 namespace Tracker.API.Controllers;
 

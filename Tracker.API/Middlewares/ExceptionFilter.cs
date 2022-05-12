@@ -22,7 +22,7 @@ public class ExceptionFilter : ExceptionFilterAttribute
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
                 { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
-                { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
+                { typeof(ForbiddenException), HandleForbiddenAccessException },
             };
     }
 
