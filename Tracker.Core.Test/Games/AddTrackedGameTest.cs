@@ -16,16 +16,16 @@ namespace Tracker.Core.Test.Games;
 [TestClass]
 public class AddTrackedGameTest
 {
-    private Mock<IGameService>? MockGameService { get; set; }
+    private static Mock<IGameService>? MockGameService { get; set; }
 
-    private Mock<DatabaseContext>? MockDatabase { get; set; }
+    private static Mock<DatabaseContext>? MockDatabase { get; set; }
     
-    private IMapper? Mapper { get; set; }
+    private static IMapper? Mapper { get; set; }
     
-    private AddTrackedGameHandler? AddTrackedGameHandler { get; set; }
+    private static AddTrackedGameHandler? AddTrackedGameHandler { get; set; }
     
-    [TestInitialize]
-    public void TestCaseInit()
+    [ClassInitialize]
+    public static void TestClassInit(TestContext context)
     {
         MockGameService = new Mock<IGameService>();
      
@@ -38,6 +38,13 @@ public class AddTrackedGameTest
         Mapper = mappingConfig.CreateMapper();
 
         AddTrackedGameHandler = new AddTrackedGameHandler(MockDatabase.Object, MockGameService.Object, Mapper);
+    }
+
+    [TestCleanup]
+    public void TestCaseCleanup()
+    {
+        MockGameService.Reset();
+        MockDatabase.Reset();
     }
 
     [TestMethod]
@@ -56,7 +63,7 @@ public class AddTrackedGameTest
             200,
             "PC",
             GameFormat.Digital,
-            GameStatus.Current,
+            GameStatus.Planning,
             GameOwnership.Owned
         );
         
@@ -97,7 +104,7 @@ public class AddTrackedGameTest
             200,
             "PC",
             GameFormat.Digital,
-            GameStatus.Current,
+            GameStatus.Planning,
             GameOwnership.Owned
         );
         
@@ -131,7 +138,7 @@ public class AddTrackedGameTest
             200,
             "PC",
             GameFormat.Digital,
-            GameStatus.Current,
+            GameStatus.Planning,
             GameOwnership.Owned
         );
         
@@ -174,7 +181,7 @@ public class AddTrackedGameTest
             200,
             "PC",
             GameFormat.Digital,
-            GameStatus.Current,
+            GameStatus.Planning,
             GameOwnership.Owned
         );
 

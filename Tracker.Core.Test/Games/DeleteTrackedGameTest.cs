@@ -15,16 +15,22 @@ namespace Tracker.Core.Test.Games;
 [TestClass]
 public class DeleteTrackedGameTest
 {
-    private Mock<DatabaseContext>? MockDatabase { get; set; }
+    private static Mock<DatabaseContext>? MockDatabase { get; set; }
 
-    private DeleteTrackedGameHandler? DeleteTrackedGameHandler { get; set; }
+    private static DeleteTrackedGameHandler? DeleteTrackedGameHandler { get; set; }
 
-    [TestInitialize]
-    public void TestCaseInit()
+    [ClassInitialize]
+    public static void TestClassInit(TestContext context)
     {
         MockDatabase = new Mock<DatabaseContext>();
 
         DeleteTrackedGameHandler = new DeleteTrackedGameHandler(MockDatabase.Object);
+    }
+    
+    [TestCleanup]
+    public void TestCaseCleanup()
+    {
+        MockDatabase.Reset();
     }
 
     [TestMethod]

@@ -17,16 +17,16 @@ namespace Tracker.Core.Test.Games;
 [TestClass]
 public class GetGameTest
 {
-    private Mock<IGameService>? MockGameService { get; set; }
+    private static Mock<IGameService>? MockGameService { get; set; }
 
-    private Mock<DatabaseContext>? MockDatabase { get; set; }
+    private static Mock<DatabaseContext>? MockDatabase { get; set; }
     
-    private IMapper? Mapper { get; set; }
+    private static IMapper? Mapper { get; set; }
     
-    private GetGameHandler? GetGameHandler { get; set; }
+    private static GetGameHandler? GetGameHandler { get; set; }
     
-    [TestInitialize]
-    public void TestCaseInit()
+    [ClassInitialize]
+    public static void TestClassInit(TestContext context)
     {
         MockGameService = new Mock<IGameService>();
      
@@ -41,6 +41,12 @@ public class GetGameTest
         GetGameHandler = new GetGameHandler(MockDatabase.Object, MockGameService.Object, Mapper);
     }
 
+    [TestCleanup]
+    public void TestCaseCleanup()
+    {
+        MockGameService.Reset();
+        MockDatabase.Reset();
+    }
     
     [TestMethod]
     public async Task GetGame_Cached()

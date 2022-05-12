@@ -13,24 +13,27 @@ namespace Tracker.Core.Test.Games;
 [TestClass]
 public class SearchGamesTest
 {
-    private Mock<IGameService>? MockGameService { get; set; }
+    private static Mock<IGameService>? MockGameService { get; set; }
 
-    private IMapper? Mapper { get; set; }
+    private static IMapper? Mapper { get; set; }
     
-    private SearchGamesHandler? SearchGamesHandler { get; set; }
-    
+    private static SearchGamesHandler? SearchGamesHandler { get; set; }
+
     [TestInitialize]
-    public void TestCaseInit()
+    public static void TestClassInit(TestContext context)
     {
         MockGameService = new Mock<IGameService>();
 
-        var mappingConfig = new MapperConfiguration(mc =>
-        {
-            mc.AddProfile<MappingProfiles>();
-        });
+        var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile<MappingProfiles>(); });
         Mapper = mappingConfig.CreateMapper();
 
         SearchGamesHandler = new SearchGamesHandler(MockGameService.Object, Mapper);
+    }
+
+    [TestCleanup]
+    public void TestCaseCleanup()
+    {
+        MockGameService.Reset();
     }
 
     [TestMethod]
