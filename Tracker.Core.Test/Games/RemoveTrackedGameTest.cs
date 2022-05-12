@@ -13,18 +13,18 @@ using Tracker.Persistence;
 namespace Tracker.Core.Test.Games;
 
 [TestClass]
-public class DeleteTrackedGameTest
+public class RemoveTrackedGameTest
 {
     private static Mock<DatabaseContext>? MockDatabase { get; set; }
 
-    private static DeleteTrackedGameHandler? DeleteTrackedGameHandler { get; set; }
+    private static RemoveTrackedGameHandler? DeleteTrackedGameHandler { get; set; }
 
     [ClassInitialize]
     public static void TestClassInit(TestContext context)
     {
         MockDatabase = new Mock<DatabaseContext>();
 
-        DeleteTrackedGameHandler = new DeleteTrackedGameHandler(MockDatabase.Object);
+        DeleteTrackedGameHandler = new RemoveTrackedGameHandler(MockDatabase.Object);
     }
     
     [TestCleanup]
@@ -34,21 +34,21 @@ public class DeleteTrackedGameTest
     }
 
     [TestMethod]
-    public async Task DeleteTrackedGame_ExistsAndUserMatched()
+    public async Task RemoveTrackedGame_Exists()
     {
         // Setup
-        var fakeTrackedGameId = new Guid();
+        var fakeGameRemoteId = 1;
         var fakeUserRemoteId = "d33Z_NuT5";
         var fakeTrackedGame = new TrackedGame
         {
-            Id = fakeTrackedGameId,
+            GameRemoteId = fakeGameRemoteId,
             UserRemoteId = fakeUserRemoteId,
         };
 
         MockDatabase!.Setup(databaseContext => databaseContext.TrackedGames)
             .ReturnsDbSet(new List<TrackedGame> { fakeTrackedGame });
 
-        var command = new DeleteTrackedGameCommand(fakeUserRemoteId, fakeTrackedGameId);
+        var command = new RemoveTrackedGameCommand(fakeUserRemoteId, fakeGameRemoteId);
         
         // Execute
         await DeleteTrackedGameHandler!.Handle(command, CancellationToken.None);
@@ -56,42 +56,18 @@ public class DeleteTrackedGameTest
         // Verify
         MockDatabase.Verify(databaseContext => databaseContext.TrackedGames.Remove(fakeTrackedGame));
     }
-    
+
     [TestMethod]
-    public async Task DeleteTrackedGame_ExistsAndUserNotMatched()
+    public async Task RemoveTrackedGame_NotExists()
     {
         // Setup
-        var fakeTrackedGameId = new Guid();
-        var fakeUserRemoteId = "d33Z_NuT5";
-        var fakeDiffUserRemoteId = "d33Z_NuT5+L+M41d3Nl35S";
-        var fakeTrackedGame = new TrackedGame
-        {
-            Id = fakeTrackedGameId,
-            UserRemoteId = fakeUserRemoteId,
-        };
-
-        MockDatabase!.Setup(databaseContext => databaseContext.TrackedGames)
-            .ReturnsDbSet(new List<TrackedGame> { fakeTrackedGame });
-
-        var command = new DeleteTrackedGameCommand(fakeDiffUserRemoteId, fakeTrackedGameId);
-        
-        // Execute
-        // Verify
-        await Assert.ThrowsExceptionAsync<ForbiddenException>(() => 
-            DeleteTrackedGameHandler!.Handle(command, CancellationToken.None));
-    }
-    
-    [TestMethod]
-    public async Task DeleteTrackedGame_NotExists()
-    {
-        // Setup
-        var fakeTrackedGameId = new Guid();
+        var fakeGameRemoteId = 1;
         var fakeUserRemoteId = "d33Z_NuT5";
 
         MockDatabase!.Setup(databaseContext => databaseContext.TrackedGames)
             .ReturnsDbSet(new List<TrackedGame>());
 
-        var command = new DeleteTrackedGameCommand(fakeUserRemoteId, fakeTrackedGameId);
+        var command = new RemoveTrackedGameCommand(fakeUserRemoteId, fakeGameRemoteId);
         
         // Execute
         // Verify

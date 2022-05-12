@@ -7,42 +7,37 @@ using Tracker.Persistence;
 
 namespace Tracker.Core.Games;
 
-public record DeleteTrackedGameCommand(
-    string RemoteUserId,
-    Guid TrackedGameId    
+public record RemoveTrackedGameCommand(
+    string UserRemoteId,
+    long GameRemoteId    
 ) : IRequest<Unit>;
 
-public class DeleteTrackedGameValidator : AbstractValidator<DeleteTrackedGameCommand>
+public class RemoveTrackedGameValidator : AbstractValidator<RemoveTrackedGameCommand>
 {
-    public DeleteTrackedGameValidator()
+    public RemoveTrackedGameValidator()
     {
-        RuleFor(c => c.TrackedGameId).NotNull();
+        RuleFor(c => c.UserRemoteId).NotEmpty();
     }
 }
 
-public class DeleteTrackedGameHandler : IRequestHandler<DeleteTrackedGameCommand, Unit>
+public class RemoveTrackedGameHandler : IRequestHandler<RemoveTrackedGameCommand, Unit>
 {
     private readonly DatabaseContext _databaseContext;
 
-    public DeleteTrackedGameHandler(DatabaseContext databaseContext)
+    public RemoveTrackedGameHandler(DatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
     }
     
-    public async Task<Unit> Handle(DeleteTrackedGameCommand command, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(RemoveTrackedGameCommand command, CancellationToken cancellationToken)
     {
         TrackedGame? trackedGame = await _databaseContext.TrackedGames
-            .Where(tg => tg.Id == command.TrackedGameId)
+            .Where(tg => tg.GameRemoteId == command.GameRemoteId && tg.UserRemoteId == command.UserRemoteId)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (trackedGame == null)
         {
             throw new NotFoundException("Tracked game not found!");
-        }
-
-        if (trackedGame.UserRemoteId != command.RemoteUserId)
-        {
-            throw new ForbiddenException();
         }
 
         _databaseContext.TrackedGames.Remove(trackedGame);
