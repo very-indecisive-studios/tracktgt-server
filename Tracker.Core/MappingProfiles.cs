@@ -12,7 +12,6 @@ public class MappingProfiles : Profile
     {
         #region Games
         AddTrackedGameMappings.Map(this);
-        GetAllUserTrackedGamesMappings.Map(this);
         GetTrackedGameMappings.Map(this);
         UpdateTrackedGameMappings.Map(this);
         SearchGamesMappings.Map(this);

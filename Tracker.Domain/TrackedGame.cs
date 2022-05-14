@@ -2,7 +2,7 @@
 
 #nullable disable
 
-public enum TrackedGameFormat { Digital, Physical }
+public enum TrackedGameFormat { Digital, Physical, None }
 
 public enum TrackedGameStatus { Completed, Playing, Paused, Planning  }
 
@@ -18,7 +18,7 @@ public class TrackedGame : Entity
     
     public string Platform { get; set; }
     
-    public TrackedGameFormat? Format { get; set; }
+    public TrackedGameFormat Format { get; set; }
 
     public TrackedGameStatus Status { get; set; }
     

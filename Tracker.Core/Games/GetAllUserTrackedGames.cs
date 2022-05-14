@@ -11,22 +11,17 @@ namespace Tracker.Core.Games;
 
 public class GetAllUserTrackedGamesQuery : PagedListRequest, IRequest<PagedListResult<GetAllUserTrackedGamesItemResult>>
 {
-    public GetAllUserTrackedGamesQuery(string userRemoteId)
-    {
-        UserRemoteId = userRemoteId;
-    }
-
-    public string UserRemoteId { get; }
+    public string UserRemoteId { get; set; } = "";
     
-    public TrackedGameStatus? GameStatus { get; init; } = null;
+    public TrackedGameStatus? GameStatus { get; set; } = null;
     
-    public bool SortByHoursPlayed { get; init; } = false;
+    public bool SortByHoursPlayed { get; set; } = false;
     
-    public bool SortByPlatform { get; init; } = false;
+    public bool SortByPlatform { get; set; } = false;
     
-    public bool SortByFormat { get; init; } = false;
+    public bool SortByFormat { get; set; } = false;
     
-    public bool SortByOwnership { get; init; } = false;
+    public bool SortByOwnership { get; set; } = false;
 }
 
 public class GetAllUserTrackedGamesValidator : AbstractValidator<GetAllUserTrackedGamesQuery>
@@ -39,20 +34,13 @@ public class GetAllUserTrackedGamesValidator : AbstractValidator<GetAllUserTrack
 
 public record GetAllUserTrackedGamesItemResult(
     long GameRemoteId,
+    string Title,
     float HoursPlayed,
     string Platform,
     TrackedGameFormat Format,
     TrackedGameStatus Status,
     TrackedGameOwnership Ownership
 );
-
-public static class GetAllUserTrackedGamesMappings
-{
-    public static void Map(Profile profile)
-    {
-        profile.CreateMap<TrackedGame, GetAllUserTrackedGamesItemResult>();
-    }
-}
 
 public class GetAllUserTrackedGamesHandler : IRequestHandler<GetAllUserTrackedGamesQuery, PagedListResult<GetAllUserTrackedGamesItemResult>>
 {
@@ -77,10 +65,23 @@ public class GetAllUserTrackedGamesHandler : IRequestHandler<GetAllUserTrackedGa
         if (query.SortByFormat) queryable = queryable.OrderBy(tg => tg.Format);
         if (query.SortByOwnership) queryable = queryable.OrderBy(tg => tg.Ownership);
 
-        var projectedQueryable = queryable.ProjectTo<GetAllUserTrackedGamesItemResult>(_mapper.ConfigurationProvider);
+        var joinQueryable = queryable.Join(
+            _databaseContext.Games,
+            tg => tg.GameRemoteId,
+            g => g.RemoteId,
+            (tg, g) => new GetAllUserTrackedGamesItemResult(
+                tg.GameRemoteId,
+                g.Title,
+                tg.HoursPlayed,
+                tg.Platform,
+                tg.Format,
+                tg.Status,
+                tg.Ownership
+            )
+        );
         
         var pagedList = await PagedListResult<GetAllUserTrackedGamesItemResult>.CreateAsync(
-            projectedQueryable,
+            joinQueryable,
             query.Page,
             query.PageSize,
             cancellationToken

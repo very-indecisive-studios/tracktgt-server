@@ -136,7 +136,10 @@ public class GetAllUserTrackedGamesTest
     public async Task GetTrackedGames_Default()
     {
         // Setup
-        var query = new GetAllUserTrackedGamesQuery(FakeUserRemoteId);
+        var query = new GetAllUserTrackedGamesQuery()
+        {
+            UserRemoteId = FakeUserRemoteId,
+        };
 
         // Execute
         var result = await GetAllUserTrackedGamesHandler!.Handle(query, CancellationToken.None);
@@ -149,20 +152,24 @@ public class GetAllUserTrackedGamesTest
     public async Task GetTrackedGames_ByGameStatus()
     {
         // Setup
-        var queryCompleted = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
+        var queryCompleted = new GetAllUserTrackedGamesQuery()
         {
+            UserRemoteId = FakeUserRemoteId,
             GameStatus = TrackedGameStatus.Completed,
         };
-        var queryPlaying = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
+        var queryPlaying = new GetAllUserTrackedGamesQuery()
         {
+            UserRemoteId = FakeUserRemoteId,
             GameStatus = TrackedGameStatus.Playing,
         };
-        var queryPaused = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
+        var queryPaused = new GetAllUserTrackedGamesQuery()
         {
+            UserRemoteId = FakeUserRemoteId,
             GameStatus = TrackedGameStatus.Paused,
         };
-        var queryPlanning = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
+        var queryPlanning = new GetAllUserTrackedGamesQuery()
         {
+            UserRemoteId = FakeUserRemoteId,
             GameStatus = TrackedGameStatus.Planning,
         };
 
@@ -183,8 +190,9 @@ public class GetAllUserTrackedGamesTest
     public async Task GetTrackedGames_SortByHoursPlayed()
     {
         // Setup
-        var query = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
+        var query = new GetAllUserTrackedGamesQuery()
         {
+            UserRemoteId = FakeUserRemoteId,
             SortByHoursPlayed = true
         };
 
@@ -201,8 +209,9 @@ public class GetAllUserTrackedGamesTest
     public async Task GetTrackedGames_SortByPlatform()
     {
         // Setup
-        var query = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
+        var query = new GetAllUserTrackedGamesQuery()
         {
+            UserRemoteId = FakeUserRemoteId,
             SortByPlatform = true
         };
 
@@ -219,8 +228,9 @@ public class GetAllUserTrackedGamesTest
     public async Task GetTrackedGames_SortByFormat()
     {
         // Setup
-        var query = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
+        var query = new GetAllUserTrackedGamesQuery()
         {
+            UserRemoteId = FakeUserRemoteId,
             SortByFormat = true
         };
 
@@ -237,8 +247,9 @@ public class GetAllUserTrackedGamesTest
     public async Task GetTrackedGames_SortByOwnership()
     {
         // Setup
-        var query = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
+        var query = new GetAllUserTrackedGamesQuery()
         {
+            UserRemoteId = FakeUserRemoteId,
             SortByOwnership = true
         };
 
