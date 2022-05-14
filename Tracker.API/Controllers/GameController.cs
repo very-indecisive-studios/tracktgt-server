@@ -14,10 +14,10 @@ public class GameController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpPost("track", Name = nameof(AddTrackedGame))]
-    public Task<Unit> AddTrackedGame(AddTrackedGameCommand addTrackedGameCommand)
+    [HttpPost("track", Name = nameof(AddGameTracking))]
+    public Task<Unit> AddGameTracking(AddGameTrackingCommand addGameTrackingCommand)
     {
-        return Mediator.Send(addTrackedGameCommand);
+        return Mediator.Send(addGameTrackingCommand);
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -26,10 +26,10 @@ public class GameController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpDelete("track", Name = nameof(RemoveTrackedGame))]
-    public Task<Unit> RemoveTrackedGame(RemoveTrackedGameCommand removeTrackedGameCommand)
+    [HttpDelete("track", Name = nameof(RemoveGameTracking))]
+    public Task<Unit> RemoveGameTracking(RemoveGameTrackingCommand removeGameTrackingCommand)
     {
-        return Mediator.Send(removeTrackedGameCommand);
+        return Mediator.Send(removeGameTrackingCommand);
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,10 +38,10 @@ public class GameController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpPut("track", Name = nameof(UpdateTrackedGame))]
-    public Task<Unit> UpdateTrackedGame(UpdateTrackedGameCommand updateTrackedGameCommand)
+    [HttpPut("track", Name = nameof(UpdateGameTracking))]
+    public Task<Unit> UpdateGameTracking(UpdateGameTrackingCommand updateGameTrackingCommand)
     {
-        return Mediator.Send(updateTrackedGameCommand);
+        return Mediator.Send(updateGameTrackingCommand);
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -50,11 +50,11 @@ public class GameController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("track", Name = nameof(GetAllUserTrackedGames))]
-    public Task<PagedListResult<GetAllUserTrackedGamesItemResult>> GetAllUserTrackedGames([FromQuery] 
-        GetAllUserTrackedGamesQuery getAllUserTrackedGamesQuery)
+    [HttpGet("track", Name = nameof(GetAllGameTrackings))]
+    public Task<PagedListResult<GetAllGameTrackingsItemResult>> GetAllGameTrackings(
+        [FromQuery] GetAllGameTrackingsQuery getAllGameTrackingsQuery)
     {
-        return Mediator.Send(getAllUserTrackedGamesQuery);
+        return Mediator.Send(getAllGameTrackingsQuery);
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -63,10 +63,10 @@ public class GameController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("track/{userRemoteId}/{gameRemoteId:long}", Name = nameof(GetTrackedGame))]
-    public Task<GetTrackedGameResult> GetTrackedGame(string userRemoteId, long gameRemoteId)
+    [HttpGet("track/{userRemoteId}/{gameRemoteId:long}", Name = nameof(GetGameTrackings))]
+    public Task<GetGameTrackingsResult> GetGameTrackings(string userRemoteId, long gameRemoteId)
     {
-        return Mediator.Send(new GetTrackedGameQuery(userRemoteId, gameRemoteId));
+        return Mediator.Send(new GetGameTrackingsQuery(userRemoteId, gameRemoteId));
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]

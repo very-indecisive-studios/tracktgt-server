@@ -14,7 +14,7 @@ using Tracker.Service.Game;
 namespace Tracker.Core.Test.Games;
 
 [TestClass]
-public class AddTrackedGameTest
+public class AddGameTrackingTest
 {
     private static Mock<IGameService>? MockGameService { get; set; }
 
@@ -22,7 +22,7 @@ public class AddTrackedGameTest
     
     private static IMapper? Mapper { get; set; }
     
-    private static AddTrackedGameHandler? AddTrackedGameHandler { get; set; }
+    private static AddGameTrackingHandler? AddGameTrackingHandler { get; set; }
     
     [ClassInitialize]
     public static void TestClassInit(TestContext context)
@@ -37,7 +37,7 @@ public class AddTrackedGameTest
         });
         Mapper = mappingConfig.CreateMapper();
 
-        AddTrackedGameHandler = new AddTrackedGameHandler(MockDatabase.Object, MockGameService.Object, Mapper);
+        AddGameTrackingHandler = new AddGameTrackingHandler(MockDatabase.Object, MockGameService.Object, Mapper);
     }
 
     [TestCleanup]
@@ -48,7 +48,7 @@ public class AddTrackedGameTest
     }
 
     [TestMethod]
-    public async Task AddTrackedGame_Cached()
+    public async Task AddGameTracking_Cached()
     {
         // Setup
         var fakeGame = new Game()
@@ -57,35 +57,35 @@ public class AddTrackedGameTest
             Title = "Chaos Chef"
         };
         
-        var command = new AddTrackedGameCommand(
+        var command = new AddGameTrackingCommand(
             "abcd",
             fakeGame.RemoteId,
             200,
             "PC",
-            TrackedGameFormat.Digital,
-            TrackedGameStatus.Planning,
-            TrackedGameOwnership.Owned
+            GameTrackingFormat.Digital,
+            GameTrackingStatus.Planning,
+            GameTrackingOwnership.Owned
         );
         
         MockDatabase!.Setup(db => db.Games)
             .ReturnsDbSet(new List<Game> { fakeGame });        
-        MockDatabase.Setup(db => db.TrackedGames)
-            .ReturnsDbSet(new List<TrackedGame>());
+        MockDatabase.Setup(db => db.GameTrackings)
+            .ReturnsDbSet(new List<GameTracking>());
         MockDatabase.Setup(db => db.Users)
             .ReturnsDbSet(new List<User>() { new() { RemoteId = "abcd"} });
 
         // Execute
-        await AddTrackedGameHandler!.Handle(command, CancellationToken.None);
+        await AddGameTrackingHandler!.Handle(command, CancellationToken.None);
         
         // Verify
         MockGameService!.Verify(service => service.GetGameById(It.IsAny<long>()), Times.Never);
-        MockDatabase.Verify(database => database.TrackedGames.Add(It.IsAny<TrackedGame>()));
+        MockDatabase.Verify(database => database.GameTrackings.Add(It.IsAny<GameTracking>()));
         MockDatabase.Verify(database => database.Games.Add(It.IsAny<Game>()), Times.Never);
         MockDatabase.Verify(database => database.SaveChangesAsync(CancellationToken.None));
     }
     
     [TestMethod]
-    public async Task AddTrackedGame_NoCached_APIHit()
+    public async Task AddGameTracking_NoCached_APIHit()
     {
         // Setup
         var fakeAPIGame = new APIGame(
@@ -98,20 +98,20 @@ public class AddTrackedGameTest
             new List<string> { "Very Indecisive Studios" }
         );
 
-        var command = new AddTrackedGameCommand(
+        var command = new AddGameTrackingCommand(
             "abcd",
             fakeAPIGame.Id,
             200,
             "PC",
-            TrackedGameFormat.Digital,
-            TrackedGameStatus.Planning,
-            TrackedGameOwnership.Owned
+            GameTrackingFormat.Digital,
+            GameTrackingStatus.Planning,
+            GameTrackingOwnership.Owned
         );
         
         MockDatabase!.Setup(db => db.Games)
             .ReturnsDbSet(new List<Game>());        
-        MockDatabase.Setup(db => db.TrackedGames)
-            .ReturnsDbSet(new List<TrackedGame>());
+        MockDatabase.Setup(db => db.GameTrackings)
+            .ReturnsDbSet(new List<GameTracking>());
         MockDatabase.Setup(db => db.Users)
             .ReturnsDbSet(new List<User>() { new() { RemoteId = "abcd"} });
         
@@ -119,33 +119,33 @@ public class AddTrackedGameTest
             .ReturnsAsync(fakeAPIGame);
         
         // Execute
-        await AddTrackedGameHandler!.Handle(command, CancellationToken.None);
+        await AddGameTrackingHandler!.Handle(command, CancellationToken.None);
         
         // Verify
         MockGameService.Verify(service => service.GetGameById(It.IsAny<long>()));
-        MockDatabase.Verify(database => database.TrackedGames.Add(It.IsAny<TrackedGame>()));
+        MockDatabase.Verify(database => database.GameTrackings.Add(It.IsAny<GameTracking>()));
         MockDatabase.Verify(database => database.Games.Add(It.IsAny<Game>()));
         MockDatabase.Verify(database => database.SaveChangesAsync(CancellationToken.None));
     }
     
     [TestMethod]
-    public async Task AddTrackedGame_GameNotFound()
+    public async Task AddGameTracking_GameNotFound()
     {
         // Setup
-        var command = new AddTrackedGameCommand(
+        var command = new AddGameTrackingCommand(
             "abcd",
             42069,
             200,
             "PC",
-            TrackedGameFormat.Digital,
-            TrackedGameStatus.Planning,
-            TrackedGameOwnership.Owned
+            GameTrackingFormat.Digital,
+            GameTrackingStatus.Planning,
+            GameTrackingOwnership.Owned
         );
         
         MockDatabase!.Setup(db => db.Games)
             .ReturnsDbSet(new List<Game>());        
-        MockDatabase.Setup(db => db.TrackedGames)
-            .ReturnsDbSet(new List<TrackedGame>());
+        MockDatabase.Setup(db => db.GameTrackings)
+            .ReturnsDbSet(new List<GameTracking>());
         MockDatabase.Setup(db => db.Users)
             .ReturnsDbSet(new List<User>() { new() { RemoteId = "abcd"} });
         
@@ -153,15 +153,15 @@ public class AddTrackedGameTest
             .ReturnsAsync((APIGame?) null);
         
         // Execute & Verify
-        await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddTrackedGameHandler!.Handle(command, CancellationToken.None));
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddGameTrackingHandler!.Handle(command, CancellationToken.None));
         MockGameService.Verify(service => service.GetGameById(It.IsAny<long>()));
-        MockDatabase.Verify(database => database.TrackedGames.Add(It.IsAny<TrackedGame>()), Times.Never);
+        MockDatabase.Verify(database => database.GameTrackings.Add(It.IsAny<GameTracking>()), Times.Never);
         MockDatabase.Verify(database => database.Games.Add(It.IsAny<Game>()), Times.Never);
         MockDatabase.Verify(database => database.SaveChangesAsync(CancellationToken.None), Times.Never);
     }
     
     [TestMethod]
-    public async Task AddTrackedGame_UserNotFound()
+    public async Task AddGameTracking_UserNotFound()
     {
         // Setup
         var fakeAPIGame = new APIGame(
@@ -175,20 +175,20 @@ public class AddTrackedGameTest
         );
 
 
-        var command = new AddTrackedGameCommand(
+        var command = new AddGameTrackingCommand(
             "abcd",
             fakeAPIGame.Id,
             200,
             "PC",
-            TrackedGameFormat.Digital,
-            TrackedGameStatus.Planning,
-            TrackedGameOwnership.Owned
+            GameTrackingFormat.Digital,
+            GameTrackingStatus.Planning,
+            GameTrackingOwnership.Owned
         );
 
         MockDatabase!.Setup(db => db.Games)
             .ReturnsDbSet(new List<Game>());        
-        MockDatabase.Setup(db => db.TrackedGames)
-            .ReturnsDbSet(new List<TrackedGame>());
+        MockDatabase.Setup(db => db.GameTrackings)
+            .ReturnsDbSet(new List<GameTracking>());
         MockDatabase.Setup(db => db.Users)
             .ReturnsDbSet(new List<User>());
         
@@ -196,9 +196,9 @@ public class AddTrackedGameTest
             .ReturnsAsync(fakeAPIGame);
         
         // Execute & Verify
-        await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddTrackedGameHandler!.Handle(command, CancellationToken.None));
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddGameTrackingHandler!.Handle(command, CancellationToken.None));
         MockGameService.Verify(service => service.GetGameById(It.IsAny<long>()), Times.Never);
-        MockDatabase.Verify(database => database.TrackedGames.Add(It.IsAny<TrackedGame>()), Times.Never);
+        MockDatabase.Verify(database => database.GameTrackings.Add(It.IsAny<GameTracking>()), Times.Never);
         MockDatabase.Verify(database => database.Games.Add(It.IsAny<Game>()), Times.Never);
         MockDatabase.Verify(database => database.SaveChangesAsync(CancellationToken.None), Times.Never);
     }

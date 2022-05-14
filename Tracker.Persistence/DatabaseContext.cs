@@ -11,7 +11,7 @@ public class DatabaseContext : DbContext
     
     public virtual DbSet<Game> Games { get; set; }
     
-    public virtual DbSet<TrackedGame> TrackedGames { get; set; }
+    public virtual DbSet<GameTracking> GameTrackings { get; set; }
 
     public DatabaseContext() { }
     

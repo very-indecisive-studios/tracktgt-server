@@ -9,19 +9,19 @@ using Tracker.Service.Game;
 
 namespace Tracker.Core.Games;
 
-public record AddTrackedGameCommand(
+public record AddGameTrackingCommand(
     string UserRemoteId,
     long GameRemoteId,
     float HoursPlayed,
     string Platform,
-    TrackedGameFormat Format,
-    TrackedGameStatus Status,
-    TrackedGameOwnership Ownership
+    GameTrackingFormat Format,
+    GameTrackingStatus Status,
+    GameTrackingOwnership Ownership
 ) : IRequest<Unit>;
 
-public class AddTrackedGameValidator : AbstractValidator<AddTrackedGameCommand>
+public class AddGameTrackingValidator : AbstractValidator<AddGameTrackingCommand>
 {
-    public AddTrackedGameValidator()
+    public AddGameTrackingValidator()
     {
         RuleFor(c => c.UserRemoteId).NotEmpty();
         RuleFor(c => c.GameRemoteId).NotEmpty();
@@ -29,30 +29,30 @@ public class AddTrackedGameValidator : AbstractValidator<AddTrackedGameCommand>
     }
 }
 
-public static class AddTrackedGameMappings
+public static class AddGameTrackingMappings
 {
     public static void Map(Profile profile)
     {
-        profile.CreateMap<AddTrackedGameCommand, TrackedGame>();
+        profile.CreateMap<AddGameTrackingCommand, GameTracking>();
         
         // APIGame => Game mapping exists in GetGame use case.
     }
 }
 
-public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit>
+public class AddGameTrackingHandler : IRequestHandler<AddGameTrackingCommand, Unit>
 {
     private readonly DatabaseContext _dbContext;
     private readonly IGameService _gameService;
     private readonly IMapper _mapper;
 
-    public AddTrackedGameHandler(DatabaseContext dbContext, IGameService gameService, IMapper mapper)
+    public AddGameTrackingHandler(DatabaseContext dbContext, IGameService gameService, IMapper mapper)
     {
         _dbContext = dbContext;
         _gameService = gameService;
         _mapper = mapper;
     }
 
-    public async Task<Unit> Handle(AddTrackedGameCommand command, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(AddGameTrackingCommand command, CancellationToken cancellationToken)
     {
         // Verify user.
         bool isUserExists = await _dbContext.Users
@@ -66,12 +66,14 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit
         }
         
         // Verify if tracked game already exist.
-        bool isTrackedGameExists = await _dbContext.TrackedGames
+        bool isGameTrackingExists = await _dbContext.GameTrackings
             .AsNoTracking()
-            .Where(tg => tg.GameRemoteId == command.GameRemoteId && tg.UserRemoteId == command.UserRemoteId)
+            .Where(tg => tg.GameRemoteId == command.GameRemoteId 
+                         && tg.UserRemoteId == command.UserRemoteId
+                         && tg.Platform.Equals(command.Platform))
             .AnyAsync(cancellationToken);
 
-        if (isTrackedGameExists)
+        if (isGameTrackingExists)
         {
             throw new ExistsException("Tracked game already exists!");
         }
@@ -95,8 +97,8 @@ public class AddTrackedGameHandler : IRequestHandler<AddTrackedGameCommand, Unit
             _dbContext.Games.Add(game);
         }
 
-        var trackedGame = _mapper.Map<AddTrackedGameCommand, TrackedGame>(command);
-        _dbContext.TrackedGames.Add(trackedGame);
+        var gameTracking = _mapper.Map<AddGameTrackingCommand, GameTracking>(command);
+        _dbContext.GameTrackings.Add(gameTracking);
         
         await _dbContext.SaveChangesAsync(cancellationToken);
         
