@@ -50,11 +50,11 @@ public class GameController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("track/get", Name = nameof(GetTrackedGames))]
-    public Task<PagedListResult<GetTrackedGamesItemResult>> GetTrackedGames([FromQuery] 
-        GetTrackedGamesQuery getTrackedGamesQuery)
+    [HttpGet("track/get", Name = nameof(GetAllUserTrackedGames))]
+    public Task<PagedListResult<GetAllUserTrackedGamesItemResult>> GetAllUserTrackedGames([FromQuery] 
+        GetAllUserTrackedGamesQuery getAllUserTrackedGamesQuery)
     {
-        return Mediator.Send(getTrackedGamesQuery);
+        return Mediator.Send(getAllUserTrackedGamesQuery);
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]

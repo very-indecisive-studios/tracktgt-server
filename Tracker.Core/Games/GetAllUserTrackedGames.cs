@@ -9,9 +9,9 @@ using Tracker.Persistence;
 
 namespace Tracker.Core.Games;
 
-public class GetTrackedGamesQuery : PagedListRequest, IRequest<PagedListResult<GetTrackedGamesItemResult>>
+public class GetAllUserTrackedGamesQuery : PagedListRequest, IRequest<PagedListResult<GetAllUserTrackedGamesItemResult>>
 {
-    public GetTrackedGamesQuery(string userRemoteId)
+    public GetAllUserTrackedGamesQuery(string userRemoteId)
     {
         UserRemoteId = userRemoteId;
     }
@@ -29,15 +29,15 @@ public class GetTrackedGamesQuery : PagedListRequest, IRequest<PagedListResult<G
     public bool SortByOwnership { get; init; } = false;
 }
 
-public class GetTrackedGamesValidator : AbstractValidator<GetTrackedGamesQuery>
+public class GetAllUserTrackedGamesValidator : AbstractValidator<GetAllUserTrackedGamesQuery>
 {
-    public GetTrackedGamesValidator()
+    public GetAllUserTrackedGamesValidator()
     {
         RuleFor(q => q.UserRemoteId).NotEmpty();
     }    
 }
 
-public record GetTrackedGamesItemResult(
+public record GetAllUserTrackedGamesItemResult(
     long GameRemoteId,
     float HoursPlayed,
     string Platform,
@@ -46,26 +46,26 @@ public record GetTrackedGamesItemResult(
     TrackedGameOwnership Ownership
 );
 
-public static class GetTrackedGamesMappings
+public static class GetAllUserTrackedGamesMappings
 {
     public static void Map(Profile profile)
     {
-        profile.CreateMap<TrackedGame, GetTrackedGamesItemResult>();
+        profile.CreateMap<TrackedGame, GetAllUserTrackedGamesItemResult>();
     }
 }
 
-public class GetTrackedGamesHandler : IRequestHandler<GetTrackedGamesQuery, PagedListResult<GetTrackedGamesItemResult>>
+public class GetAllUserTrackedGamesHandler : IRequestHandler<GetAllUserTrackedGamesQuery, PagedListResult<GetAllUserTrackedGamesItemResult>>
 {
     private readonly DatabaseContext _databaseContext;
     private readonly IMapper _mapper;
 
-    public GetTrackedGamesHandler(DatabaseContext databaseContext, IMapper mapper)
+    public GetAllUserTrackedGamesHandler(DatabaseContext databaseContext, IMapper mapper)
     {
         _databaseContext = databaseContext;
         _mapper = mapper;
     }
     
-    public async Task<PagedListResult<GetTrackedGamesItemResult>> Handle(GetTrackedGamesQuery query, CancellationToken cancellationToken)
+    public async Task<PagedListResult<GetAllUserTrackedGamesItemResult>> Handle(GetAllUserTrackedGamesQuery query, CancellationToken cancellationToken)
     {
         var queryable = _databaseContext.TrackedGames
             .AsNoTracking()
@@ -77,9 +77,9 @@ public class GetTrackedGamesHandler : IRequestHandler<GetTrackedGamesQuery, Page
         if (query.SortByFormat) queryable = queryable.OrderBy(tg => tg.Format);
         if (query.SortByOwnership) queryable = queryable.OrderBy(tg => tg.Ownership);
 
-        var projectedQueryable = queryable.ProjectTo<GetTrackedGamesItemResult>(_mapper.ConfigurationProvider);
+        var projectedQueryable = queryable.ProjectTo<GetAllUserTrackedGamesItemResult>(_mapper.ConfigurationProvider);
         
-        var pagedList = await PagedListResult<GetTrackedGamesItemResult>.CreateAsync(
+        var pagedList = await PagedListResult<GetAllUserTrackedGamesItemResult>.CreateAsync(
             projectedQueryable,
             query.Page,
             query.PageSize,

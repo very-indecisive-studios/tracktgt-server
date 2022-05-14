@@ -14,7 +14,7 @@ using Tracker.Persistence;
 namespace Tracker.Core.Test.Games;
 
 [TestClass]
-public class GetTrackedGamesTest
+public class GetAllUserTrackedGamesTest
 {
     private static SqliteConnection? Connection { get; set; }
     
@@ -24,7 +24,7 @@ public class GetTrackedGamesTest
 
     private static IMapper? Mapper { get; set; }
 
-    private static GetTrackedGamesHandler? GetTrackedGamesHandler { get; set; }
+    private static GetAllUserTrackedGamesHandler? GetAllUserTrackedGamesHandler { get; set; }
 
     private const string FakeUserRemoteId = "d33Z_NuT5";
     private const string FakeDiffUserRemoteId = "d33Z_NuT5+L+M41d3Nl35S";
@@ -122,7 +122,7 @@ public class GetTrackedGamesTest
         var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile<MappingProfiles>(); });
         Mapper = mappingConfig.CreateMapper();
 
-        GetTrackedGamesHandler = new GetTrackedGamesHandler(InMemDatabase, Mapper);
+        GetAllUserTrackedGamesHandler = new GetAllUserTrackedGamesHandler(InMemDatabase, Mapper);
     }
 
     [ClassCleanup]
@@ -136,10 +136,10 @@ public class GetTrackedGamesTest
     public async Task GetTrackedGames_Default()
     {
         // Setup
-        var query = new GetTrackedGamesQuery(FakeUserRemoteId);
+        var query = new GetAllUserTrackedGamesQuery(FakeUserRemoteId);
 
         // Execute
-        var result = await GetTrackedGamesHandler!.Handle(query, CancellationToken.None);
+        var result = await GetAllUserTrackedGamesHandler!.Handle(query, CancellationToken.None);
 
         // Verify
         Assert.AreEqual(result.TotalCount, 6);
@@ -149,28 +149,28 @@ public class GetTrackedGamesTest
     public async Task GetTrackedGames_ByGameStatus()
     {
         // Setup
-        var queryCompleted = new GetTrackedGamesQuery(FakeUserRemoteId)
+        var queryCompleted = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
         {
             GameStatus = TrackedGameStatus.Completed,
         };
-        var queryPlaying = new GetTrackedGamesQuery(FakeUserRemoteId)
+        var queryPlaying = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
         {
             GameStatus = TrackedGameStatus.Playing,
         };
-        var queryPaused = new GetTrackedGamesQuery(FakeUserRemoteId)
+        var queryPaused = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
         {
             GameStatus = TrackedGameStatus.Paused,
         };
-        var queryPlanning = new GetTrackedGamesQuery(FakeUserRemoteId)
+        var queryPlanning = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
         {
             GameStatus = TrackedGameStatus.Planning,
         };
 
         // Execute
-        var resultCompleted = await GetTrackedGamesHandler!.Handle(queryCompleted, CancellationToken.None);
-        var resultPlaying = await GetTrackedGamesHandler.Handle(queryPlaying, CancellationToken.None);
-        var resultPaused = await GetTrackedGamesHandler.Handle(queryPaused, CancellationToken.None);
-        var resultPlanning = await GetTrackedGamesHandler.Handle(queryPlanning, CancellationToken.None);
+        var resultCompleted = await GetAllUserTrackedGamesHandler!.Handle(queryCompleted, CancellationToken.None);
+        var resultPlaying = await GetAllUserTrackedGamesHandler.Handle(queryPlaying, CancellationToken.None);
+        var resultPaused = await GetAllUserTrackedGamesHandler.Handle(queryPaused, CancellationToken.None);
+        var resultPlanning = await GetAllUserTrackedGamesHandler.Handle(queryPlanning, CancellationToken.None);
 
         // Verify
         Assert.AreEqual(resultCompleted.TotalCount, 1);
@@ -183,13 +183,13 @@ public class GetTrackedGamesTest
     public async Task GetTrackedGames_SortByHoursPlayed()
     {
         // Setup
-        var query = new GetTrackedGamesQuery(FakeUserRemoteId)
+        var query = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
         {
             SortByHoursPlayed = true
         };
 
         // Execute
-        var result = await GetTrackedGamesHandler!.Handle(query, CancellationToken.None);
+        var result = await GetAllUserTrackedGamesHandler!.Handle(query, CancellationToken.None);
 
         // Verify
         Assert.AreEqual(result.TotalCount, 6);
@@ -201,13 +201,13 @@ public class GetTrackedGamesTest
     public async Task GetTrackedGames_SortByPlatform()
     {
         // Setup
-        var query = new GetTrackedGamesQuery(FakeUserRemoteId)
+        var query = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
         {
             SortByPlatform = true
         };
 
         // Execute
-        var result = await GetTrackedGamesHandler!.Handle(query, CancellationToken.None);
+        var result = await GetAllUserTrackedGamesHandler!.Handle(query, CancellationToken.None);
 
         // Verify
         Assert.AreEqual(result.TotalCount, 6);
@@ -219,13 +219,13 @@ public class GetTrackedGamesTest
     public async Task GetTrackedGames_SortByFormat()
     {
         // Setup
-        var query = new GetTrackedGamesQuery(FakeUserRemoteId)
+        var query = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
         {
             SortByFormat = true
         };
 
         // Execute
-        var result = await GetTrackedGamesHandler!.Handle(query, CancellationToken.None);
+        var result = await GetAllUserTrackedGamesHandler!.Handle(query, CancellationToken.None);
 
         // Verify
         Assert.AreEqual(result.TotalCount, 6);
@@ -237,13 +237,13 @@ public class GetTrackedGamesTest
     public async Task GetTrackedGames_SortByOwnership()
     {
         // Setup
-        var query = new GetTrackedGamesQuery(FakeUserRemoteId)
+        var query = new GetAllUserTrackedGamesQuery(FakeUserRemoteId)
         {
             SortByOwnership = true
         };
 
         // Execute
-        var result = await GetTrackedGamesHandler!.Handle(query, CancellationToken.None);
+        var result = await GetAllUserTrackedGamesHandler!.Handle(query, CancellationToken.None);
 
         // Verify
         Assert.AreEqual(result.TotalCount, 6);
