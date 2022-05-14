@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -197,7 +198,39 @@ public class GetAllGameTrackingsTest
         Assert.AreEqual(1, resultPaused.TotalCount);
         Assert.AreEqual(2, resultPlanning.TotalCount);
     }
+    
+    [TestMethod]
+    public async Task GetAllGameTrackings_SortByRecentlyModified()
+    {
+        // Setup
+        var query = new GetAllGameTrackingsQuery()
+        {
+            UserRemoteId = FakeUserRemoteId,
+            SortByRecentlyModified = true
+        };
+        
+        var recentlyModifiedGameIdList = new List<long>();
+        var gameTrackings = await InMemDatabase!.GameTrackings
+            .Where(gt => gt.UserRemoteId == FakeUserRemoteId)
+            .ToListAsync();
+        foreach (var gameTracking in gameTrackings)
+        {
+            recentlyModifiedGameIdList.Add(gameTracking.GameRemoteId);
+            gameTracking.HoursPlayed += 1;
+            InMemDatabase.Update(gameTracking);
+            await InMemDatabase.SaveChangesAsync();
+            await Task.Delay(1000);
+        }
 
+        // Execute
+        var result = await GetAllGameTrackingsHandler!.Handle(query, CancellationToken.None);
+
+        // Verify
+        Assert.AreEqual(6, result.TotalCount);
+        Assert.AreEqual(recentlyModifiedGameIdList.Last(), result.Items.First().GameRemoteId);
+        Assert.AreEqual(recentlyModifiedGameIdList.First(), result.Items.Last().GameRemoteId);
+    }
+    
     [TestMethod]
     public async Task GetAllGameTrackings_SortByHoursPlayed()
     {

@@ -13,6 +13,8 @@ public class GetAllGameTrackingsQuery : PagedListRequest, IRequest<PagedListResu
     public string UserRemoteId { get; set; } = "";
     
     public GameTrackingStatus? GameStatus { get; set; } = null;
+
+    public bool SortByRecentlyModified { get; set; } = false;
     
     public bool SortByHoursPlayed { get; set; } = false;
     
@@ -59,6 +61,7 @@ public class GetAllGameTrackingsHandler : IRequestHandler<GetAllGameTrackingsQue
             .Where(tg => tg.UserRemoteId == query.UserRemoteId);
 
         if (query.GameStatus != null) queryable = queryable.Where(gt => gt.Status == query.GameStatus);
+        if (query.SortByRecentlyModified) queryable = queryable.OrderByDescending(gt => gt.LastModifiedOn);
         if (query.SortByHoursPlayed) queryable = queryable.OrderBy(gt => gt.HoursPlayed);
         if (query.SortByPlatform) queryable = queryable.OrderBy(gt => gt.Platform);
         if (query.SortByFormat) queryable = queryable.OrderBy(gt => gt.Format);
