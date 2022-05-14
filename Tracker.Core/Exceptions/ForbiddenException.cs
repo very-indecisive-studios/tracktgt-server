@@ -1,6 +1,6 @@
 namespace Tracker.Core.Exceptions;
 
-public class ForbiddenAccessException : Exception
+public class ForbiddenException : Exception
 {
-    public ForbiddenAccessException() : base() { }
+    public ForbiddenException() : base() { }
 }

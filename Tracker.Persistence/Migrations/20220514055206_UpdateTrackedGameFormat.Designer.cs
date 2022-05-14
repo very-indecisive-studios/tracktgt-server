@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tracker.Persistence;
 
@@ -10,9 +11,10 @@ using Tracker.Persistence;
 namespace Tracker.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220514055206_UpdateTrackedGameFormat")]
+    partial class UpdateTrackedGameFormat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +59,7 @@ namespace Tracker.Persistence.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("Tracker.Domain.GameTracking", b =>
+            modelBuilder.Entity("Tracker.Domain.TrackedGame", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -92,7 +94,7 @@ namespace Tracker.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GameTrackings");
+                    b.ToTable("TrackedGames");
                 });
 
             modelBuilder.Entity("Tracker.Domain.User", b =>
