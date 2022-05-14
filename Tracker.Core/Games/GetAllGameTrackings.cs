@@ -36,6 +36,7 @@ public class GetAllGameTrackingsValidator : AbstractValidator<GetAllGameTracking
 public record GetAllGameTrackingsItemResult(
     long GameRemoteId,
     string Title,
+    string CoverImageURL,
     float HoursPlayed,
     string Platform,
     GameTrackingFormat Format,
@@ -74,6 +75,7 @@ public class GetAllGameTrackingsHandler : IRequestHandler<GetAllGameTrackingsQue
             (gt, g) => new GetAllGameTrackingsItemResult(
                 gt.GameRemoteId,
                 g.Title,
+                g.CoverImageURL,
                 gt.HoursPlayed,
                 gt.Platform,
                 gt.Format,
