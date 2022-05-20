@@ -3,17 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Domain", "Tracker.Domain\Tracker.Domain.csproj", "{4D5974B1-EBBA-42C0-BBF2-DE978409A10F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{4D5974B1-EBBA-42C0-BBF2-DE978409A10F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Persistence", "Tracker.Persistence\Tracker.Persistence.csproj", "{C7B9BE3E-B5FE-401E-BDA7-190EA1DBF9CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "Persistence\Persistence.csproj", "{C7B9BE3E-B5FE-401E-BDA7-190EA1DBF9CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Service.Game", "Tracker.Service.Game\Tracker.Service.Game.csproj", "{ADFC9BA9-0EFB-414B-87B1-8435609F3AA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Game", "Service.Game\Service.Game.csproj", "{ADFC9BA9-0EFB-414B-87B1-8435609F3AA4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Core", "Tracker.Core\Tracker.Core.csproj", "{7CD30ED4-C970-4253-8C71-A8C621978416}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{7CD30ED4-C970-4253-8C71-A8C621978416}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Core.Test", "Tracker.Core.Test\Tracker.Core.Test.csproj", "{3AAEE060-3C93-4250-BC5D-75E520378F57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Test", "Core.Test\Core.Test.csproj", "{3AAEE060-3C93-4250-BC5D-75E520378F57}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.API", "Tracker.API\Tracker.API.csproj", "{F20A6CBB-E841-436C-89E5-5428D52283BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{F20A6CBB-E841-436C-89E5-5428D52283BB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6B2BAF35-D682-4E75-BCE9-D60FAD95174E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E3F7E5D6-50A9-4F55-8DDC-5A5F28D02CC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,5 +55,13 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6468E3B2-E683-4CC2-AD6E-EB3E558EA17C}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F20A6CBB-E841-436C-89E5-5428D52283BB} = {6B2BAF35-D682-4E75-BCE9-D60FAD95174E}
+		{7CD30ED4-C970-4253-8C71-A8C621978416} = {6B2BAF35-D682-4E75-BCE9-D60FAD95174E}
+		{4D5974B1-EBBA-42C0-BBF2-DE978409A10F} = {6B2BAF35-D682-4E75-BCE9-D60FAD95174E}
+		{C7B9BE3E-B5FE-401E-BDA7-190EA1DBF9CF} = {6B2BAF35-D682-4E75-BCE9-D60FAD95174E}
+		{ADFC9BA9-0EFB-414B-87B1-8435609F3AA4} = {6B2BAF35-D682-4E75-BCE9-D60FAD95174E}
+		{3AAEE060-3C93-4250-BC5D-75E520378F57} = {E3F7E5D6-50A9-4F55-8DDC-5A5F28D02CC1}
 	EndGlobalSection
 EndGlobal
