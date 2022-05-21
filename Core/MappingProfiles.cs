@@ -26,7 +26,7 @@ public class MappingProfiles : Profile
             .ForMember(
                 game => game.RemoteId,
                 options => options.MapFrom(command => command.RemoteUserId));
-        
+        GetUserMappings.Map(this);
         #endregion
     }
 }
