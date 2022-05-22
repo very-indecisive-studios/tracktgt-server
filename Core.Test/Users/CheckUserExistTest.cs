@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Core.Exceptions;
 using Core.Users;
 using Domain;
@@ -13,17 +12,15 @@ using Persistence;
 namespace Core.Test.Users;
 
 [TestClass]
-public class GetUserTest
+public class CheckUserExistTest
 {
     private static SqliteConnection? Connection { get; set; }
     
     private static DbContextOptions<DatabaseContext>? ContextOptions { get; set; }
     
     private static DatabaseContext? InMemDatabase { get; set; }
-    
-    private static IMapper? Mapper { get; set; }
-    
-    private static GetUserHandler? GetUserHandler { get; set; }
+
+    private static CheckUserExistHandler? CheckUserExistHandler { get; set; }
 
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)
@@ -62,35 +59,64 @@ public class GetUserTest
         await InMemDatabase.Database.EnsureCreatedAsync();
         await InMemDatabase.Users.AddRangeAsync(fakeUserList);
         await InMemDatabase.SaveChangesAsync();
-        
-        var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile<MappingProfiles>(); });
-        Mapper = mappingConfig.CreateMapper();
 
-        GetUserHandler = new GetUserHandler(InMemDatabase, Mapper);
+        CheckUserExistHandler = new CheckUserExistHandler(InMemDatabase);
     }
 
     [TestMethod]
-    public async Task GetUser_Found()
+    public async Task CheckUserExists_EmailFound()
     {
         // Setup
-        var query = new GetUserQuery("b0f4d33zn0tz");
+        var query = new CheckUserExistQuery("gargoyle", "bofa@example.com");
         
         // Execute
-        var result = await GetUserHandler!.Handle(query, CancellationToken.None);
+        var result = await CheckUserExistHandler!.Handle(query, CancellationToken.None);
 
         // Verify
-        Assert.AreEqual("bofa", result.UserName);
-        Assert.AreEqual("bofa@example.com", result.Email);
+        Assert.AreEqual(true, result.IsEmailTaken);
+        Assert.AreEqual(false, result.IsUserNameTaken);
     }
     
     [TestMethod]
-    public async Task GetUser_NotFound()
+    public async Task CheckUserExists_UsernameFound()
     {
         // Setup
-        var query = new GetUserQuery("h3lPm33!");
+        var query = new CheckUserExistQuery("bofa", "gargoyle@deznotx.com");
         
         // Execute
+        var result = await CheckUserExistHandler!.Handle(query, CancellationToken.None);
+
         // Verify
-        await Assert.ThrowsExceptionAsync<NotFoundException>(() => GetUserHandler!.Handle(query, CancellationToken.None));
+        Assert.AreEqual(false, result.IsEmailTaken);
+        Assert.AreEqual(true, result.IsUserNameTaken);
+    }
+    
+    [TestMethod]
+    public async Task CheckUserExists_BothFound()
+    {
+        // Setup
+        var query = new CheckUserExistQuery("bofa", "bofa@example.com");
+        
+        // Execute
+        var result = await CheckUserExistHandler!.Handle(query, CancellationToken.None);
+
+        // Verify
+        Assert.AreEqual(true, result.IsEmailTaken);
+        Assert.AreEqual(true, result.IsUserNameTaken);
+    }
+
+    
+    [TestMethod]
+    public async Task CheckUserExists_NotFound()
+    {
+        // Setup
+        var query = new CheckUserExistQuery("gargoyle", "gargoyle@deznotx.com");
+        
+        // Execute
+        var result = await CheckUserExistHandler!.Handle(query, CancellationToken.None);
+
+        // Verify
+        Assert.AreEqual(false, result.IsEmailTaken);
+        Assert.AreEqual(false, result.IsUserNameTaken);
     }
 }
