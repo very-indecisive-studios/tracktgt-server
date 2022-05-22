@@ -30,4 +30,16 @@ public class UserController : APIControllerBase
     {
         return Mediator.Send(query);
     }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("user/{userRemoteId}", Name = nameof(GetUser))]
+    public Task<GetUserResult> GetUser(string userRemoteId)
+    {
+        return Mediator.Send(new GetUserQuery(userRemoteId));
+    }
 }

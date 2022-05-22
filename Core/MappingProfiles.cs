@@ -19,14 +19,8 @@ public class MappingProfiles : Profile
         #endregion
 
         #region Users
-        // RegisterUser
-        CreateMap<RegisterUserCommand, User>()
-            .ForSourceMember(command => command.RemoteUserId, 
-                    options => options.DoNotValidate())
-            .ForMember(
-                game => game.RemoteId,
-                options => options.MapFrom(command => command.RemoteUserId));
-        
+        RegisterUserMappings.Map(this);
+        GetUserMappings.Map(this);
         #endregion
     }
 }

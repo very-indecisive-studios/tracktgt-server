@@ -9,7 +9,7 @@ using Persistence;
 namespace Core.Users;
 
 public record RegisterUserCommand(
-    string RemoteUserId,
+    string UserRemoteId,
     string Email,
     string UserName
 ) : IRequest<Unit>;
@@ -18,9 +18,20 @@ public class RegisterUserValidator : AbstractValidator<RegisterUserCommand>
 {
     public RegisterUserValidator()
     {
-        RuleFor(c => c.RemoteUserId).NotEmpty();
+        RuleFor(c => c.UserRemoteId).NotEmpty();
         RuleFor(c => c.Email).NotEmpty();
         RuleFor(c => c.UserName).NotEmpty();
+    }
+}
+
+public static class RegisterUserMappings
+{
+    public static void Map(Profile profile)
+    {
+        profile.CreateMap<RegisterUserCommand, User>()
+            .ForMember(
+                game => game.RemoteId,
+                options => options.MapFrom(command => command.UserRemoteId));
     }
 }
 
@@ -37,17 +48,25 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Unit>
     
     public async Task<Unit> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
     {
+        var isRemoteIdExists = await _dbContext.Users
+            .AnyAsync(u => u.RemoteId.Equals(command.UserRemoteId), cancellationToken);
+        if (isRemoteIdExists)
+        {
+            throw new ExistsException("Remote id already exists!");
+        }
+       
         var isUserNameTaken = await _dbContext.Users
-            .Where(u => u.UserName.Equals(command.UserName))
-            .AnyAsync(cancellationToken);
+            .AnyAsync(u => u.UserName.Equals(command.UserName), cancellationToken);
+        if (isUserNameTaken)
+        {
+            throw new ExistsException("User name already exists!");
+        }
         
         var isEmailTaken = await _dbContext.Users
-            .Where(u => u.Email.Equals(command.Email))
-            .AnyAsync(cancellationToken);
-
-        if (isUserNameTaken && isEmailTaken)
+            .AnyAsync(u => u.Email.Equals(command.Email), cancellationToken);
+        if (isEmailTaken)
         {
-            throw new ExistsException("User already exists!");
+            throw new ExistsException("Email already exists!");
         }
         
         _dbContext.Users.Add(_mapper.Map<RegisterUserCommand, User>(command));
