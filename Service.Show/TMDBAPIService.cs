@@ -9,12 +9,17 @@ namespace Service.Show;
 
 public class TMDBAPIService : IShowService
 {
-    public async Task<List<APIShow>> SearchShowByTitle(string title)
+    private readonly TMDbClient _client;
+
+    public TMDBAPIService(string apiKey)
     {
-        List<APIShow> list = new();
-        
-        TMDbClient client = new TMDbClient("APIKey");
-        var searchContainer = await client.SearchMultiAsync(title);
+        _client = new TMDbClient(apiKey);
+    }
+
+    public async Task<List<APIShowBasic>> SearchShowByTitle(string title)
+    {
+        List<APIShowBasic> list = new();
+        var searchContainer = await _client.SearchMultiAsync(title);
         var showList = searchContainer.Results
             .Where(sb => sb.MediaType != MediaType.Person)
             .ToList();
@@ -28,7 +33,6 @@ public class TMDBAPIService : IShowService
                     movie.Id,
                     movie.PosterPath,
                     movie.Title,
-                    movie.Overview,
                     ShowType.Movie));
             }
             else
@@ -38,7 +42,6 @@ public class TMDBAPIService : IShowService
                     series.Id,
                     series.PosterPath,
                     series.Name,
-                    series.Overview,
                     ShowType.Series));
             }
         }
@@ -47,11 +50,9 @@ public class TMDBAPIService : IShowService
 
     public async Task<APIShow?> GetShowById(int id, ShowType showType)
     {
-        TMDbClient client = new TMDbClient("APIKey");
-
         if (showType == ShowType.Movie)
         {
-            Movie movie = await client.GetMovieAsync(id);
+            Movie movie = await _client.GetMovieAsync(id);
             return new(
                 movie.Id,
                 movie.PosterPath,
@@ -62,7 +63,7 @@ public class TMDBAPIService : IShowService
         }
         else if (showType == ShowType.Series)
         {
-            TvShow series = await client.GetTvShowAsync(id);
+            TvShow series = await _client.GetTvShowAsync(id);
             return new(
                 series.Id,
                 series.PosterPath,
