@@ -17,10 +17,7 @@
       <ProjectReference Include="..\Domain\Domain.csproj" />
       <ProjectReference Include="..\Persistence\Persistence.csproj" />
       <ProjectReference Include="..\Service.Game\Service.Game.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Shows" />
+      <ProjectReference Include="..\Service.Show\Service.Show.csproj" />
     </ItemGroup>
 
 </Project>
