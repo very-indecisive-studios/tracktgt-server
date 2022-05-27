@@ -15,4 +15,6 @@ public class Show : Entity
     public string Summary { get; set; }
 
     public double Rating { get; set; }
+    
+    public ShowType ShowType { get; set; }
 }

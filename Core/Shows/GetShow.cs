@@ -60,7 +60,7 @@ public class GetShowHandler : IRequestHandler<GetShowQuery, GetShowResult>
         // Find show from local database
         var dbShow = await _dbContext.Shows
             .AsNoTracking()
-            .Where(game => game.RemoteId == getShowQuery.RemoteId)
+            .Where(show => show.RemoteId == getShowQuery.RemoteId && show.ShowType == getShowQuery.ShowType)
             .FirstOrDefaultAsync(cancellationToken);
         if (dbShow != null) return _mapper.Map<Show, GetShowResult>(dbShow);
 
