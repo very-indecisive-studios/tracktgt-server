@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Books;
 using Core.Games;
 using Core.Shows;
 using Core.Users;
@@ -30,6 +31,10 @@ public class MappingProfiles : Profile
         UpdateShowTrackingMappings.Map(this);
         SearchShowsMappings.Map(this);
         GetShowMappings.Map(this);
+
+        #region Books
+        SearchBooksMappings.Map(this);
+        GetBookMappings.Map(this);
         #endregion
     }
 }
