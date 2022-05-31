@@ -6,19 +6,16 @@ namespace Service.Book;
 internal class GoogleBooksAPIImageLinks
 {
     [JsonPropertyName("thumbnail")] 
-    public string Thumbnail { get; set; }
-    
-    [JsonPropertyName("large")] 
-    public string Large { get; set; }
+    public string? Thumbnail { get; set; }
 }
 
 internal class GoogleBooksAPIVolumeInfo
 {
     [JsonPropertyName("title")] 
-    public string Title { get; set; }
+    public string? Title { get; set; }
     
     [JsonPropertyName("description")] 
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     [JsonPropertyName("authors")] 
     public List<string>? Authors { get; set; }
@@ -30,25 +27,25 @@ internal class GoogleBooksAPIVolumeInfo
 internal class GoogleBooksAPISearchItem
 {
     [JsonPropertyName("id")] 
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("volumeInfo")] 
-    public GoogleBooksAPIVolumeInfo VolumeInfo { get; set; }
+    public GoogleBooksAPIVolumeInfo? VolumeInfo { get; set; }
 }
 
 internal class GoogleBooksAPIBookResult
 {
     [JsonPropertyName("id")] 
-    public string Id { get; set; }
+    public string? Id { get; set; }
     
     [JsonPropertyName("volumeInfo")] 
-    public GoogleBooksAPIVolumeInfo VolumeInfo { get; set; }
+    public GoogleBooksAPIVolumeInfo? VolumeInfo { get; set; }
 }
 
 internal class GoogleBooksAPISearchResult
 {
     [JsonPropertyName("items")] 
-    public List<GoogleBooksAPISearchItem> Items { get; set; }
+    public List<GoogleBooksAPISearchItem>? Items { get; set; }
 }
 
 public class GoogleBooksAPIService : IBookService
@@ -76,13 +73,13 @@ public class GoogleBooksAPIService : IBookService
             return new List<APIBookBasic>();
         }
         
-        return results.Items
+        return results.Items?
             .Select(item => new APIBookBasic(
-                item.Id,
-                item.VolumeInfo.Images?.Thumbnail ?? "",
-                item.VolumeInfo.Title,
-                item.VolumeInfo.Authors ?? new List<string>()))
-            .ToList();
+                item.Id ?? "",
+                item.VolumeInfo?.Images?.Thumbnail ?? "",
+                item.VolumeInfo?.Title ?? "",
+                item.VolumeInfo?.Authors ?? new List<string>()))
+            .ToList() ?? new List<APIBookBasic>();
     }
 
     public async Task<APIBook?> GetBookById(string id)
@@ -99,14 +96,14 @@ public class GoogleBooksAPIService : IBookService
             }
 
             return new APIBook(
-                result.Id,
-                result.VolumeInfo.Images?.Large ?? result.VolumeInfo.Images?.Thumbnail ?? "",
-                result.VolumeInfo.Title,
-                result.VolumeInfo.Description,
-                result.VolumeInfo.Authors ?? new List<string>()
+                result.Id ?? "",
+                result.VolumeInfo?.Images?.Thumbnail ?? "",
+                result.VolumeInfo?.Title ?? "",
+                result.VolumeInfo?.Description ?? "",
+                result.VolumeInfo?.Authors ?? new List<string>()
             );
         }
-        catch (Exception e)
+        catch
         {
             return null;
         }
