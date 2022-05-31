@@ -103,7 +103,7 @@ public class AddBookTrackingTest
         
         // Verify
         MockBookService!.Verify(service => service.GetBookById(It.IsAny<string>()), Times.Never);
-        var bookTracking = await InMemDatabase.BookTrackings
+        var bookTracking = await InMemDatabase!.BookTrackings
             .Where(bt => bt.BookRemoteId.Equals(FakeExistingBookId) 
                          && bt.UserRemoteId.Equals(FakeExistingUserId))
             .CountAsync();
@@ -139,7 +139,7 @@ public class AddBookTrackingTest
         
         // Verify
         MockBookService.Verify(service => service.GetBookById(It.IsAny<string>()));
-        var bookTrackingCount = await InMemDatabase.BookTrackings
+        var bookTrackingCount = await InMemDatabase!.BookTrackings
             .Where(bt => bt.BookRemoteId.Equals(FakeExistingBookId) 
                          && bt.UserRemoteId.Equals(FakeExistingUserId))
             .CountAsync();

@@ -76,7 +76,7 @@ public class RemoveBookTrackingTest
         await RemoveBookTrackingHandler!.Handle(command, CancellationToken.None);
 
         // Verify
-        var count = await InMemDatabase.BookTrackings
+        var count = await InMemDatabase!.BookTrackings
             .Where(b => b.UserRemoteId.Equals(FakeUserRemoteId) 
                         && b.BookRemoteId.Equals(FakeBookRemoteId))
             .CountAsync();
