@@ -11,7 +11,7 @@ namespace Core.Books;
 public record GetBookTrackingQuery(
     string UserRemoteId,
     string BookRemoteId
-) : IRequest<GetBookTrackingResult>;
+) : IRequest<GetBookTrackingResult?>;
 
 public class GetBookTrackingValidator : AbstractValidator<GetBookTrackingQuery>
 {
