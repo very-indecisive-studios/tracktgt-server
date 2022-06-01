@@ -76,10 +76,22 @@ public class ShowController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("{id:int}/{showType:ShowType}", Name = nameof(GetShow))]
-    public Task<GetShowResult> GetShow(int id, ShowType showType)
+    [HttpGet("series/{id:int}", Name = nameof(GetSeries))]
+    public Task<GetShowResult> GetSeries(int id)
     {
-        return Mediator.Send(new GetShowQuery(id, showType));
+        return Mediator.Send(new GetShowQuery(id, ShowType.Series));
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("movie/{id:int}", Name = nameof(GetMovie))]
+    public Task<GetShowResult> GetMovie(int id)
+    {
+        return Mediator.Send(new GetShowQuery(id, ShowType.Movie));
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]

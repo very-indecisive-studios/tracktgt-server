@@ -1,4 +1,5 @@
 ﻿using Service.Game;
+using Service.Show;
 
 namespace API.Extensions;
 
@@ -9,5 +10,8 @@ public static class ExternalAPIServiceExtentions
         services.AddSingleton<IGameService>(new IGDBAPIService(
             configuration["IGDB:ClientId"], 
             configuration["IGDB:ClientSecret"]));
+        
+        services.AddSingleton<IShowService>(new TMDBAPIService(
+            configuration["TMDB:APIKey"]));
     }
 }
