@@ -40,6 +40,14 @@ public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Un
     private readonly IShowService _showService;
     private readonly IMapper _mapper;
     
+    public AddShowTrackingHandler(DatabaseContext dbContext, IShowService showService, IMapper mapper)
+    {
+        _dbContext = dbContext;
+        _showService = showService;
+        _mapper = mapper;
+    }
+
+    
     public async Task<Unit> Handle(AddShowTrackingCommand command, CancellationToken cancellationToken)
     {
         // Verify user.
