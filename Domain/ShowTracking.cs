@@ -13,4 +13,6 @@ public class ShowTracking : Entity
     public int EpisodesWatched { get; set; }
 
     public ShowTrackingStatus Status { get; set; }
+    
+    public ShowType ShowType { get; set; }
 }

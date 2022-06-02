@@ -11,7 +11,7 @@ namespace Core.Shows;
 public record GetShowTrackingQuery(
     string UserRemoteId,
     int ShowRemoteId
-) : IRequest<GetShowTrackingResult>;
+) : IRequest<GetShowTrackingResult?>;
 
 public class GetShowTrackingValidator : AbstractValidator<GetShowTrackingQuery>
 {
