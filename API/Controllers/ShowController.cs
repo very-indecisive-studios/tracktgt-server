@@ -64,10 +64,10 @@ public class ShowController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("track/{userRemoteId}/{showRemoteId:int}", Name = nameof(GetShowTrackings))]
-    public Task<GetShowTrackingsResult> GetShowTrackings(string userRemoteId, int showRemoteId)
+    [HttpGet("track/{userRemoteId}/{showRemoteId:int}", Name = nameof(GetShowTracking))]
+    public Task<GetShowTrackingResult> GetShowTracking(string userRemoteId, int showRemoteId)
     {
-        return Mediator.Send(new GetShowTrackingsQuery(userRemoteId, showRemoteId));
+        return Mediator.Send(new GetShowTrackingQuery(userRemoteId, showRemoteId));
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]

@@ -26,7 +26,6 @@ public class MappingProfiles : Profile
         
         #region Shows
         AddShowTrackingMappings.Map(this);
-        GetShowTrackingsMappings.Map(this);
         UpdateShowTrackingMappings.Map(this);
         SearchShowsMappings.Map(this);
         GetShowMappings.Map(this);
