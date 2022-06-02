@@ -25,7 +25,10 @@ public static class SearchShowsMappings
 {
     public static void Map(Profile profile)
     {
-        profile.CreateMap<APIShowBasic, SearchShowsResult.SearchShowsItemResult>();
+        profile.CreateMap<APIShowBasic, SearchShowsResult.SearchShowsItemResult>()
+            .ForCtorParam(
+                "RemoteId",
+                options => options.MapFrom(apiShow => apiShow.Id));
     }
 }
 

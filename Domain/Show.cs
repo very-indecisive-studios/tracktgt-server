@@ -6,7 +6,7 @@ public enum ShowType { Movie, Series }
 
 public class Show : Entity
 {
-    public long RemoteId { get; set; }
+    public int RemoteId { get; set; }
     
     public string CoverImageURL { get; set; }
     
@@ -14,7 +14,5 @@ public class Show : Entity
     
     public string Summary { get; set; }
 
-    public double Rating { get; set; }
-    
     public ShowType ShowType { get; set; }
 }
