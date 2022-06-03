@@ -13,6 +13,10 @@ public class DatabaseContext : DbContext
     
     public virtual DbSet<GameTracking> GameTrackings { get; set; }
 
+    public virtual DbSet<Show> Shows { get; set; }
+    
+    public virtual DbSet<ShowTracking> ShowTrackings { get; set; }
+
     public DatabaseContext() { }
     
     public DatabaseContext(DbContextOptions<DatabaseContext> options): base(options) { }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Games;
+using Core.Shows;
 using Core.Users;
 using Domain;
 using Service.Game;
@@ -21,6 +22,14 @@ public class MappingProfiles : Profile
         #region Users
         RegisterUserMappings.Map(this);
         GetUserMappings.Map(this);
+        #endregion
+        
+        #region Shows
+        AddShowTrackingMappings.Map(this);
+        GetShowTrackingMappings.Map(this);
+        UpdateShowTrackingMappings.Map(this);
+        SearchShowsMappings.Map(this);
+        GetShowMappings.Map(this);
         #endregion
     }
 }
