@@ -1,5 +1,6 @@
-﻿using Service.Game;
 using Service.Show;
+using Service.Book;
+using Service.Game;
 
 namespace API.Extensions;
 
@@ -13,5 +14,8 @@ public static class ExternalAPIServiceExtentions
         
         services.AddSingleton<IShowService>(new TMDBAPIService(
             configuration["TMDB:APIKey"]));
+
+        services.AddSingleton<IBookService>(new GoogleBooksAPIService(
+            configuration["GoogleBooks:APIKey"]));
     }
 }
