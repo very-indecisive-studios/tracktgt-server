@@ -31,6 +31,7 @@ public class MappingProfiles : Profile
         UpdateShowTrackingMappings.Map(this);
         SearchShowsMappings.Map(this);
         GetShowMappings.Map(this);
+        #endregion
 
         #region Books
         SearchBooksMappings.Map(this);
