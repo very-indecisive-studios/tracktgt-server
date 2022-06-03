@@ -14,7 +14,7 @@ public class BookTracking : Entity
     
     public string BookRemoteId { get; set; }
     
-    public float ChaptersRead { get; set; }
+    public int ChaptersRead { get; set; }
 
     public BookTrackingFormat Format { get; set; }
 

@@ -34,6 +34,9 @@ public class MappingProfiles : Profile
         #endregion
 
         #region Books
+        AddBookTrackingMappings.Map(this);
+        GetBookTrackingMappings.Map(this);
+        UpdateBookTrackingMappings.Map(this);
         SearchBooksMappings.Map(this);
         GetBookMappings.Map(this);
         #endregion
