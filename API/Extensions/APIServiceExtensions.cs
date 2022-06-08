@@ -6,9 +6,9 @@ using Sieve.Services;
 
 namespace API.Extensions;
 
-public static class WebAPIServiceExtensions
+public static class APIServiceExtensions
 {
-    public static void AddWebAPIServices(this IServiceCollection services, IConfiguration configuration)
+    public static void AddAPIServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddRouting(options => options.LowercaseUrls = true);
         services
@@ -29,6 +29,13 @@ public static class WebAPIServiceExtensions
             services.AddAutoMapper(coreAssembly);
         }
 
+        services.AddOpenApiDocument(document =>
+        {
+            document.Title = "TrackTogether";
+            document.Description = "REST API schema for TrackTogether's 'Tracking' service.";
+            document.DocumentName = "v1";
+        });
+        
         services.AddScoped<ISieveProcessor, SieveProcessor>();
     }
 }
