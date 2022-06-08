@@ -10,6 +10,8 @@ namespace Service.Show;
 public class TMDBAPIService : IShowService
 {
     private readonly TMDbClient _client;
+    
+    private readonly string imageURL = "https://www.themoviedb.org/t/p/w300_and_h450_bestv2";
 
     public TMDBAPIService(string apiKey)
     {
@@ -31,7 +33,7 @@ public class TMDBAPIService : IShowService
                 SearchMovie movie = show as SearchMovie;
                 list.Add(new(
                     movie.Id,
-                    movie.PosterPath,
+                    imageURL + movie.PosterPath,
                     movie.Title,
                     ShowType.Movie));
             }
@@ -40,7 +42,7 @@ public class TMDBAPIService : IShowService
                 SearchTv series = show as SearchTv;
                 list.Add(new(
                     series.Id,
-                    series.PosterPath,
+                    imageURL + series.PosterPath,
                     series.Name,
                     ShowType.Series));
             }
@@ -55,7 +57,7 @@ public class TMDBAPIService : IShowService
             Movie movie = await _client.GetMovieAsync(id);
             return new(
                 movie.Id,
-                movie.PosterPath,
+                imageURL + movie.PosterPath,
                 movie.Title,
                 movie.Overview,
                 ShowType.Movie);
@@ -66,7 +68,7 @@ public class TMDBAPIService : IShowService
             TvShow series = await _client.GetTvShowAsync(id);
             return new(
                 series.Id,
-                series.PosterPath,
+                imageURL + series.PosterPath,
                 series.Name,
                 series.Overview,
                 ShowType.Series);
