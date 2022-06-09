@@ -16,8 +16,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddLoggerServices();
-        services.AddSwaggerServices();
-        services.AddWebAPIServices(_configuration);
+        services.AddAPIServices(_configuration);
         services.AddDatabaseServices(_configuration);
         services.AddExternalAPIServices(_configuration);
     }

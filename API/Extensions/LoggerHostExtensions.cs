@@ -14,18 +14,9 @@ public static class LoggerHostExtensions
         var logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Enrich.WithExceptionDetails()
-            .WriteTo.Console();
-
-        if (env.IsProduction())
-        {
-            logger.MinimumLevel.Information();
-        }
+            .WriteTo.Console()
+            .MinimumLevel.Information();
         
-        if (env.IsDevelopment())
-        {
-            logger.MinimumLevel.Debug();
-        }
-
         Log.Logger = logger.CreateLogger();     
     }
 }

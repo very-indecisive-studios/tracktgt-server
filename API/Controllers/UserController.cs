@@ -37,7 +37,7 @@ public class UserController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("user/{userRemoteId}", Name = nameof(GetUser))]
+    [HttpGet("{userRemoteId}", Name = nameof(GetUser))]
     public Task<GetUserResult> GetUser(string userRemoteId)
     {
         return Mediator.Send(new GetUserQuery(userRemoteId));
