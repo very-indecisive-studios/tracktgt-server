@@ -29,7 +29,7 @@ public class RemoveShowTrackingTest
     private static RemoveShowTrackingHandler? RemoveShowTrackingHandler { get; set; }
 
     private const string FakeUserRemoteId = "d33Z_NuT5";
-    private const int FakeShowRemoteId = 123;
+    private const string FakeShowRemoteId = "s_123";
 
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)

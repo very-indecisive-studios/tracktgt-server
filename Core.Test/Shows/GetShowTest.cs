@@ -30,7 +30,7 @@ public class GetShowTest
     
     private static GetShowHandler? GetShowHandler { get; set; }
     
-    private static int fakeExistShowRemoteId = 38167;
+    private static string fakeExistShowRemoteId = "m_38167";
     
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)
@@ -84,7 +84,7 @@ public class GetShowTest
     public async Task GetShow_Cached()
     {
         // Setup
-        var query = new GetShowQuery(fakeExistShowRemoteId, ShowType.Movie);
+        var query = new GetShowQuery(fakeExistShowRemoteId);
 
         // Execute
         await GetShowHandler!.Handle(query, CancellationToken.None);
@@ -97,7 +97,7 @@ public class GetShowTest
     public async Task GetShow_NoCache()
     {
         // Setup
-        int fakeId = 11231;
+        string fakeId = "m_11231";
         ShowType fakeShowType = ShowType.Movie;
         
         var fakeAPIShow = new APIShow
@@ -109,16 +109,16 @@ public class GetShowTest
             fakeShowType
         );
         
-        MockShowService!.Setup(service => service.GetShowById(fakeId,fakeShowType))
+        MockShowService!.Setup(service => service.GetShowById(fakeId))
             .ReturnsAsync(fakeAPIShow);
         
-        var query = new GetShowQuery(fakeId, fakeShowType);
+        var query = new GetShowQuery(fakeId);
         
         // Execute
         var result = await GetShowHandler!.Handle(query, CancellationToken.None);
 
         // Verify
-        MockShowService.Verify(service => service.GetShowById(fakeId, fakeShowType), Times.Once);
+        MockShowService.Verify(service => service.GetShowById(fakeId), Times.Once);
 
         Assert.IsTrue(await InMemDatabase!.Shows.Where(s => s.RemoteId == fakeId).AnyAsync());
         
@@ -133,19 +133,18 @@ public class GetShowTest
     public async Task GetShow_NotFound()
     {
         // Setup
-        int fakeId = 123;
-        ShowType fakeShowType = ShowType.Movie;
+        string fakeId = "m_123";
         
-        var query = new GetShowQuery(fakeId, fakeShowType);
+        var query = new GetShowQuery(fakeId);
         
 
-        MockShowService!.Setup(service => service.GetShowById(fakeId, fakeShowType))
+        MockShowService!.Setup(service => service.GetShowById(fakeId))
             .ReturnsAsync((APIShow?) null);
         
         // Execute
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => GetShowHandler!.Handle(query, CancellationToken.None));
 
         // Verify
-        MockShowService.Verify(service => service.GetShowById(fakeId, fakeShowType), Times.Once);
+        MockShowService.Verify(service => service.GetShowById(fakeId), Times.Once);
     }
 }

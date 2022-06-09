@@ -46,8 +46,8 @@ public class SearchShowsTest
     {
         var fakeAPIShows = new List<APIShowBasic>
         {
-            new(42069, "http://image.example.com", "everything everywhere all at once - movie", ShowType.Movie),
-            new(420, "http://image.example.com", "everything everywhere all at once - the making of series", ShowType.Series)
+            new("m_42069", "http://image.example.com", "everything everywhere all at once - movie", ShowType.Movie),
+            new("s_420", "http://image.example.com", "everything everywhere all at once - the making of series", ShowType.Series)
         };
         
         MockShowService!
