@@ -30,7 +30,7 @@ public class AddShowTrackingTest
     
     private static AddShowTrackingHandler? AddShowTrackingHandler { get; set; }
 
-    private const int FakeExistingShowId = 123;
+    private const string FakeExistingShowId = "m_123";
     private const string FakeExistingUserId = "USEREXIST";
 
     [ClassInitialize]
@@ -101,7 +101,7 @@ public class AddShowTrackingTest
         await AddShowTrackingHandler!.Handle(command, CancellationToken.None);
         
         // Verify
-        MockShowService!.Verify(service => service.GetShowById(It.IsAny<int>(), ShowType.Movie), Times.Never);
+        MockShowService!.Verify(service => service.GetShowById(It.IsAny<string>(), ShowType.Movie), Times.Never);
         var showTracking = await InMemDatabase!.ShowTrackings
             .Where(showTracking => showTracking.ShowRemoteId.Equals(FakeExistingShowId) 
                                    && showTracking.UserRemoteId.Equals(FakeExistingUserId))
@@ -114,7 +114,7 @@ public class AddShowTrackingTest
     {
         // Setup
         var fakeAPIShow = new APIShow(
-            999,
+            "m_123",
             "",
             "Chaos Chef",
             "Underrated Movie of the Year",
@@ -136,7 +136,7 @@ public class AddShowTrackingTest
         await AddShowTrackingHandler!.Handle(command, CancellationToken.None);
         
         // Verify
-        MockShowService.Verify(service => service.GetShowById(It.IsAny<int>(), ShowType.Movie));
+        MockShowService.Verify(service => service.GetShowById(It.IsAny<string>(), ShowType.Movie));
         var showTrackingCount = await InMemDatabase!.ShowTrackings
             .Where(showTracking => showTracking.ShowRemoteId.Equals(FakeExistingShowId) 
                                    && showTracking.UserRemoteId.Equals(FakeExistingUserId))
@@ -173,7 +173,7 @@ public class AddShowTrackingTest
         // Setup
         var command = new AddShowTrackingCommand(
             FakeExistingUserId,
-            111,
+            "m_111",
             0,
             ShowType.Series,
             ShowTrackingStatus.Planning
@@ -184,7 +184,7 @@ public class AddShowTrackingTest
         
         // Execute & Verify
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddShowTrackingHandler!.Handle(command, CancellationToken.None));
-        MockShowService.Verify(service => service.GetShowById(It.IsAny<int>(), ShowType.Series));
+        MockShowService.Verify(service => service.GetShowById(It.IsAny<string>(), ShowType.Series));
     }
     
     [TestMethod]
@@ -192,7 +192,7 @@ public class AddShowTrackingTest
     {
         // Setup
         var fakeAPIShow = new APIShow(
-            123,
+            "m_123",
             "",
             "Chaos Chef",
             "Won Movie of the Year",

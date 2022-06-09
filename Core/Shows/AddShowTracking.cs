@@ -11,7 +11,7 @@ namespace Core.Shows;
 
 public record AddShowTrackingCommand(
     string UserRemoteId,
-    int ShowRemoteId,
+    string ShowRemoteId,
     int EpisodesWatched,
     ShowType ShowType,
     ShowTrackingStatus Status
@@ -65,8 +65,7 @@ public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Un
         bool isShowTrackingExists = await _dbContext.ShowTrackings
             .AsNoTracking()
             .Where(trackedShow => trackedShow.ShowRemoteId == command.ShowRemoteId 
-                         && trackedShow.UserRemoteId == command.UserRemoteId
-                         && trackedShow.ShowType == command.ShowType)
+                         && trackedShow.UserRemoteId == command.UserRemoteId)
             .AnyAsync(cancellationToken);
 
         if (isShowTrackingExists)
@@ -77,13 +76,12 @@ public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Un
         // Fetch from external API and store in db if show do not exist.
         bool isShowExists = await _dbContext.Shows
             .AsNoTracking()
-            .Where(show => show.RemoteId == command.ShowRemoteId
-                           && show.ShowType == command.ShowType)
+            .Where(show => show.RemoteId == command.ShowRemoteId)
             .AnyAsync(cancellationToken);
 
         if (!isShowExists)
         {
-            APIShow? apiShow = await _showService.GetShowById(command.ShowRemoteId, command.ShowType);
+            APIShow? apiShow = await _showService.GetShowById(command.ShowRemoteId);
             
             if (apiShow == null)
             {

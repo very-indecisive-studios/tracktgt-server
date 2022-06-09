@@ -6,7 +6,7 @@ public enum ShowType { Movie, Series }
 
 public class Show : Entity
 {
-    public int RemoteId { get; set; }
+    public string RemoteId { get; set; }
     
     public string CoverImageURL { get; set; }
     

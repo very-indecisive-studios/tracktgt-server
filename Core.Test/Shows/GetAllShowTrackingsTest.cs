@@ -36,7 +36,7 @@ public class GetAllShowTrackingsTest
             new()
             {
                 UserRemoteId = FakeUserRemoteId,
-                ShowRemoteId = 0,
+                ShowRemoteId = "0",
                 EpisodesWatched = 100,
                 ShowType = ShowType.Series,
                 Status = ShowTrackingStatus.Watching

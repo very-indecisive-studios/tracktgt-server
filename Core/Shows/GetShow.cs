@@ -9,7 +9,7 @@ using Service.Show;
 
 namespace Core.Shows;
 
-public record GetShowQuery(int RemoteId, ShowType ShowType) : IRequest<GetShowResult>;
+public record GetShowQuery(string RemoteId) : IRequest<GetShowResult>;
 
 public class GetShowValidator : AbstractValidator<GetShowQuery>
 {
@@ -20,7 +20,7 @@ public class GetShowValidator : AbstractValidator<GetShowQuery>
 }
 
 public record GetShowResult(
-    int RemoteId,
+    string RemoteId,
     string CoverImageURL,
     string Title,
     string Summary,
@@ -60,12 +60,12 @@ public class GetShowHandler : IRequestHandler<GetShowQuery, GetShowResult>
         // Find show from local database
         var dbShow = await _dbContext.Shows
             .AsNoTracking()
-            .Where(show => show.RemoteId == getShowQuery.RemoteId && show.ShowType == getShowQuery.ShowType)
+            .Where(show => show.RemoteId == getShowQuery.RemoteId)
             .FirstOrDefaultAsync(cancellationToken);
         if (dbShow != null) return _mapper.Map<Show, GetShowResult>(dbShow);
 
         // Find show from remote (if not in local)
-        var remoteShow = await _showService.GetShowById(getShowQuery.RemoteId, getShowQuery.ShowType);
+        var remoteShow = await _showService.GetShowById(getShowQuery.RemoteId);
         if (remoteShow != null)
         {
             var newDBShow = _mapper.Map<APIShow, Show>(remoteShow);

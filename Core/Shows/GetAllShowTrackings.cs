@@ -28,7 +28,7 @@ public class GetAllShowTrackingsValidator : AbstractValidator<GetAllShowTracking
 }
 
 public record GetAllShowTrackingsItemResult(
-    int ShowRemoteId,
+    string ShowRemoteId,
     string Title,
     string CoverImageURL,
     int EpisodesWatched,
@@ -56,7 +56,7 @@ public class GetAllShowTrackingsHandler : IRequestHandler<GetAllShowTrackingsQue
         if (query.Status != null) queryable = queryable.Where(showTracking => showTracking.Status == query.Status);
         if (query.SortByRecentlyModified) queryable = queryable.OrderByDescending(showTracking => showTracking.LastModifiedOn);
         if (query.SortByEpisodesWatched) queryable = queryable.OrderBy(showTracking => showTracking.EpisodesWatched);
-        
+
         var joinQueryable = queryable.Join(
             _databaseContext.Shows,
             showTracking => showTracking.ShowRemoteId,

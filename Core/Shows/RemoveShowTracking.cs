@@ -10,7 +10,7 @@ namespace Core.Shows;
 
 public record RemoveShowTrackingCommand(
     string UserRemoteId,
-    int ShowRemoteId,
+    string ShowRemoteId,
     ShowType ShowType
 ) : IRequest<Unit>;
 

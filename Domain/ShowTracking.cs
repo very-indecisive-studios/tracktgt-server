@@ -8,7 +8,7 @@ public class ShowTracking : Entity
 {
     public string UserRemoteId { get; set; }
     
-    public int ShowRemoteId { get; set; }
+    public string ShowRemoteId { get; set; }
     
     public int EpisodesWatched { get; set; }
 

@@ -64,10 +64,10 @@ public class ShowController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("track/{userRemoteId}/{showRemoteId:int}", Name = nameof(GetShowTracking))]
-    public Task<GetShowTrackingResult> GetShowTracking(string userRemoteId, int showRemoteId, ShowType showType)
+    [HttpGet("track/{userRemoteId}/{showRemoteId}", Name = nameof(GetShowTracking))]
+    public Task<GetShowTrackingResult?> GetShowTracking(string userRemoteId, string showRemoteId)
     {
-        return Mediator.Send(new GetShowTrackingQuery(userRemoteId, showRemoteId, showType));
+        return Mediator.Send(new GetShowTrackingQuery(userRemoteId, showRemoteId));
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -76,24 +76,12 @@ public class ShowController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("series/{id:int}", Name = nameof(GetSeries))]
-    public Task<GetShowResult> GetSeries(int id)
+    [HttpGet("{id}", Name = nameof(GetShow))]
+    public Task<GetShowResult> GetShow(string id)
     {
-        return Mediator.Send(new GetShowQuery(id, ShowType.Series));
+        return Mediator.Send(new GetShowQuery(id));
     }
-    
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [Consumes(MediaTypeNames.Application.Json)]
-    [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("movie/{id:int}", Name = nameof(GetMovie))]
-    public Task<GetShowResult> GetMovie(int id)
-    {
-        return Mediator.Send(new GetShowQuery(id, ShowType.Movie));
-    }
-    
+
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

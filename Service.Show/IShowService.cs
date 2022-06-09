@@ -6,5 +6,5 @@ public interface IShowService
 {
     Task<List<APIShowBasic>> SearchShowByTitle(string title);
 
-    Task<APIShow?> GetShowById(int id, ShowType showType);
+    Task<APIShow?> GetShowById(string id);
 }

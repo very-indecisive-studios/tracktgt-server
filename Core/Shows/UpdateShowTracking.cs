@@ -10,7 +10,7 @@ namespace Core.Shows;
 
 public record UpdateShowTrackingCommand(
     string UserRemoteId,
-    int ShowRemoteId, 
+    string ShowRemoteId, 
     int EpisodesWatched,
     ShowTrackingStatus Status
 ) : IRequest<Unit>;
