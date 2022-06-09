@@ -6,6 +6,7 @@
       <ImplicitUsings>enable</ImplicitUsings>
       <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
       <UserSecretsId>aaf2b593-7da8-4758-bb58-a67ea9e7093d</UserSecretsId>
+      <ServerGarbageCollection>false</ServerGarbageCollection>
     </PropertyGroup>
   
     <Target Name="NSwag" AfterTargets="AfterBuild" Condition="'$(Configuration)' == 'Debug'">
