@@ -65,9 +65,9 @@ public class ShowController : APIControllerBase
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     [HttpGet("track/{userRemoteId}/{showRemoteId:int}", Name = nameof(GetShowTracking))]
-    public Task<GetShowTrackingResult> GetShowTracking(string userRemoteId, int showRemoteId)
+    public Task<GetShowTrackingResult> GetShowTracking(string userRemoteId, int showRemoteId, ShowType showType)
     {
-        return Mediator.Send(new GetShowTrackingQuery(userRemoteId, showRemoteId));
+        return Mediator.Send(new GetShowTrackingQuery(userRemoteId, showRemoteId, showType));
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]

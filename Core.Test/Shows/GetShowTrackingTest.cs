@@ -70,7 +70,7 @@ public class GetShowTrackingTest
     public async Task GetShowTracking_Found()
     {
         // Setup
-        var query = new GetShowTrackingQuery(FakeUserRemoteId, FakeShowRemoteId);
+        var query = new GetShowTrackingQuery(FakeUserRemoteId, FakeShowRemoteId, ShowType.Movie);
 
         // Execute
         var result = await GetShowTrackingHandler!.Handle(query, CancellationToken.None);
@@ -83,7 +83,7 @@ public class GetShowTrackingTest
     public async Task GetShowTracking_NotFound()
     {
         // Setup
-        var query = new GetShowTrackingQuery(FakeUserRemoteId, 111);
+        var query = new GetShowTrackingQuery(FakeUserRemoteId, 111,  ShowType.Movie);
 
         // Execute
         var result = await GetShowTrackingHandler!.Handle(query, CancellationToken.None);

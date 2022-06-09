@@ -10,7 +10,8 @@ namespace Core.Shows;
 
 public record GetShowTrackingQuery(
     string UserRemoteId,
-    int ShowRemoteId
+    int ShowRemoteId,
+    ShowType ShowType
 ) : IRequest<GetShowTrackingResult?>;
 
 public class GetShowTrackingValidator : AbstractValidator<GetShowTrackingQuery>
@@ -51,7 +52,9 @@ public class GetShowTrackingHandler : IRequestHandler<GetShowTrackingQuery, GetS
     {
         var showTracking = await _databaseContext.ShowTrackings
             .AsNoTracking()
-            .Where(showTracking => showTracking.UserRemoteId == query.UserRemoteId && showTracking.ShowRemoteId == query.ShowRemoteId)
+            .Where(showTracking => showTracking.UserRemoteId == query.UserRemoteId 
+                                   && showTracking.ShowRemoteId == query.ShowRemoteId 
+                                   && showTracking.ShowType == query.ShowType)
             .ProjectTo<GetShowTrackingResult>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
         

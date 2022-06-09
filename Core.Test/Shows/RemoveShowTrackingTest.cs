@@ -68,7 +68,7 @@ public class RemoveShowTrackingTest
     public async Task RemoveShowTracking_Exists()
     {
         // Setup
-        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId);
+        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId, ShowType.Movie);
         
         // Execute
         await RemoveShowTrackingHandler!.Handle(command, CancellationToken.None);
@@ -85,7 +85,7 @@ public class RemoveShowTrackingTest
     public async Task RemoveShowTracking_NotExists()
     {
         // Setup
-        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId);
+        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId, ShowType.Movie);
 
         // Execute
         // Verify

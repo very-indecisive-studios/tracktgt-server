@@ -60,12 +60,13 @@ public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Un
         {
             throw new NotFoundException("User not found!");
         }
-        
+
         // Verify if tracked show already exist.
         bool isShowTrackingExists = await _dbContext.ShowTrackings
             .AsNoTracking()
             .Where(trackedShow => trackedShow.ShowRemoteId == command.ShowRemoteId 
-                         && trackedShow.UserRemoteId == command.UserRemoteId)
+                         && trackedShow.UserRemoteId == command.UserRemoteId
+                         && trackedShow.ShowType == command.ShowType)
             .AnyAsync(cancellationToken);
 
         if (isShowTrackingExists)
@@ -76,7 +77,8 @@ public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Un
         // Fetch from external API and store in db if show do not exist.
         bool isShowExists = await _dbContext.Shows
             .AsNoTracking()
-            .Where(show => show.RemoteId == command.ShowRemoteId)
+            .Where(show => show.RemoteId == command.ShowRemoteId
+                           && show.ShowType == command.ShowType)
             .AnyAsync(cancellationToken);
 
         if (!isShowExists)
