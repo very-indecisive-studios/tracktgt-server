@@ -18,7 +18,7 @@ public class SearchShowsValidator : AbstractValidator<SearchShowsQuery>
 
 public record SearchShowsResult(List<SearchShowsResult.SearchShowsItemResult> Items)
 {
-    public record SearchShowsItemResult(long RemoteId, string Title, string CoverImageURL, ShowType ShowType);
+    public record SearchShowsItemResult(string RemoteId, string Title, string CoverImageURL, ShowType ShowType);
 }
 
 public static class SearchShowsMappings

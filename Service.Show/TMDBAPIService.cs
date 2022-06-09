@@ -32,7 +32,7 @@ public class TMDBAPIService : IShowService
             {
                 SearchMovie movie = show as SearchMovie;
                 list.Add(new(
-                    movie.Id,
+                    "m_" + movie.Id,
                     imageURL + movie.PosterPath,
                     movie.Title,
                     ShowType.Movie));
@@ -41,7 +41,7 @@ public class TMDBAPIService : IShowService
             {
                 SearchTv series = show as SearchTv;
                 list.Add(new(
-                    series.Id,
+                    "s_" + series.Id,
                     imageURL + series.PosterPath,
                     series.Name,
                     ShowType.Series));
@@ -50,24 +50,26 @@ public class TMDBAPIService : IShowService
         return list;
     }
 
-    public async Task<APIShow?> GetShowById(int id, ShowType showType)
+    public async Task<APIShow?> GetShowById(string id)
     {
-        if (showType == ShowType.Movie)
+        int intId = Convert.ToInt32(id.Split("_").Last());
+
+        if (id.Split("_").First() == "m")
         {
-            Movie movie = await _client.GetMovieAsync(id);
+            Movie movie = await _client.GetMovieAsync(intId);
             return new(
-                movie.Id,
+                "m_" + movie.Id,
                 imageURL + movie.PosterPath,
                 movie.Title,
                 movie.Overview,
                 ShowType.Movie);
 
         }
-        else if (showType == ShowType.Series)
+        else if (id.Split("_").First() == "s")
         {
-            TvShow series = await _client.GetTvShowAsync(id);
+            TvShow series = await _client.GetTvShowAsync(intId);
             return new(
-                series.Id,
+                "s_" + series.Id,
                 imageURL + series.PosterPath,
                 series.Name,
                 series.Overview,

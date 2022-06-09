@@ -11,7 +11,7 @@ namespace Core.Shows;
 
 public record AddShowTrackingCommand(
     string UserRemoteId,
-    int ShowRemoteId,
+    string ShowRemoteId,
     int EpisodesWatched,
     ShowType ShowType,
     ShowTrackingStatus Status
@@ -60,7 +60,7 @@ public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Un
         {
             throw new NotFoundException("User not found!");
         }
-        
+
         // Verify if tracked show already exist.
         bool isShowTrackingExists = await _dbContext.ShowTrackings
             .AsNoTracking()
@@ -81,7 +81,7 @@ public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Un
 
         if (!isShowExists)
         {
-            APIShow? apiShow = await _showService.GetShowById(command.ShowRemoteId, command.ShowType);
+            APIShow? apiShow = await _showService.GetShowById(command.ShowRemoteId);
             
             if (apiShow == null)
             {

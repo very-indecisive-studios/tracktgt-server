@@ -36,7 +36,7 @@ public class GetAllShowTrackingsTest
             new()
             {
                 UserRemoteId = FakeUserRemoteId,
-                ShowRemoteId = 0,
+                ShowRemoteId = "s_0",
                 EpisodesWatched = 100,
                 ShowType = ShowType.Series,
                 Status = ShowTrackingStatus.Watching
@@ -44,7 +44,7 @@ public class GetAllShowTrackingsTest
             new()
             {
                 UserRemoteId = FakeUserRemoteId,
-                ShowRemoteId = 1,
+                ShowRemoteId = "m_1",
                 EpisodesWatched = 1,
                 ShowType = ShowType.Movie,
                 Status = ShowTrackingStatus.Completed
@@ -52,7 +52,7 @@ public class GetAllShowTrackingsTest
             new()
             {
                 UserRemoteId = FakeUserRemoteId,
-                ShowRemoteId = 2,
+                ShowRemoteId = "s_2",
                 EpisodesWatched = 16,
                 ShowType = ShowType.Series,
                 Status = ShowTrackingStatus.Completed
@@ -60,7 +60,7 @@ public class GetAllShowTrackingsTest
             new()
             {
                 UserRemoteId = FakeUserRemoteId,
-                ShowRemoteId = 3,
+                ShowRemoteId = "m_3",
                 EpisodesWatched = 1,
                 ShowType = ShowType.Movie,
                 Status = ShowTrackingStatus.Completed
@@ -68,7 +68,7 @@ public class GetAllShowTrackingsTest
             new()
             {
                 UserRemoteId = FakeUserRemoteId,
-                ShowRemoteId = 4,
+                ShowRemoteId = "m_4",
                 EpisodesWatched = 0,
                 ShowType = ShowType.Movie,
                 Status = ShowTrackingStatus.Planning
@@ -76,7 +76,7 @@ public class GetAllShowTrackingsTest
             new()
             {
                 UserRemoteId = FakeDiffUserRemoteId,
-                ShowRemoteId = 5,
+                ShowRemoteId = "m_5",
                 EpisodesWatched = 1,
                 ShowType = ShowType.Movie,
                 Status = ShowTrackingStatus.Completed
@@ -85,12 +85,12 @@ public class GetAllShowTrackingsTest
 
         var fakeShowsList = new List<Show>()
         {
-            new() { RemoteId = 0 },
-            new() { RemoteId = 1 },
-            new() { RemoteId = 2 },
-            new() { RemoteId = 3 },
-            new() { RemoteId = 4 },
-            new() { RemoteId = 5 },
+            new() { RemoteId = "s_0" },
+            new() { RemoteId = "m_1" },
+            new() { RemoteId = "s_2" },
+            new() { RemoteId = "m_3" },
+            new() { RemoteId = "m_4" },
+            new() { RemoteId = "m_5" },
         };
         
         // Setup in memory database
@@ -205,7 +205,7 @@ public class GetAllShowTrackingsTest
             SortByRecentlyModified = true
         };
         
-        var recentlyModifiedShowIdList = new List<int>();
+        var recentlyModifiedShowIdList = new List<string>();
         var showTrackings = await InMemDatabase!.ShowTrackings
             .Where(st => st.UserRemoteId == FakeUserRemoteId)
             .ToListAsync();

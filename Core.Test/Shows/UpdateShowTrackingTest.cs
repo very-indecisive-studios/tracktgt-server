@@ -56,7 +56,7 @@ public class UpdateShowTrackingTest
     {
         // Setup
         var fakeUserRemoteId = "d33Z_NuT5";
-        var fakeShowRemoteId = 69;
+        var fakeShowRemoteId = "s_69";
         var fakeEpisodesWatched = 10;
         var fakeStatus = ShowTrackingStatus.Watching;
         var fakeShowType = ShowType.Series;
@@ -95,8 +95,8 @@ public class UpdateShowTrackingTest
         // Setup
         var fakeUserRemoteId = "d33Z_NuT5";
         var fakeDiffUserRemoteId = "d33Z_NuT5_L+M41d3nL3s5";
-        var fakeShowRemoteId = 69;
-        var fakeDiffShowRemoteId = 420;
+        var fakeShowRemoteId = "s_69";
+        var fakeDiffShowRemoteId = "s_422";
         
         var newFakeEpisodesWatched = 25;
         var newFakeStatus = ShowTrackingStatus.Paused;

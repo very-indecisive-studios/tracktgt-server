@@ -10,7 +10,8 @@ namespace Core.Shows;
 
 public record RemoveShowTrackingCommand(
     string UserRemoteId,
-    int ShowRemoteId
+    string ShowRemoteId,
+    ShowType ShowType
 ) : IRequest<Unit>;
 
 public class RemoveShowTrackingValidator : AbstractValidator<RemoveShowTrackingCommand>
@@ -34,7 +35,8 @@ public class RemoveShowTrackingHandler : IRequestHandler<RemoveShowTrackingComma
     {
         ShowTracking? showTracking = await _databaseContext.ShowTrackings
             .Where(showTracking => showTracking.ShowRemoteId == command.ShowRemoteId 
-                                   && showTracking.UserRemoteId == command.UserRemoteId)
+                                   && showTracking.UserRemoteId == command.UserRemoteId
+                                   && showTracking.ShowType == command.ShowType)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (showTracking == null)

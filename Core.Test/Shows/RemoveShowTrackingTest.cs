@@ -29,7 +29,7 @@ public class RemoveShowTrackingTest
     private static RemoveShowTrackingHandler? RemoveShowTrackingHandler { get; set; }
 
     private const string FakeUserRemoteId = "d33Z_NuT5";
-    private const int FakeShowRemoteId = 123;
+    private const string FakeShowRemoteId = "s_123";
 
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)
@@ -68,7 +68,7 @@ public class RemoveShowTrackingTest
     public async Task RemoveShowTracking_Exists()
     {
         // Setup
-        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId);
+        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId, ShowType.Movie);
         
         // Execute
         await RemoveShowTrackingHandler!.Handle(command, CancellationToken.None);
@@ -85,7 +85,7 @@ public class RemoveShowTrackingTest
     public async Task RemoveShowTracking_NotExists()
     {
         // Setup
-        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId);
+        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId, ShowType.Movie);
 
         // Execute
         // Verify

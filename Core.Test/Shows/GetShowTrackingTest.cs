@@ -25,7 +25,7 @@ public class GetShowTrackingTest
     private static GetShowTrackingHandler? GetShowTrackingHandler { get; set; }
 
     private const string FakeUserRemoteId = "d33Z_NuT5";
-    private const int FakeShowRemoteId = 123;
+    private const string FakeShowRemoteId = "s_123";
 
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)
@@ -83,7 +83,7 @@ public class GetShowTrackingTest
     public async Task GetShowTracking_NotFound()
     {
         // Setup
-        var query = new GetShowTrackingQuery(FakeUserRemoteId, 111);
+        var query = new GetShowTrackingQuery(FakeUserRemoteId, "s_111");
 
         // Execute
         var result = await GetShowTrackingHandler!.Handle(query, CancellationToken.None);

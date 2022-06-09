@@ -3,7 +3,7 @@
 namespace Service.Show;
 
 public record APIShowBasic(
-    int Id,
+    string Id,
     string CoverImageURL,
     string Title,
     ShowType ShowType
