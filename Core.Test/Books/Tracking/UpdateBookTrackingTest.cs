@@ -2,15 +2,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Books.Tracking;
+using Core.Exceptions;
+using Domain;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Core.Exceptions;
-using Core.Books;
-using Domain;
 using Persistence;
 
-namespace Core.Test.Books;
+namespace Core.Test.Books.Tracking;
 
 [TestClass]
 public class UpdateBookTrackingTest
@@ -60,7 +60,7 @@ public class UpdateBookTrackingTest
         var fakeChaptersRead = 10;
         var fakeFormat = BookTrackingFormat.Digital;
         var fakeStatus = BookTrackingStatus.Planning;
-        var fakeOwnership = BookTrackingOwnership.Wishlist;
+        var fakeOwnership = BookTrackingOwnership.Owned;
         InMemDatabase!.BookTrackings.Add(new BookTracking
         {
             UserRemoteId = fakeUserRemoteId,
@@ -75,7 +75,7 @@ public class UpdateBookTrackingTest
         var newFakeChaptersRead = 25;
         var newFakeFormat = BookTrackingFormat.Physical;
         var newFakeStatus = BookTrackingStatus.Reading;
-        var newFakeOwnership = BookTrackingOwnership.Owned;
+        var newFakeOwnership = BookTrackingOwnership.Loan;
         var command = new UpdateBookTrackingCommand(fakeUserRemoteId, fakeBookRemoteId, newFakeChaptersRead, 
             newFakeFormat, newFakeStatus, newFakeOwnership);
         

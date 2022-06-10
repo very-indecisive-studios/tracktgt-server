@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Domain;
 using Persistence;
 
-namespace Core.Books;
+namespace Core.Books.Tracking;
 
 public record GetBookTrackingQuery(
     string UserRemoteId,

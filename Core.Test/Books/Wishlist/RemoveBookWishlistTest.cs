@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Books.Wishlist;
+using Core.Exceptions;
+using Domain;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Core.Books;
-using Domain;
 using Persistence;
 
-namespace Core.Test.Books;
+namespace Core.Test.Books.Wishlist;
 
 [TestClass]
-public class GetBookTrackingTest
+public class RemoveBookWishlistTest
 {
     private static SqliteConnection? Connection { get; set; }
 
@@ -22,7 +24,7 @@ public class GetBookTrackingTest
 
     private static IMapper? Mapper { get; set; }
 
-    private static GetBookTrackingHandler? GetBookTrackingHandler { get; set; }
+    private static RemoveBookWishlistHandler? RemoveBookWishlistHandler { get; set; }
 
     private const string FakeUserRemoteId = "d33Z_NuT5";
     private const string FakeBookRemoteId = "0";
@@ -30,16 +32,12 @@ public class GetBookTrackingTest
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)
     {
-        var fakeBookTrackingsList = new List<BookTracking>()
+        var fakeBookWishlistsList = new List<BookWishlist>()
         {
             new()
             {
                 UserRemoteId = FakeUserRemoteId,
-                BookRemoteId = FakeBookRemoteId,
-                ChaptersRead = 100,
-                Format = BookTrackingFormat.Digital,
-                Status = BookTrackingStatus.Reading,
-                Ownership = BookTrackingOwnership.Wishlist
+                BookRemoteId = FakeBookRemoteId
             }
         };
 
@@ -53,44 +51,41 @@ public class GetBookTrackingTest
 
         InMemDatabase = new DatabaseContext(ContextOptions);
         await InMemDatabase.Database.EnsureCreatedAsync();
-        InMemDatabase.BookTrackings.AddRange(fakeBookTrackingsList);
+        InMemDatabase.BookWishlists.AddRange(fakeBookWishlistsList);
         await InMemDatabase.SaveChangesAsync();
 
         var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile<MappingProfiles>(); });
         Mapper = mappingConfig.CreateMapper();
 
-        GetBookTrackingHandler = new GetBookTrackingHandler(InMemDatabase, Mapper);
-    }
-
-    [ClassCleanup]
-    public static async Task TestClassCleanup()
-    {
-        await Connection!.DisposeAsync();
+        RemoveBookWishlistHandler = new RemoveBookWishlistHandler(InMemDatabase);
     }
 
     [TestMethod]
-    public async Task GetBookTracking_Found()
+    public async Task RemoveBookWishlist_Exists()
     {
         // Setup
-        var query = new GetBookTrackingQuery(FakeUserRemoteId, FakeBookRemoteId);
-
-        // Execute
-        var result = await GetBookTrackingHandler!.Handle(query, CancellationToken.None);
+        var command = new RemoveBookWishlistCommand(FakeUserRemoteId, FakeBookRemoteId);
         
+        // Execute
+        await RemoveBookWishlistHandler!.Handle(command, CancellationToken.None);
+
         // Verify
-        Assert.IsNotNull(result);
+        var count = await InMemDatabase!.BookWishlists
+            .Where(b => b.UserRemoteId.Equals(FakeUserRemoteId) 
+                        && b.BookRemoteId.Equals(FakeBookRemoteId))
+            .CountAsync();
+        Assert.AreEqual(0, count);
     }
-    
+
     [TestMethod]
-    public async Task GetBookTracking_NotFound()
+    public async Task RemoveBookWishlist_NotExists()
     {
         // Setup
-        var query = new GetBookTrackingQuery(FakeUserRemoteId, "BOOKNOTEXIST");
+        var command = new RemoveBookWishlistCommand(FakeUserRemoteId, FakeBookRemoteId);
 
         // Execute
-        var result = await GetBookTrackingHandler!.Handle(query, CancellationToken.None);
-        
         // Verify
-        Assert.IsNull(result);
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => 
+            RemoveBookWishlistHandler!.Handle(command, CancellationToken.None));
     }
 }

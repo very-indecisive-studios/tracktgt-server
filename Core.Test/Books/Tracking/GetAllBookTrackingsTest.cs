@@ -3,14 +3,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Books.Tracking;
+using Domain;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Core.Books;
-using Domain;
 using Persistence;
 
-namespace Core.Test.Books;
+namespace Core.Test.Books.Tracking;
 
 [TestClass]
 public class GetAllBookTrackingsTest
@@ -40,7 +40,7 @@ public class GetAllBookTrackingsTest
                 ChaptersRead = 100,
                 Format = BookTrackingFormat.Digital,
                 Status = BookTrackingStatus.Reading,
-                Ownership = BookTrackingOwnership.Wishlist
+                Ownership = BookTrackingOwnership.Owned
             },
             new()
             {
@@ -244,7 +244,7 @@ public class GetAllBookTrackingsTest
         // Verify
         Assert.AreEqual(6, result.TotalCount);
         Assert.AreEqual(BookTrackingOwnership.Owned, result.Items.First().Ownership);
-        Assert.AreEqual(BookTrackingOwnership.Wishlist, result.Items.Last().Ownership);
+        Assert.AreEqual(BookTrackingOwnership.Loan, result.Items.Last().Ownership);
     }
     
     [TestMethod]

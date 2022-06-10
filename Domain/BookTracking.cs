@@ -2,11 +2,11 @@
 
 #nullable disable
 
-public enum BookTrackingFormat { Digital, Physical, None }
+public enum BookTrackingFormat { Digital, Physical }
 
 public enum BookTrackingStatus { Completed, Reading, Paused, Planning  }
 
-public enum BookTrackingOwnership { Owned, Loan, Wishlist }
+public enum BookTrackingOwnership { Owned, Loan }
 
 public class BookTracking : Entity
 {

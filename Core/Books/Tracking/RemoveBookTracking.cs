@@ -1,11 +1,11 @@
 ﻿using Core.Exceptions;
+using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Domain;
 using Persistence;
 
-namespace Core.Books;
+namespace Core.Books.Tracking;
 
 public record RemoveBookTrackingCommand(
     string UserRemoteId,

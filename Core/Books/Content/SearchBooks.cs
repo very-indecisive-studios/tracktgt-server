@@ -3,7 +3,7 @@ using FluentValidation;
 using MediatR;
 using Service.Book;
 
-namespace Core.Books;
+namespace Core.Books.Content;
 
 public record SearchBooksQuery(string Title) : IRequest<SearchBooksResult>;
 

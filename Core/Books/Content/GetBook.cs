@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
+using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Domain;
 using Persistence;
 using Service.Book;
 
-namespace Core.Books;
+namespace Core.Books.Content;
 
 public record GetBookQuery(string RemoteId) : IRequest<GetBookResult>;
 

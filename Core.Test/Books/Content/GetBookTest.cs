@@ -3,17 +3,17 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Core.Books;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+using Core.Books.Content;
 using Core.Exceptions;
 using Domain;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Persistence;
 using Service.Book;
 
-namespace Core.Test.Books;
+namespace Core.Test.Books.Content;
 
 [TestClass]
 public class GetBookTest

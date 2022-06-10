@@ -3,17 +3,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Moq.EntityFrameworkCore;
+using Core.Books.Tracking;
 using Core.Exceptions;
-using Core.Books;
 using Domain;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Persistence;
 
-namespace Core.Test.Books;
+namespace Core.Test.Books.Tracking;
 
 [TestClass]
 public class RemoveBookTrackingTest
@@ -43,7 +41,7 @@ public class RemoveBookTrackingTest
                 ChaptersRead = 100,
                 Format = BookTrackingFormat.Digital,
                 Status = BookTrackingStatus.Reading,
-                Ownership = BookTrackingOwnership.Wishlist
+                Ownership = BookTrackingOwnership.Owned
             }
         };
 

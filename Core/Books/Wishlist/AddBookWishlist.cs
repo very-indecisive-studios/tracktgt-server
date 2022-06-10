@@ -1,56 +1,52 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
+using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Domain;
 using Persistence;
 using Service.Book;
 
-namespace Core.Books;
+namespace Core.Books.Wishlist;
 
-public record AddBookTrackingCommand(
+public record AddBookWishlistCommand(
     string UserRemoteId,
-    string BookRemoteId,
-    int ChaptersRead,
-    BookTrackingFormat Format,
-    BookTrackingStatus Status,
-    BookTrackingOwnership Ownership
+    string BookRemoteId
 ) : IRequest<Unit>;
 
-public class AddBookTrackingValidator : AbstractValidator<AddBookTrackingCommand>
+public class AddBookWishlistValidator : AbstractValidator<AddBookWishlistCommand>
 {
-    public AddBookTrackingValidator()
+    public AddBookWishlistValidator()
     {
         RuleFor(c => c.UserRemoteId).NotEmpty();
         RuleFor(c => c.BookRemoteId).NotEmpty();
     }
 }
 
-public static class AddBookTrackingMappings
+public static class AddBookWishlistMappings
 {
     public static void Map(Profile profile)
     {
-        profile.CreateMap<AddBookTrackingCommand, BookTracking>();
+        profile.CreateMap<AddBookWishlistCommand, BookWishlist>();
         
         // APIBook => Book mapping exists in GetBook use case.
     }
 }
 
-public class AddBookTrackingHandler : IRequestHandler<AddBookTrackingCommand, Unit>
+public class AddBookWishlistHandler : IRequestHandler<AddBookWishlistCommand, Unit>
 {
     private readonly DatabaseContext _dbContext;
     private readonly IBookService _bookService;
     private readonly IMapper _mapper;
 
-    public AddBookTrackingHandler(DatabaseContext dbContext, IBookService bookService, IMapper mapper)
+    public AddBookWishlistHandler(DatabaseContext dbContext, IBookService bookService, IMapper mapper)
     {
         _dbContext = dbContext;
         _bookService = bookService;
         _mapper = mapper;
     }
 
-    public async Task<Unit> Handle(AddBookTrackingCommand command, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(AddBookWishlistCommand command, CancellationToken cancellationToken)
     {
         // Verify user.
         bool isUserExists = await _dbContext.Users
@@ -64,21 +60,21 @@ public class AddBookTrackingHandler : IRequestHandler<AddBookTrackingCommand, Un
         }
         
         // Verify if tracked book already exist.
-        bool isBookTrackingExists = await _dbContext.BookTrackings
+        bool isBookWishlistExists = await _dbContext.BookWishlists
             .AsNoTracking()
-            .Where(bt => bt.BookRemoteId == command.BookRemoteId 
-                         && bt.UserRemoteId == command.UserRemoteId)
+            .Where(bw => bw.BookRemoteId.Equals(command.BookRemoteId) 
+                         && bw.UserRemoteId.Equals(command.UserRemoteId))
             .AnyAsync(cancellationToken);
 
-        if (isBookTrackingExists)
+        if (isBookWishlistExists)
         {
-            throw new ExistsException("Tracked book already exists!");
+            throw new ExistsException("Wishlisted book already exists!");
         }
         
         // Verify book id.
         bool isBookExists = await _dbContext.Books
             .AsNoTracking()
-            .Where(b => b.RemoteId == command.BookRemoteId)
+            .Where(b => b.RemoteId.Equals(command.BookRemoteId))
             .AnyAsync(cancellationToken);
         // Fetch from external API and store in db if book not cached
         if (!isBookExists)
@@ -94,8 +90,8 @@ public class AddBookTrackingHandler : IRequestHandler<AddBookTrackingCommand, Un
             _dbContext.Books.Add(book);
         }
 
-        var bookTracking = _mapper.Map<AddBookTrackingCommand, BookTracking>(command);
-        _dbContext.BookTrackings.Add(bookTracking);
+        var bookWishlist = _mapper.Map<AddBookWishlistCommand, BookWishlist>(command);
+        _dbContext.BookWishlists.Add(bookWishlist);
         
         await _dbContext.SaveChangesAsync(cancellationToken);
         

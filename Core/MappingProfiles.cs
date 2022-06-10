@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using Core.Books;
+using Core.Books.Content;
+using Core.Books.Tracking;
+using Core.Books.Wishlist;
 using Core.Games;
 using Core.Games.Content;
 using Core.Games.Tracking;
@@ -44,8 +47,12 @@ public class MappingProfiles : Profile
         AddBookTrackingMappings.Map(this);
         GetBookTrackingMappings.Map(this);
         UpdateBookTrackingMappings.Map(this);
+        
         SearchBooksMappings.Map(this);
         GetBookMappings.Map(this);
+        
+        AddBookWishlistMappings.Map(this);
+        GetBookWishlistMappings.Map(this);
         #endregion
     }
 }
