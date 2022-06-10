@@ -2,12 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Games.Content;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Core.Games;
 using Service.Game;
 
-namespace Core.Test.Games;
+namespace Core.Test.Games.Content;
 
 [TestClass]
 public class SearchGamesTest

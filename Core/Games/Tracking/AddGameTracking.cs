@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
+using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Domain;
 using Persistence;
 using Service.Game;
 
-namespace Core.Games;
+namespace Core.Games.Tracking;
 
 public record AddGameTrackingCommand(
     string UserRemoteId,

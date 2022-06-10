@@ -2,16 +2,16 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Exceptions;
+using Core.Games.Tracking;
+using Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Moq.EntityFrameworkCore;
-using Core.Exceptions;
-using Core.Games;
-using Domain;
 using Persistence;
 using Service.Game;
 
-namespace Core.Test.Games;
+namespace Core.Test.Games.Tracking;
 
 [TestClass]
 public class AddGameTrackingTest

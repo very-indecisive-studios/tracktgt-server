@@ -2,14 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Games.Tracking;
+using Domain;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Core.Games;
-using Domain;
 using Persistence;
 
-namespace Core.Test.Games;
+namespace Core.Test.Games.Tracking;
 
 [TestClass]
 public class GetGameTrackingsTest
@@ -40,7 +40,7 @@ public class GetGameTrackingsTest
                 Platform = "PSP",
                 Format = GameTrackingFormat.Digital,
                 Status = GameTrackingStatus.Playing,
-                Ownership = GameTrackingOwnership.Wishlist
+                Ownership = GameTrackingOwnership.Owned
             },
             new()
             {

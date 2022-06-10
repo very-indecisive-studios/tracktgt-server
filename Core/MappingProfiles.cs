@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Core.Books;
 using Core.Games;
+using Core.Games.Content;
+using Core.Games.Tracking;
+using Core.Games.Wishlist;
 using Core.Shows;
 using Core.Users;
 using Domain;
@@ -16,8 +19,12 @@ public class MappingProfiles : Profile
         AddGameTrackingMappings.Map(this);
         GetGameTrackingsMappings.Map(this);
         UpdateGameTrackingMappings.Map(this);
+        
         SearchGamesMappings.Map(this);
         GetGameMappings.Map(this);
+        
+        AddGameWishlistMappings.Map(this);
+        GetGameWishlistsMappings.Map(this);
         #endregion
 
         #region Users

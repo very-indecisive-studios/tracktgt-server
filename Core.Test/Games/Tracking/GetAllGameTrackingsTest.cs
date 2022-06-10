@@ -3,14 +3,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Games.Tracking;
+using Domain;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Core.Games;
-using Domain;
 using Persistence;
 
-namespace Core.Test.Games;
+namespace Core.Test.Games.Tracking;
 
 [TestClass]
 public class GetAllGameTrackingsTest
@@ -41,7 +41,7 @@ public class GetAllGameTrackingsTest
                 Platform = "PSP",
                 Format = GameTrackingFormat.Digital,
                 Status = GameTrackingStatus.Playing,
-                Ownership = GameTrackingOwnership.Wishlist
+                Ownership = GameTrackingOwnership.Owned
             },
             new()
             {
@@ -71,7 +71,7 @@ public class GetAllGameTrackingsTest
                 Platform = "Switch",
                 Format = GameTrackingFormat.Physical,
                 Status = GameTrackingStatus.Planning,
-                Ownership = GameTrackingOwnership.Loan
+                Ownership = GameTrackingOwnership.Owned
             },
             new()
             {

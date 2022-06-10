@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Core.Common;
+using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Domain;
 using Persistence;
 
-namespace Core.Games;
+namespace Core.Games.Tracking;
 
 public class GetAllGameTrackingsQuery : PagedListRequest, IRequest<PagedListResult<GetAllGameTrackingsItemResult>>
 {

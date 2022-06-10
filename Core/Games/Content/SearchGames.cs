@@ -3,7 +3,7 @@ using FluentValidation;
 using MediatR;
 using Service.Game;
 
-namespace Core.Games;
+namespace Core.Games.Content;
 
 public record SearchGamesQuery(string Title) : IRequest<SearchGamesResult>;
 

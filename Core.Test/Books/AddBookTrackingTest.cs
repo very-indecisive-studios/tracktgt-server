@@ -162,10 +162,7 @@ public class AddBookTrackingTest
             BookTrackingStatus.Planning,
             BookTrackingOwnership.Owned
         );
-        
-        MockBookService!.Setup(service => service.GetBookById(command.BookRemoteId))
-            .ReturnsAsync((APIBook?) null);
-        
+
         // Execute & Verify
         await Assert.ThrowsExceptionAsync<ExistsException>(() => AddBookTrackingHandler!.Handle(command, CancellationToken.None));
     }

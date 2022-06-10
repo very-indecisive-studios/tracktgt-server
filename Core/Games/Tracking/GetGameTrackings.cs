@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Core.Exceptions;
-using Domain;
 using Persistence;
 
-namespace Core.Games;
+namespace Core.Games.Tracking;
 
 public record GetGameTrackingsQuery(
     string UserRemoteId,

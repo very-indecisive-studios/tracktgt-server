@@ -2,15 +2,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Exceptions;
+using Core.Games.Tracking;
+using Domain;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Core.Exceptions;
-using Core.Games;
-using Domain;
 using Persistence;
 
-namespace Core.Test.Games;
+namespace Core.Test.Games.Tracking;
 
 [TestClass]
 public class UpdateGameTrackingTest
@@ -61,7 +61,7 @@ public class UpdateGameTrackingTest
         var fakePlatform = "PC";
         var fakeFormat = GameTrackingFormat.Digital;
         var fakeStatus = GameTrackingStatus.Planning;
-        var fakeOwnership = GameTrackingOwnership.Wishlist;
+        var fakeOwnership = GameTrackingOwnership.Subscription;
         InMemDatabase!.GameTrackings.Add(new GameTracking
         {
             UserRemoteId = fakeUserRemoteId,

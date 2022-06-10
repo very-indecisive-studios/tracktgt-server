@@ -2,12 +2,63 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Core.Common;
-using Core.Games;
+using Core.Games.Content;
+using Core.Games.Tracking;
+using Core.Games.Wishlist;
 
 namespace API.Controllers;
 
 public class GameController : APIControllerBase
 {
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpPost("wishlist", Name = nameof(AddGameWishlist))]
+    public Task<Unit> AddGameWishlist(AddGameWishlistCommand addGameWishlistCommand)
+    {
+        return Mediator.Send(addGameWishlistCommand);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpDelete("wishlist", Name = nameof(RemoveGameWishlist))]
+    public Task<Unit> RemoveGameWishlist(RemoveGameWishlistCommand removeGameWishlistCommand)
+    {
+        return Mediator.Send(removeGameWishlistCommand);
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("wishlist", Name = nameof(GetAllGameWishlists))]
+    public Task<PagedListResult<GetAllGameWishlistsItemResult>> GetAllGameWishlists(
+        [FromQuery] GetAllGameWishlistsQuery getAllGameWishlistsQuery)
+    {
+        return Mediator.Send(getAllGameWishlistsQuery);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("wishlist/{userRemoteId}/{gameRemoteId:long}", Name = nameof(GetGameWishlists))]
+    public Task<GetGameWishlistsResult> GetGameWishlists(string userRemoteId, long gameRemoteId)
+    {
+        return Mediator.Send(new GetGameWishlistsQuery(userRemoteId, gameRemoteId));
+    }
+    
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -92,4 +143,5 @@ public class GameController : APIControllerBase
     {
         return Mediator.Send(new SearchGamesQuery(title));
     }
+    
 }
