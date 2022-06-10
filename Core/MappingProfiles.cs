@@ -1,6 +1,12 @@
 ﻿using AutoMapper;
 using Core.Books;
+using Core.Books.Content;
+using Core.Books.Tracking;
+using Core.Books.Wishlist;
 using Core.Games;
+using Core.Games.Content;
+using Core.Games.Tracking;
+using Core.Games.Wishlist;
 using Core.Shows;
 using Core.Users;
 using Domain;
@@ -16,8 +22,12 @@ public class MappingProfiles : Profile
         AddGameTrackingMappings.Map(this);
         GetGameTrackingsMappings.Map(this);
         UpdateGameTrackingMappings.Map(this);
+        
         SearchGamesMappings.Map(this);
         GetGameMappings.Map(this);
+        
+        AddGameWishlistMappings.Map(this);
+        GetGameWishlistsMappings.Map(this);
         #endregion
 
         #region Users
@@ -37,8 +47,12 @@ public class MappingProfiles : Profile
         AddBookTrackingMappings.Map(this);
         GetBookTrackingMappings.Map(this);
         UpdateBookTrackingMappings.Map(this);
+        
         SearchBooksMappings.Map(this);
         GetBookMappings.Map(this);
+        
+        AddBookWishlistMappings.Map(this);
+        GetBookWishlistMappings.Map(this);
         #endregion
     }
 }

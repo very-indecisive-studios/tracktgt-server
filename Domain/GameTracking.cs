@@ -2,11 +2,11 @@
 
 #nullable disable
 
-public enum GameTrackingFormat { Digital, Physical, None }
+public enum GameTrackingFormat { Digital, Physical }
 
 public enum GameTrackingStatus { Completed, Playing, Paused, Planning  }
 
-public enum GameTrackingOwnership { Owned, Loan, Wishlist, Subscription }
+public enum GameTrackingOwnership { Owned, Loan, Subscription }
 
 public class GameTracking : Entity
 {

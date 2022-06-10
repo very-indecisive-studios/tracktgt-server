@@ -1,5 +1,7 @@
 ﻿using System.Net.Mime;
-using Core.Books;
+using Core.Books.Content;
+using Core.Books.Tracking;
+using Core.Books.Wishlist;
 using Core.Common;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +10,55 @@ namespace API.Controllers;
 
 public class BookController : APIControllerBase
 {
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpPost("wishlist", Name = nameof(AddBookWishlist))]
+    public Task<Unit> AddBookWishlist(AddBookWishlistCommand addBookWishlistCommand)
+    {
+        return Mediator.Send(addBookWishlistCommand);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpDelete("wishlist", Name = nameof(RemoveBookWishlist))]
+    public Task<Unit> RemoveBookWishlist(RemoveBookWishlistCommand removeBookWishlistCommand)
+    {
+        return Mediator.Send(removeBookWishlistCommand);
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("wishlist", Name = nameof(GetAllBookWishlists))]
+    public Task<PagedListResult<GetAllBookWishlistsItemResult>> GetAllBookWishlists(
+        [FromQuery] GetAllBookWishlistsQuery getAllBookWishlistsQuery)
+    {
+        return Mediator.Send(getAllBookWishlistsQuery);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("wishlist/{userRemoteId}/{bookRemoteId}", Name = nameof(GetBookWishlist))]
+    public Task<bool> GetBookWishlist(string userRemoteId, string bookRemoteId)
+    {
+        return Mediator.Send(new GetBookWishlistQuery(userRemoteId, bookRemoteId));
+    }
+    
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
