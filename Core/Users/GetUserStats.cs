@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Core.Exceptions;
-using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -54,11 +52,11 @@ public class GetUserStatsHandler : IRequestHandler<GetUserStatsQuery, GetUserSta
         
         var following = await _databaseContext.Follows
             .AsNoTracking()
-            .Where(gt => gt.FollowerUserId == query.UserRemoteId).CountAsync(cancellationToken);
+            .Where(f => f.FollowerUserId == query.UserRemoteId).CountAsync(cancellationToken);
         
         var followers = await _databaseContext.Follows
             .AsNoTracking()
-            .Where(gt => gt.FollowingUserId == query.UserRemoteId).CountAsync(cancellationToken);
+            .Where(f => f.FollowingUserId == query.UserRemoteId).CountAsync(cancellationToken);
 
         return new GetUserStatsResult(gamingHours,showsWatched,chaptersRead,following,followers);
     }
