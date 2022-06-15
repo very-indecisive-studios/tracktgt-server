@@ -10,7 +10,6 @@ using Core.Games.Wishlist;
 using Core.Shows;
 using Core.Users;
 using Domain;
-using Service.Game;
 
 namespace Core;
 
@@ -33,6 +32,10 @@ public class MappingProfiles : Profile
         #region Users
         RegisterUserMappings.Map(this);
         GetUserMappings.Map(this);
+        #endregion
+        
+        #region Follows
+        FollowUserMappings.Map(this);
         #endregion
         
         #region Shows
