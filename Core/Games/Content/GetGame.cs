@@ -73,20 +73,36 @@ public class GetGameHandler : IRequestHandler<GetGameQuery, GetGameResult>
     {
         // Find game from database (cached locally).
         var dbGame = await _dbContext.Games
-            .AsNoTracking()
             .Where(game => game.RemoteId == getGameQuery.RemoteId)
             .FirstOrDefaultAsync(cancellationToken);
-        if (dbGame != null) return _mapper.Map<Game, GetGameResult>(dbGame);
 
-        // Find game from remote if not cached.
+        // Return cached game if its fresh.
+        var timeSpan = DateTime.Now - dbGame?.LastModifiedOn;
+        if (timeSpan?.TotalHours < 12 && dbGame != null)
+        {
+            return _mapper.Map<Game, GetGameResult>(dbGame);
+        }
+        
+        // Find game from remote if not cached or cached expired.
         var remoteGame = await _gameService.GetGameById(getGameQuery.RemoteId);
         if (remoteGame != null)
         {
-            var newDBGame = _mapper.Map<APIGame, Game>(remoteGame);
-            _dbContext.Games.Add(newDBGame);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            if (dbGame == null)
+            {
+                var newDBGame = _mapper.Map<APIGame, Game>(remoteGame);
+                _dbContext.Games.Add(newDBGame);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return _mapper.Map<Game, GetGameResult>(newDBGame);
+                return _mapper.Map<Game, GetGameResult>(newDBGame);
+            }
+            else
+            {
+                _mapper.Map<APIGame, Game>(remoteGame, dbGame);
+                _dbContext.Games.Update(dbGame);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                return _mapper.Map<Game, GetGameResult>(dbGame);
+            }
         }
 
         throw new NotFoundException();

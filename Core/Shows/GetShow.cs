@@ -59,20 +59,36 @@ public class GetShowHandler : IRequestHandler<GetShowQuery, GetShowResult>
     {
         // Find show from local database
         var dbShow = await _dbContext.Shows
-            .AsNoTracking()
             .Where(show => show.RemoteId == getShowQuery.RemoteId)
             .FirstOrDefaultAsync(cancellationToken);
-        if (dbShow != null) return _mapper.Map<Show, GetShowResult>(dbShow);
 
+        // Return cached show if its fresh.
+        var timeSpan = DateTime.Now - dbShow?.LastModifiedOn;
+        if (timeSpan?.TotalHours < 12 && dbShow != null)
+        {
+             return _mapper.Map<Show, GetShowResult>(dbShow);
+        }
+        
         // Find show from remote (if not in local)
         var remoteShow = await _showService.GetShowById(getShowQuery.RemoteId);
         if (remoteShow != null)
         {
-            var newDBShow = _mapper.Map<APIShow, Show>(remoteShow);
-            _dbContext.Shows.Add(newDBShow);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            if (dbShow == null)
+            {
+                var newDBShow = _mapper.Map<APIShow, Show>(remoteShow);
+                _dbContext.Shows.Add(newDBShow);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return _mapper.Map<Show, GetShowResult>(newDBShow);
+                return _mapper.Map<Show, GetShowResult>(newDBShow);
+            }
+            else
+            {
+                _mapper.Map<APIShow, Show>(remoteShow, dbShow);
+                _dbContext.Shows.Update(dbShow);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                return _mapper.Map<Show, GetShowResult>(dbShow);
+            }
         }
 
         throw new NotFoundException();

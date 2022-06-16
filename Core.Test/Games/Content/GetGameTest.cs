@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +50,7 @@ public class GetGameTest
     }
     
     [TestMethod]
-    public async Task GetGame_Cached()
+    public async Task GetGame_CachedFresh()
     {
         // Setup
         long fakeId = 42069;
@@ -62,7 +63,8 @@ public class GetGameTest
             Summary = "Won Game of the Year",
             Rating = 100,
             PlatformsString = "PC;PS5;Switch",
-            CompaniesString = "Very Indecisive Studios;Overflow"
+            CompaniesString = "Very Indecisive Studios;Overflow",
+            LastModifiedOn = DateTime.Now
         };
         
         var query = new GetGameQuery(fakeId);
@@ -75,6 +77,57 @@ public class GetGameTest
 
         // Verify
         MockGameService!.VerifyNoOtherCalls();
+        Assert.AreEqual(result.RemoteId, fakeGame.RemoteId);
+        Assert.AreEqual(result.CoverImageURL, fakeGame.CoverImageURL);
+        Assert.AreEqual(result.Title, fakeGame.Title);
+        Assert.AreEqual(result.Summary, fakeGame.Summary);
+        Assert.AreEqual(result.Rating, fakeGame.Rating);
+        Assert.IsTrue(result.Platforms!.SequenceEqual(fakeGame.PlatformsString.Split(";")));
+        Assert.IsTrue(result.Companies!.SequenceEqual(fakeGame.CompaniesString.Split(";")));
+    }
+    
+    [TestMethod]
+    public async Task GetGame_CachedOld()
+    {
+        // Setup
+        long fakeId = 42069;
+
+        var fakeGame = new Game()
+        {
+            RemoteId = fakeId,
+            CoverImageURL = "https://chaoschef.example.com",
+            Title = "Chaos Chef",
+            Summary = "Won Game of the Year",
+            Rating = 100,
+            PlatformsString = "PC;PS5;Switch",
+            CompaniesString = "Very Indecisive Studios;Overflow",
+            LastModifiedOn = new DateTime(2022, 1, 1)
+        };
+        var fakeAPIGame = new APIGame
+        (
+            fakeId,
+            "https://chaoschef.example.com",
+            "Chaos Chef",
+            "Won Game of the Year",
+            100,
+            new  () { "PC", "PS5", "Switch" },
+            new List<string>() { "Very Indecisive Studios", "Overflow" }
+        );
+        
+        var query = new GetGameQuery(fakeId);
+        
+        MockDatabase!.Setup(db => db.Games)
+            .ReturnsDbSet(new List<Game> { fakeGame });
+        MockGameService!.Setup(service => service.GetGameById(fakeId))
+            .ReturnsAsync(fakeAPIGame);
+
+        // Execute
+        var result = await GetGameHandler!.Handle(query, CancellationToken.None);
+
+        // Verify
+        MockGameService.Verify(service => service.GetGameById(fakeId), Times.Once);
+        MockDatabase.Verify(database => database.Games.Update(It.Is<Game>(g => g.RemoteId == fakeId)), Times.Once);
+        MockDatabase.Verify(database => database.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         Assert.AreEqual(result.RemoteId, fakeGame.RemoteId);
         Assert.AreEqual(result.CoverImageURL, fakeGame.CoverImageURL);
         Assert.AreEqual(result.Title, fakeGame.Title);
