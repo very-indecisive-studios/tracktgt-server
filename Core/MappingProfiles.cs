@@ -32,6 +32,7 @@ public class MappingProfiles : Profile
         #region Users
         RegisterUserMappings.Map(this);
         GetUserMappings.Map(this);
+        UpdateProfilePicMappings.Map(this);
         #endregion
         
         #region Follows
