@@ -66,20 +66,35 @@ public class GetBookHandler : IRequestHandler<GetBookQuery, GetBookResult>
     {
         // Find book from database (cached locally).
         var dbBook = await _dbContext.Books
-            .AsNoTracking()
             .Where(book => book.RemoteId == getBookQuery.RemoteId)
             .FirstOrDefaultAsync(cancellationToken);
-        if (dbBook != null) return _mapper.Map<Book, GetBookResult>(dbBook);
+        
+        var timeSpan = DateTime.Now - dbBook?.LastModifiedOn;
+        if (timeSpan?.TotalHours < 12 && dbBook != null)
+        {
+            return _mapper.Map<Book, GetBookResult>(dbBook);
+        }
 
         // Find book from remote if not cached.
-        var remoteGame = await _bookService.GetBookById(getBookQuery.RemoteId);
-        if (remoteGame != null)
+        var remoteBook = await _bookService.GetBookById(getBookQuery.RemoteId);
+        if (remoteBook != null)
         {
-            var newDbBook = _mapper.Map<APIBook, Book>(remoteGame);
-            _dbContext.Books.Add(newDbBook);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            if (dbBook == null)
+            {
+                var newDbBook = _mapper.Map<APIBook, Book>(remoteBook);
+                _dbContext.Books.Add(newDbBook);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return _mapper.Map<Book, GetBookResult>(newDbBook);
+                return _mapper.Map<Book, GetBookResult>(newDbBook);
+            }
+            else
+            {
+                _mapper.Map<APIBook, Book>(remoteBook, dbBook);
+                _dbContext.Books.Update(dbBook);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                return _mapper.Map<Book, GetBookResult>(dbBook);
+            }
         }
 
         throw new NotFoundException();
