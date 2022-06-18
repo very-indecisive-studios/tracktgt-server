@@ -30,7 +30,7 @@ public static class RegisterUserMappings
     {
         profile.CreateMap<RegisterUserCommand, User>()
             .ForMember(
-                game => game.RemoteId,
+                user => user.RemoteId,
                 options => options.MapFrom(command => command.UserRemoteId));
     }
 }

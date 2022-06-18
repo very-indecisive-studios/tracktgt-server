@@ -13,6 +13,8 @@ public class DatabaseContext : DbContext
     
     public virtual DbSet<Book> Books { get; set; }
     
+    public virtual DbSet<Follow> Follows { get; set; }
+    
     public virtual DbSet<GameTracking> GameTrackings { get; set; }
     
     public virtual DbSet<GameWishlist> GameWishlists { get; set; }
