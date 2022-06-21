@@ -19,6 +19,8 @@
       <ProjectReference Include="..\Service.Book\Service.Book.csproj" />
       <ProjectReference Include="..\Service.Game\Service.Game.csproj" />
       <ProjectReference Include="..\Service.Show\Service.Show.csproj" />
+      <ProjectReference Include="..\Service.Store.Game.Switch\Service.Store.Game.Switch.csproj" />
+      <ProjectReference Include="..\Service.Store.Game\Service.Store.Game.csproj" />
     </ItemGroup>
 
 </Project>

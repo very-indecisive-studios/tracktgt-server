@@ -7,6 +7,7 @@ using Core.Games;
 using Core.Games.Content;
 using Core.Games.Tracking;
 using Core.Games.Wishlist;
+using Core.Pricing;
 using Core.Shows;
 using Core.Users;
 using Domain;
@@ -59,5 +60,7 @@ public class MappingProfiles : Profile
         AddBookWishlistMappings.Map(this);
         GetBookWishlistMappings.Map(this);
         #endregion
+        
+        GetSwitchGamePriceMappings.Map(this);
     }
 }
