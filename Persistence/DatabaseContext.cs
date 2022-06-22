@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Domain;
+using Domain.Pricing;
 
 namespace Persistence;
 
@@ -26,6 +27,10 @@ public class DatabaseContext : DbContext
     public virtual DbSet<Show> Shows { get; set; }
     
     public virtual DbSet<ShowTracking> ShowTrackings { get; set; }
+    
+    public virtual DbSet<GamePrice> GamePrices { get; set; }
+    
+    public virtual DbSet<GameStoreMetadata> GameStoreMetadatas { get; set; }
 
     public DatabaseContext() { }
     
