@@ -8,6 +8,7 @@ using Core.Games.Content;
 using Core.Games.Tracking;
 using Core.Games.Wishlist;
 using Core.Pricing;
+using Core.Pricing.Switch;
 using Core.Shows;
 using Core.Users;
 using Domain;

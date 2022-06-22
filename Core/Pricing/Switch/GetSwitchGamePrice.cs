@@ -9,7 +9,7 @@ using Persistence;
 using Service.Game;
 using Service.Store.Game;
 
-namespace Core.Pricing;
+namespace Core.Pricing.Switch;
 
 public record GetSwitchGamePriceQuery(
     string Region,

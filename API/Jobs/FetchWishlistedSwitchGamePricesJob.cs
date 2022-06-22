@@ -1,4 +1,5 @@
 ﻿using Core.Pricing;
+using Core.Pricing.Switch;
 using MediatR;
 using Quartz;
 

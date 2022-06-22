@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Service.Game;
 
-namespace Core.Pricing;
+namespace Core.Pricing.Switch;
 
 public record FetchWishlistedSwitchGamePricesCommand() 
     : IRequest<Unit>;
