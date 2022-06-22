@@ -34,94 +34,106 @@ public class FetchWishlistedSwitchGamePricesHandler : IRequestHandler<FetchWishl
     public async Task<Unit> Handle(FetchWishlistedSwitchGamePricesCommand command,
         CancellationToken cancellationToken)
     {
-        var allWishlistedGameRemoteIds = await _databaseContext.GameWishlists
-            .Where(gw => gw.Platform == "Switch")
-            .Select(gw => gw.GameRemoteId)
-            .ToListAsync(cancellationToken);
-
         var switchGameStore = _gameMall.GetGameStore(GameStoreType.Switch);
         var switchGameStoreRegions = switchGameStore.GetSupportedRegions();
         
-        foreach (var wishlistedGameRemoteId in allWishlistedGameRemoteIds)
+        var wishlistedGamesCount = await _databaseContext.GameWishlists
+            .Where(gw => gw.Platform == "Switch")
+            .CountAsync(cancellationToken);
+        const int maxSize = 10;
+        var totalPages = Math.Ceiling(wishlistedGamesCount / (float) maxSize);
+        
+        for (int currentPage = 1; currentPage <= totalPages; currentPage++)
         {
-            foreach (var region in switchGameStoreRegions)
+            var allWishlistedGameRemoteIds = await _databaseContext.GameWishlists
+                .Where(gw => gw.Platform == "Switch")
+                .Select(gw => gw.GameRemoteId)
+                .Distinct()
+                .Skip((currentPage - 1) * maxSize)
+                .Take(maxSize)
+                .ToListAsync(cancellationToken);
+            
+            foreach (var wishlistedGameRemoteId in allWishlistedGameRemoteIds)
             {
-                // Fetch latest prices.
-                var gameStoreId = await _databaseContext.GameStoreMetadatas
-                    .AsNoTracking()
-                    .Where(gsm => gsm.GameRemoteId == wishlistedGameRemoteId
-                                 && gsm.GameStoreType == GameStoreType.Switch
-                                 && gsm.Region == region)
-                    .Select(gsm => gsm.GameStoreId)
-                    .FirstOrDefaultAsync(cancellationToken);
-                
-                // If no cached id, search for game store id.
-                if (gameStoreId == null)
+                foreach (var region in switchGameStoreRegions)
                 {
-                    // Get game title => if null, game does not exist.
-                    var gameTitle = await _databaseContext.Games
-                        .Where(g => g.RemoteId == wishlistedGameRemoteId)
-                        .Select(g => g.Title)
+                    // Fetch latest prices.
+                    var gameStoreId = await _databaseContext.GameStoreMetadatas
+                        .AsNoTracking()
+                        .Where(gsm => gsm.GameRemoteId == wishlistedGameRemoteId
+                                     && gsm.GameStoreType == GameStoreType.Switch
+                                     && gsm.Region == region)
+                        .Select(gsm => gsm.GameStoreId)
                         .FirstOrDefaultAsync(cancellationToken);
-                    if (gameTitle == null)
+                    
+                    // If no cached id, search for game store id.
+                    if (gameStoreId == null)
                     {
-                        var apiGame = await _gameService.GetGameById(wishlistedGameRemoteId);
-                        if (apiGame == null)
+                        // Get game title => if null, game does not exist.
+                        var gameTitle = await _databaseContext.Games
+                            .Where(g => g.RemoteId == wishlistedGameRemoteId)
+                            .Select(g => g.Title)
+                            .FirstOrDefaultAsync(cancellationToken);
+                        if (gameTitle == null)
+                        {
+                            var apiGame = await _gameService.GetGameById(wishlistedGameRemoteId);
+                            if (apiGame == null)
+                            {
+                                continue;
+                            }
+
+                            gameTitle = apiGame.Title;
+
+                            _databaseContext.Games.Add(_mapper.Map<Game>(apiGame));
+                            await _databaseContext.SaveChangesAsync(cancellationToken);
+                        }
+                        
+                        // Search for game store id by game title.
+                        gameStoreId = await _gameMall
+                            .GetGameStore(GameStoreType.Switch)
+                            .SearchGameStoreId(region, gameTitle);
+                        if (gameStoreId == null)
                         {
                             continue;
                         }
-
-                        gameTitle = apiGame.Title;
-
-                        _databaseContext.Games.Add(_mapper.Map<Game>(apiGame));
+                        
+                        // Store the game store metadata if search successful.
+                        var gameStoreMetadata = new GameStoreMetadata
+                        {
+                            GameRemoteId = wishlistedGameRemoteId,
+                            GameStoreType = GameStoreType.Switch,
+                            Region = region,
+                            GameStoreId = gameStoreId
+                        };
+                        _databaseContext.GameStoreMetadatas.Add(gameStoreMetadata);
+                        
                         await _databaseContext.SaveChangesAsync(cancellationToken);
                     }
-                    
-                    // Search for game store id by game title.
-                    gameStoreId = await _gameMall
+
+                    // Fetch latest game price from store.
+                    var storeGamePrice = await _gameMall
                         .GetGameStore(GameStoreType.Switch)
-                        .SearchGameStoreId(region, gameTitle);
-                    if (gameStoreId == null)
+                        .GetGamePrice(region, gameStoreId);
+                    if (storeGamePrice == null)
                     {
                         continue;
                     }
                     
-                    // Store the game store metadata if search successful.
-                    var gameStoreMetadata = new GameStoreMetadata
+                    // Save the fetched price to database.
+                    var newGamePrice = new GamePrice
                     {
                         GameRemoteId = wishlistedGameRemoteId,
                         GameStoreType = GameStoreType.Switch,
                         Region = region,
-                        GameStoreId = gameStoreId
                     };
-                    _databaseContext.GameStoreMetadatas.Add(gameStoreMetadata);
+                    newGamePrice = _mapper.Map(storeGamePrice, newGamePrice);
+                    _databaseContext.GamePrices.Add(newGamePrice);
                     
                     await _databaseContext.SaveChangesAsync(cancellationToken);
-                }
 
-                // Fetch latest game price from store.
-                var storeGamePrice = await _gameMall
-                    .GetGameStore(GameStoreType.Switch)
-                    .GetGamePrice(region, gameStoreId);
-                if (storeGamePrice == null)
-                {
-                    continue;
+                    // Backpressure to prevent spamming external API.
+                    await Task.Delay(1500, cancellationToken);
                 }
-                
-                // Save the fetched price to database.
-                var newGamePrice = new GamePrice
-                {
-                    GameRemoteId = wishlistedGameRemoteId,
-                    GameStoreType = GameStoreType.Switch,
-                    Region = region,
-                };
-                newGamePrice = _mapper.Map(storeGamePrice, newGamePrice);
-                _databaseContext.GamePrices.Add(newGamePrice);
-                
-                await _databaseContext.SaveChangesAsync(cancellationToken);
-
-                // Backpressure to prevent spamming external API.
-                await Task.Delay(1500, cancellationToken);
             }
         }
         
