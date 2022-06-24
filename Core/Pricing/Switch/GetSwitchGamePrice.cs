@@ -75,18 +75,19 @@ public class GetSwitchGamePriceHandler : IRequestHandler<GetSwitchGamePriceQuery
         
         // Fetch cached prices.
         var cachedGamePrice = await _databaseContext.GamePrices
-            .AsNoTracking()
             .Where(gp => gp.GameRemoteId == query.GameRemoteId 
                          && gp.GameStoreType == GameStoreType.Switch
                          && gp.Region == query.Region)
-            .ProjectTo<GetSwitchGamePriceResult>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
-        if (cachedGamePrice != null)
+        
+        // Return cached game if its fresh.
+        var timeSpan = DateTime.Now - cachedGamePrice?.LastModifiedOn;
+        if (timeSpan?.TotalHours < 12 && cachedGamePrice != null)
         {
             return _mapper.Map<GetSwitchGamePriceResult>(cachedGamePrice);
         }
         
-        // Fetch latest prices if no cached price.
+        // Fetch latest prices if no cached price or cache expired.
         var gameStoreId = await _databaseContext.GameStoreMetadatas
             .AsNoTracking()
             .Where(gsm => gsm.GameRemoteId == query.GameRemoteId 
@@ -149,17 +150,30 @@ public class GetSwitchGamePriceHandler : IRequestHandler<GetSwitchGamePriceQuery
         }
         
         // Save the fetched price to database.
-        var newGamePrice = new GamePrice
+        GamePrice gamePrice;
+        if (cachedGamePrice == null)
         {
-            GameRemoteId = query.GameRemoteId,
-            GameStoreType = GameStoreType.Switch,
-            Region = query.Region,
-        };
-        newGamePrice = _mapper.Map(storeGamePrice, newGamePrice);
-        _databaseContext.GamePrices.Add(newGamePrice);
+            var newGamePrice = new GamePrice
+            {
+                GameRemoteId = query.GameRemoteId,
+                GameStoreType = GameStoreType.Switch,
+                Region = query.Region,
+            };
+            newGamePrice = _mapper.Map(storeGamePrice, newGamePrice);
+            _databaseContext.GamePrices.Add(newGamePrice);
+
+            gamePrice = newGamePrice;
+        }
+        else
+        {
+            cachedGamePrice = _mapper.Map(storeGamePrice, cachedGamePrice);
+            _databaseContext.GamePrices.Update(cachedGamePrice);
+
+            gamePrice = cachedGamePrice;
+        }
         
         await _databaseContext.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<GetSwitchGamePriceResult>(newGamePrice);
+        return _mapper.Map<GetSwitchGamePriceResult>(gamePrice);
     }
 }

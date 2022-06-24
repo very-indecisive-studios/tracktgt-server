@@ -120,15 +120,29 @@ public class FetchWishlistedSwitchGamePricesHandler : IRequestHandler<FetchWishl
                         continue;
                     }
                     
-                    // Save the fetched price to database.
-                    var newGamePrice = new GamePrice
+                    // Save or update the fetched price to database.
+                    var cachedGamePrice = await _databaseContext.GamePrices
+                        .Where(gp => gp.GameRemoteId == wishlistedGameRemoteId 
+                                     && gp.GameStoreType == GameStoreType.Switch
+                                     && gp.Region == region)
+                        .FirstOrDefaultAsync(cancellationToken);
+
+                    if (cachedGamePrice == null)
                     {
-                        GameRemoteId = wishlistedGameRemoteId,
-                        GameStoreType = GameStoreType.Switch,
-                        Region = region,
-                    };
-                    newGamePrice = _mapper.Map(storeGamePrice, newGamePrice);
-                    _databaseContext.GamePrices.Add(newGamePrice);
+                        var newGamePrice = new GamePrice
+                        {
+                            GameRemoteId = wishlistedGameRemoteId,
+                            GameStoreType = GameStoreType.Switch,
+                            Region = region,
+                        };
+                        newGamePrice = _mapper.Map(storeGamePrice, newGamePrice);
+                        _databaseContext.GamePrices.Add(newGamePrice);
+                    }
+                    else
+                    {
+                        cachedGamePrice = _mapper.Map(storeGamePrice, cachedGamePrice);
+                        _databaseContext.GamePrices.Update(cachedGamePrice);
+                    }
                     
                     await _databaseContext.SaveChangesAsync(cancellationToken);
 
