@@ -18,7 +18,7 @@ public class PriceController : APIControllerBase
         return Mediator.Send(new GetSwitchGamePriceQuery(region, id));
     }
     
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetSwitchGamePriceResult))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetSwitchGameStoreRegionsResult))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
