@@ -62,7 +62,7 @@ public class UserController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpPut("preferences/pricing/{userRemoteId}", Name = nameof(UpdatePricingUserPreferenceCommand))]
+    [HttpPut("preferences/pricing", Name = nameof(UpdatePricingUserPreferenceCommand))]
     public Task<Unit> UpdatePricingUserPreferenceCommand(UpdatePricingUserPreferenceCommand command)
     {
         return Mediator.Send(command);
