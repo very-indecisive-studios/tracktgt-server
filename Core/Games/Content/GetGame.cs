@@ -26,8 +26,8 @@ public record GetGameResult(
     string Title,
     string Summary,
     double Rating,
-    List<string>? Platforms,
-    List<string>? Companies
+    List<string> Platforms,
+    List<string> Companies
 );
 
 public static class GetGameMappings
