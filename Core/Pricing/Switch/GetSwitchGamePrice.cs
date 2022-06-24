@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
+using Domain.Media;
 using Domain.Pricing;
 using FluentValidation;
 using MediatR;

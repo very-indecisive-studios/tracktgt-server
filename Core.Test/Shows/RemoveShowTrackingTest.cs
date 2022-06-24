@@ -9,6 +9,8 @@ using Moq.EntityFrameworkCore;
 using Core.Exceptions;
 using Core.Shows;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Persistence;

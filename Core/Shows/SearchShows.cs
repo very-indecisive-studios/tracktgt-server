@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain;
+using Domain.Media;
 using FluentValidation;
 using MediatR;
 using Service.Show;

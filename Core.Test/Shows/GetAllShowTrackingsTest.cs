@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Core.Shows;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
 using Persistence;
 
 namespace Core.Test.Shows;

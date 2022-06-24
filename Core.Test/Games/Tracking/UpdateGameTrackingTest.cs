@@ -5,6 +5,7 @@ using AutoMapper;
 using Core.Exceptions;
 using Core.Games.Tracking;
 using Domain;
+using Domain.Tracking;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

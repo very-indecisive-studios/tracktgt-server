@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Core.Exceptions;
 using Core.Users;
 using Domain;
+using Domain.User;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -1,5 +1,6 @@
 ﻿using Core.Exceptions;
 using Domain;
+using Domain.Wishlist;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

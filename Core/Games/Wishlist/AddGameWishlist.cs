@@ -2,6 +2,8 @@
 using Core.Exceptions;
 using Core.Games.Tracking;
 using Domain;
+using Domain.Media;
+using Domain.Wishlist;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

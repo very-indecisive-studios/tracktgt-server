@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain;
+using Domain.Media;
 using Domain.Pricing;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -132,7 +133,7 @@ public class FetchWishlistedSwitchGamePricesHandler : IRequestHandler<FetchWishl
                     await _databaseContext.SaveChangesAsync(cancellationToken);
 
                     // Backpressure to prevent spamming external API.
-                    await Task.Delay(1500, cancellationToken);
+                    await Task.Delay(5000, cancellationToken);
                 }
             }
         }

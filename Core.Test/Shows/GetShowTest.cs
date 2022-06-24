@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Core.Exceptions;
 using Domain;
+using Domain.Media;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Persistence;

@@ -1,4 +1,6 @@
-﻿namespace Domain;
+﻿using Domain.Media;
+
+namespace Domain.Tracking;
 
 #nullable disable
 

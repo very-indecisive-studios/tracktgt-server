@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Games.Tracking;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

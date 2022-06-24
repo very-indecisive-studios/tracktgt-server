@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
