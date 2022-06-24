@@ -68,7 +68,6 @@ public class UpdateShowTrackingTest
             ShowRemoteId = fakeShowRemoteId,
             EpisodesWatched = fakeEpisodesWatched,
             Status = fakeStatus,
-            ShowType = fakeShowType
         });
         await InMemDatabase.SaveChangesAsync(CancellationToken.None);
 

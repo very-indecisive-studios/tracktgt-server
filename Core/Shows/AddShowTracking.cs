@@ -15,7 +15,6 @@ public record AddShowTrackingCommand(
     string UserRemoteId,
     string ShowRemoteId,
     int EpisodesWatched,
-    ShowType ShowType,
     ShowTrackingStatus Status
 ) : IRequest<Unit>;
 

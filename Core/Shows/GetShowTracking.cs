@@ -26,7 +26,6 @@ public class GetShowTrackingValidator : AbstractValidator<GetShowTrackingQuery>
 
 public record GetShowTrackingResult(
     int EpisodesWatched,
-    ShowType ShowType,
     ShowTrackingStatus Status
 );
 
