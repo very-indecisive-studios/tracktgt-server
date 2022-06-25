@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +15,6 @@ public record AddShowTrackingCommand(
     string UserRemoteId,
     string ShowRemoteId,
     int EpisodesWatched,
-    ShowType ShowType,
     ShowTrackingStatus Status
 ) : IRequest<Unit>;
 

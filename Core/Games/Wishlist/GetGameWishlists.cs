@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
+using Domain.Wishlist;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

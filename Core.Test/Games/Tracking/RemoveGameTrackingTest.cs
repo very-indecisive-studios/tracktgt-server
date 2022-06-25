@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Core.Exceptions;
 using Core.Games.Tracking;
 using Domain;
+using Domain.Tracking;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Moq.EntityFrameworkCore;

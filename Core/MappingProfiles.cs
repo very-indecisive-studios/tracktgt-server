@@ -1,17 +1,14 @@
 ﻿using AutoMapper;
-using Core.Books;
 using Core.Books.Content;
 using Core.Books.Tracking;
 using Core.Books.Wishlist;
-using Core.Games;
 using Core.Games.Content;
 using Core.Games.Tracking;
 using Core.Games.Wishlist;
-using Core.Pricing;
 using Core.Pricing.Switch;
 using Core.Shows;
 using Core.Users;
-using Domain;
+using Core.Users.Preferences;
 
 namespace Core;
 
@@ -61,7 +58,11 @@ public class MappingProfiles : Profile
         AddBookWishlistMappings.Map(this);
         GetBookWishlistMappings.Map(this);
         #endregion
-        
+
+        #region Pricing
         GetSwitchGamePriceMappings.Map(this);
+        GetPricingUserPreferenceMappings.Map(this);
+        UpdatePricingUserPreferenceMappings.Map(this);
+        #endregion
     }
 }

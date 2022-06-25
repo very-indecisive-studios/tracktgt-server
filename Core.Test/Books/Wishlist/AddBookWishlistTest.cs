@@ -6,6 +6,8 @@ using AutoMapper;
 using Core.Books.Wishlist;
 using Core.Exceptions;
 using Domain;
+using Domain.Media;
+using Domain.User;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

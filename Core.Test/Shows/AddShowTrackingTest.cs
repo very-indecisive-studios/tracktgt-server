@@ -8,6 +8,9 @@ using Moq;
 using Core.Exceptions;
 using Core.Shows;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
+using Domain.User;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -93,7 +96,6 @@ public class AddShowTrackingTest
             FakeExistingUserId,
             FakeExistingShowId,
             200,
-            ShowType.Movie,
             ShowTrackingStatus.Completed
         );
         
@@ -125,7 +127,6 @@ public class AddShowTrackingTest
             FakeExistingUserId,
             fakeAPIShow.Id,
             1,
-            ShowType.Movie,
             ShowTrackingStatus.Completed
         );
         
@@ -156,7 +157,6 @@ public class AddShowTrackingTest
             FakeExistingUserId,
             FakeExistingShowId,
             0,
-            ShowType.Series,
             ShowTrackingStatus.Planning
         );
         
@@ -175,7 +175,6 @@ public class AddShowTrackingTest
             FakeExistingUserId,
             "m_111",
             0,
-            ShowType.Series,
             ShowTrackingStatus.Planning
         );
         
@@ -203,7 +202,6 @@ public class AddShowTrackingTest
             "abcd",
             fakeAPIShow.Id,
             200,
-            ShowType.Movie,
             ShowTrackingStatus.Planning
         );
 

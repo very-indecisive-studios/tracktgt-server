@@ -5,6 +5,7 @@ using AutoMapper;
 using Core.Books.Tracking;
 using Core.Exceptions;
 using Domain;
+using Domain.Tracking;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

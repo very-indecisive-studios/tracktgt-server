@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Media;
 using TMDbLib.Client;
 using TMDbLib.Objects.General;
 using TMDbLib.Objects.Movies;

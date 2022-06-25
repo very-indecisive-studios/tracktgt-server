@@ -8,6 +8,7 @@ using Core.Pricing;
 using Core.Pricing.Switch;
 using Domain;
 using Domain.Pricing;
+using Domain.Wishlist;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

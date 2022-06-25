@@ -6,6 +6,7 @@ using AutoMapper;
 using Core.Pricing;
 using Core.Pricing.Switch;
 using Domain;
+using Domain.Media;
 using Domain.Pricing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;

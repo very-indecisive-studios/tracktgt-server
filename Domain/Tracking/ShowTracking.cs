@@ -1,4 +1,6 @@
-﻿namespace Domain;
+﻿using Domain.Media;
+
+namespace Domain.Tracking;
 
 #nullable disable
 
@@ -13,6 +15,4 @@ public class ShowTracking : Entity
     public int EpisodesWatched { get; set; }
 
     public ShowTrackingStatus Status { get; set; }
-    
-    public ShowType ShowType { get; set; }
 }
