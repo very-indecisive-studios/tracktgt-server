@@ -23,9 +23,10 @@ public record GetUserActivityResult(List<GetUserActivityResult.GetUserActivityIt
 {
     public record GetUserActivityItemResult(
         string MediaRemoteId,
-        string Status,
+        string MediaStatus,
         float NoOf,
-        string MediaType
+        string MediaType,
+        ActivityAction Action
     );
 }
 
