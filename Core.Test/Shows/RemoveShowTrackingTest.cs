@@ -9,6 +9,8 @@ using Moq.EntityFrameworkCore;
 using Core.Exceptions;
 using Core.Shows;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -68,7 +70,7 @@ public class RemoveShowTrackingTest
     public async Task RemoveShowTracking_Exists()
     {
         // Setup
-        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId, ShowType.Movie);
+        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId);
         
         // Execute
         await RemoveShowTrackingHandler!.Handle(command, CancellationToken.None);
@@ -85,7 +87,7 @@ public class RemoveShowTrackingTest
     public async Task RemoveShowTracking_NotExists()
     {
         // Setup
-        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId, ShowType.Movie);
+        var command = new RemoveShowTrackingCommand(FakeUserRemoteId, FakeShowRemoteId);
 
         // Execute
         // Verify

@@ -8,6 +8,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Core.Exceptions;
 using Core.Shows;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
 using Persistence;
 
 namespace Core.Test.Shows;
@@ -66,7 +68,6 @@ public class UpdateShowTrackingTest
             ShowRemoteId = fakeShowRemoteId,
             EpisodesWatched = fakeEpisodesWatched,
             Status = fakeStatus,
-            ShowType = fakeShowType
         });
         await InMemDatabase.SaveChangesAsync(CancellationToken.None);
 

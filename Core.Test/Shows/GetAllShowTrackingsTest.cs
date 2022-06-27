@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Core.Shows;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
 using Persistence;
 
 namespace Core.Test.Shows;
@@ -38,7 +40,6 @@ public class GetAllShowTrackingsTest
                 UserRemoteId = FakeUserRemoteId,
                 ShowRemoteId = "s_0",
                 EpisodesWatched = 100,
-                ShowType = ShowType.Series,
                 Status = ShowTrackingStatus.Watching
             },
             new()
@@ -46,7 +47,6 @@ public class GetAllShowTrackingsTest
                 UserRemoteId = FakeUserRemoteId,
                 ShowRemoteId = "m_1",
                 EpisodesWatched = 1,
-                ShowType = ShowType.Movie,
                 Status = ShowTrackingStatus.Completed
             },
             new()
@@ -54,7 +54,6 @@ public class GetAllShowTrackingsTest
                 UserRemoteId = FakeUserRemoteId,
                 ShowRemoteId = "s_2",
                 EpisodesWatched = 16,
-                ShowType = ShowType.Series,
                 Status = ShowTrackingStatus.Completed
             },
             new()
@@ -62,7 +61,6 @@ public class GetAllShowTrackingsTest
                 UserRemoteId = FakeUserRemoteId,
                 ShowRemoteId = "m_3",
                 EpisodesWatched = 1,
-                ShowType = ShowType.Movie,
                 Status = ShowTrackingStatus.Completed
             },
             new()
@@ -70,7 +68,6 @@ public class GetAllShowTrackingsTest
                 UserRemoteId = FakeUserRemoteId,
                 ShowRemoteId = "m_4",
                 EpisodesWatched = 0,
-                ShowType = ShowType.Movie,
                 Status = ShowTrackingStatus.Planning
             },
             new()
@@ -78,7 +75,6 @@ public class GetAllShowTrackingsTest
                 UserRemoteId = FakeDiffUserRemoteId,
                 ShowRemoteId = "m_5",
                 EpisodesWatched = 1,
-                ShowType = ShowType.Movie,
                 Status = ShowTrackingStatus.Completed
             }
         };

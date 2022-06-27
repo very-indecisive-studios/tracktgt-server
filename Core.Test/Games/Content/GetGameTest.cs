@@ -7,6 +7,7 @@ using AutoMapper;
 using Core.Exceptions;
 using Core.Games.Content;
 using Domain;
+using Domain.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Moq.EntityFrameworkCore;

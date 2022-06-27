@@ -19,6 +19,7 @@ public class Startup
         services.AddAPIServices(_configuration);
         services.AddDatabaseServices(_configuration);
         services.AddExternalAPIServices(_configuration);
+        services.AddSchedulerServices(_configuration);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

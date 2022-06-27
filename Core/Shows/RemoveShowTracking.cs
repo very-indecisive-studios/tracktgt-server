@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +12,7 @@ namespace Core.Shows;
 
 public record RemoveShowTrackingCommand(
     string UserRemoteId,
-    string ShowRemoteId,
-    ShowType ShowType
+    string ShowRemoteId
 ) : IRequest<Unit>;
 
 public class RemoveShowTrackingValidator : AbstractValidator<RemoveShowTrackingCommand>
@@ -35,8 +36,7 @@ public class RemoveShowTrackingHandler : IRequestHandler<RemoveShowTrackingComma
     {
         ShowTracking? showTracking = await _databaseContext.ShowTrackings
             .Where(showTracking => showTracking.ShowRemoteId == command.ShowRemoteId 
-                                   && showTracking.UserRemoteId == command.UserRemoteId
-                                   && showTracking.ShowType == command.ShowType)
+                                   && showTracking.UserRemoteId == command.UserRemoteId)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (showTracking == null)

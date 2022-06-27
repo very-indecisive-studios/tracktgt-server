@@ -1,5 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Domain;
+using Domain.Media;
+using Domain.Pricing;
+using Domain.Tracking;
+using Domain.User;
+using Domain.Wishlist;
 
 namespace Persistence;
 
@@ -27,6 +32,12 @@ public class DatabaseContext : DbContext
     public virtual DbSet<Show> Shows { get; set; }
     
     public virtual DbSet<ShowTracking> ShowTrackings { get; set; }
+    
+    public virtual DbSet<GamePrice> GamePrices { get; set; }
+    
+    public virtual DbSet<GameStoreMetadata> GameStoreMetadatas { get; set; }
+    
+    public virtual DbSet<PricingUserPreference> PricingUserPreferences { get; set; }
 
     public DatabaseContext() { }
     

@@ -4,6 +4,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Domain;
+using Domain.User;
 using Persistence;
 
 namespace Core.Users;

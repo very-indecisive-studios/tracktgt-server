@@ -1,3 +1,4 @@
+using Core.Pricing;
 using Service.Show;
 using Service.Book;
 using Service.Game;
@@ -17,5 +18,7 @@ public static class ExternalAPIServiceExtentions
 
         services.AddSingleton<IBookService>(new GoogleBooksAPIService(
             configuration["GoogleBooks:APIKey"]));
+
+        services.AddSingleton<IGameMall, GameMall>();
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Core.Shows;
 using Domain;
+using Domain.Media;
 using Service.Show;
 
 namespace Core.Test.Shows;

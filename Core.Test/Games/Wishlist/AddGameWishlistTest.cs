@@ -6,6 +6,8 @@ using AutoMapper;
 using Core.Exceptions;
 using Core.Games.Wishlist;
 using Domain;
+using Domain.Media;
+using Domain.User;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
+using Domain.Media;
+using Domain.Tracking;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +26,6 @@ public class GetShowTrackingValidator : AbstractValidator<GetShowTrackingQuery>
 
 public record GetShowTrackingResult(
     int EpisodesWatched,
-    ShowType ShowType,
     ShowTrackingStatus Status
 );
 
