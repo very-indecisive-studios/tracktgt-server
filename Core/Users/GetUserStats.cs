@@ -18,7 +18,7 @@ public class GetUserStatsValidator : AbstractValidator<GetUserStatsQuery>
 
 public record GetUserStatsResult(
     float GamingHours,
-    int ShowsWatched,
+    int EpisodesWatched,
     int ChaptersRead,
     int Following,
     int Followers
@@ -40,7 +40,7 @@ public class GetUserStatsHandler : IRequestHandler<GetUserStatsQuery, GetUserSta
             .Where(gt => gt.UserRemoteId == query.UserRemoteId)
             .SumAsync(gt => gt.HoursPlayed, cancellationToken);
 
-        var showsWatched = await _databaseContext.ShowTrackings
+        var episodesWatched = await _databaseContext.ShowTrackings
             .AsNoTracking()
             .Where(st => st.UserRemoteId == query.UserRemoteId)
             .SumAsync(st => st.EpisodesWatched, cancellationToken);
@@ -58,6 +58,6 @@ public class GetUserStatsHandler : IRequestHandler<GetUserStatsQuery, GetUserSta
             .AsNoTracking()
             .Where(f => f.FollowingUserId == query.UserRemoteId).CountAsync(cancellationToken);
 
-        return new GetUserStatsResult(gamingHours,showsWatched,chaptersRead,following,followers);
+        return new GetUserStatsResult(gamingHours,episodesWatched,chaptersRead,following,followers);
     }
 }

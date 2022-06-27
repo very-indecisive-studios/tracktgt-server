@@ -26,7 +26,7 @@ public class UserController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("checkUserExist", Name = nameof(CheckUserExist))]
+    [HttpGet("exist", Name = nameof(CheckUserExist))]
     public Task<CheckUserExistResult> CheckUserExist([FromQuery] CheckUserExistQuery query)
     {
         return Mediator.Send(query);
@@ -38,12 +38,36 @@ public class UserController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("{userRemoteId}", Name = nameof(GetUser))]
+    [HttpGet("id/{userRemoteId}", Name = nameof(GetUser))]
     public Task<GetUserResult> GetUser(string userRemoteId)
     {
         return Mediator.Send(new GetUserQuery(userRemoteId));
     }
+
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserByUserNameResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("username/{userName}", Name = nameof(GetUserByUserName))]
+    public Task<GetUserByUserNameResult> GetUserByUserName(string userName)
+    {
+        return Mediator.Send(new GetUserByUserNameQuery(userName));
+    }
     
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserStatsResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("stats/{userId}", Name = nameof(GetUserStats))]
+    public Task<GetUserStatsResult> GetUserStats(string userId)
+    {
+        return Mediator.Send(new GetUserStatsQuery(userId));
+    }
+
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetPricingUserPreferenceResult))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
