@@ -67,6 +67,18 @@ public class UserController : APIControllerBase
     {
         return Mediator.Send(new GetUserStatsQuery(userId));
     }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SearchUsersResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("search/{userName}", Name = nameof(SearchUsers))]
+    public Task<SearchUsersResult> SearchUsers(string userName)
+    {
+        return Mediator.Send(new SearchUsersQuery(userName));
+    }
 
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetPricingUserPreferenceResult))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
