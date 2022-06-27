@@ -24,8 +24,8 @@ public record GetUserActivityResult(List<GetUserActivityResult.GetUserActivityIt
     public record GetUserActivityItemResult(
         string MediaRemoteId,
         string MediaStatus,
-        float NoOf,
-        string MediaType,
+        int NoOf,
+        TypeOfMedia MediaType,
         ActivityAction Action
     );
 }
@@ -34,7 +34,7 @@ public static class GetUserActivityMappings
 {
     public static void Map(Profile profile)
     {
-        profile.CreateMap<Domain.Activity, GetUserActivityResult>();
+        profile.CreateMap<Activity, GetUserActivityResult>();
     }
 }
 
