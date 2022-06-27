@@ -63,6 +63,15 @@ public class UpdateGameTrackingHandler : IRequestHandler<UpdateGameTrackingComma
         _mapper.Map<UpdateGameTrackingCommand, GameTracking>(command, gameTracking);
         _dbContext.GameTrackings.Update(gameTracking);
         
+        Activity activity = new Activity();
+        activity.UserRemoteId = command.UserRemoteId;
+        activity.MediaRemoteId = command.GameRemoteId.ToString();
+        activity.MediaStatus = command.Status.ToString();
+        activity.NoOf = (int) command.HoursPlayed;
+        activity.MediaType = TypeOfMedia.Game;
+        activity.Action = ActivityAction.Update;
+        _dbContext.Activities.Add(activity);
+        
         await _dbContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;

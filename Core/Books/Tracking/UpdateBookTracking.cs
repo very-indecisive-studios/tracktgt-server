@@ -60,6 +60,15 @@ public class UpdateBookTrackingHandler : IRequestHandler<UpdateBookTrackingComma
         _mapper.Map<UpdateBookTrackingCommand, BookTracking>(command, bookTracking);
         _dbContext.BookTrackings.Update(bookTracking);
         
+        Activity activity = new Activity();
+        activity.UserRemoteId = command.UserRemoteId;
+        activity.MediaRemoteId = command.BookRemoteId;
+        activity.MediaStatus = command.Status.ToString();
+        activity.NoOf = command.ChaptersRead;
+        activity.MediaType = TypeOfMedia.Book;
+        activity.Action = ActivityAction.Update;
+        _dbContext.Activities.Add(activity);
+        
         await _dbContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;
