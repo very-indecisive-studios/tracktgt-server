@@ -46,6 +46,16 @@ public class RemoveGameTrackingHandler : IRequestHandler<RemoveGameTrackingComma
         }
 
         _databaseContext.GameTrackings.Remove(gameTracking);
+        
+        Activity activity = new Activity();
+        activity.UserRemoteId = command.UserRemoteId;
+        activity.MediaRemoteId = command.GameRemoteId.ToString();
+        activity.MediaStatus = gameTracking.Status.ToString();
+        activity.NoOf = (int) gameTracking.HoursPlayed;
+        activity.MediaType = TypeOfMedia.Game;
+        activity.Action = ActivityAction.Remove;
+        _databaseContext.Activities.Add(activity);
+        
         await _databaseContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;
