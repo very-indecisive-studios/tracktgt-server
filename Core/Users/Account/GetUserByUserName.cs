@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
-using Domain;
 using Domain.User;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Core.Users;
+namespace Core.Users.Account;
 
 public record GetUserByUserNameQuery(string UserName) : IRequest<GetUserByUserNameResult>;
 

@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Core.Users;
+namespace Core.Users.Following;
 
 public record GetUserFollowingQuery(string CurrentUserId) : IRequest<GetUserFollowingResult>;
 

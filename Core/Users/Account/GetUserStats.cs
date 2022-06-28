@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Core.Users;
+namespace Core.Users.Account;
 
 public record GetUserStatsQuery(string UserRemoteId) : IRequest<GetUserStatsResult>;
 

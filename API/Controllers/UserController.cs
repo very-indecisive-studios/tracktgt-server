@@ -1,8 +1,12 @@
 ﻿using System.Net.Mime;
+using System.Runtime.CompilerServices;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Core.Users;
+using Core.Users.Account;
+using Core.Users.Following;
 using Core.Users.Preferences;
+using Core.Users.Register;
 
 namespace API.Controllers;
 
@@ -80,6 +84,42 @@ public class UserController : APIControllerBase
         return Mediator.Send(new SearchUsersQuery(userName));
     }
 
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpPost("follow", Name = nameof(FollowUser))]
+    public Task<Unit> FollowUser(FollowUserCommand followUserCommand)
+    {
+        return Mediator.Send(followUserCommand);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpDelete("unfollow", Name = nameof(UnfollowUser))]
+    public Task<Unit> UnfollowUser(UnfollowUserCommand unfollowUserCommand)
+    {
+        return Mediator.Send(unfollowUserCommand);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CheckUserFollowingResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("follow/{followerUserId}/{followingUserId}", Name = nameof(CheckUserFollowing))]
+    public Task<CheckUserFollowingResult> CheckUserFollowing(string followerUserId, string followingUserId)
+    {
+        return Mediator.Send(new CheckUserFollowingQuery(followerUserId, followingUserId));
+    }
+    
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetPricingUserPreferenceResult))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

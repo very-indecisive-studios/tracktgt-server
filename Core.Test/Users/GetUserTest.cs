@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Exceptions;
 using Core.Users;
+using Core.Users.Account;
 using Domain;
 using Domain.User;
 using Microsoft.Data.Sqlite;

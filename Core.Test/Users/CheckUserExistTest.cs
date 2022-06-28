@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Exceptions;
 using Core.Users;
+using Core.Users.Register;
 using Domain;
 using Domain.User;
 using Microsoft.Data.Sqlite;

@@ -8,7 +8,10 @@ using Core.Games.Wishlist;
 using Core.Pricing.Switch;
 using Core.Shows;
 using Core.Users;
+using Core.Users.Account;
+using Core.Users.Following;
 using Core.Users.Preferences;
+using Core.Users.Register;
 
 namespace Core;
 

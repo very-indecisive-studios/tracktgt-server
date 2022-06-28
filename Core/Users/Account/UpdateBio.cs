@@ -1,51 +1,50 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
-using Domain;
 using Domain.User;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Core.Users;
+namespace Core.Users.Account;
 
-public record UpdateProfilePicCommand(
+public record UpdateBioCommand(
     string UserRemoteId,
-    string ProfilePictureURL
+    string Bio
 ) : IRequest<Unit>;
 
-public class UpdateProfilePicValidator : AbstractValidator<UpdateProfilePicCommand>
+public class UpdateBioValidator : AbstractValidator<UpdateBioCommand>
 {
-    public UpdateProfilePicValidator()
+    public UpdateBioValidator()
     {
         RuleFor(c => c.UserRemoteId).NotEmpty();
-        RuleFor(c => c.ProfilePictureURL).NotEmpty();
+        RuleFor(c => c.Bio).NotEmpty();
     }
 }
 
-public static class UpdateProfilePicMappings
+public static class UpdateBioMappings
 {
     public static void Map(Profile profile)
     {
-        profile.CreateMap<UpdateProfilePicCommand, User>()
+        profile.CreateMap<UpdateBioCommand, User>()
             .ForMember(
                 user => user.RemoteId,
                 options => options.MapFrom(command => command.UserRemoteId));
     }
 }
 
-public class UpdateProfilePicHandler : IRequestHandler<UpdateProfilePicCommand, Unit>
+public class UpdateBioHandler : IRequestHandler<UpdateBioCommand, Unit>
 {
     private readonly DatabaseContext _dbContext;
     private readonly IMapper _mapper;
 
-    public UpdateProfilePicHandler(DatabaseContext dbContext, IMapper mapper)
+    public UpdateBioHandler(DatabaseContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
         _mapper = mapper;
     }
     
-    public async Task<Unit> Handle(UpdateProfilePicCommand command, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateBioCommand command, CancellationToken cancellationToken)
     {
         User? user = await _dbContext.Users
             .Where(user => user.RemoteId == command.UserRemoteId)
@@ -56,7 +55,7 @@ public class UpdateProfilePicHandler : IRequestHandler<UpdateProfilePicCommand, 
             throw new NotFoundException();
         }
 
-        _mapper.Map<UpdateProfilePicCommand, User>(command, user);
+        _mapper.Map<UpdateBioCommand, User>(command, user);
         _dbContext.Users.Update(user);
         
         await _dbContext.SaveChangesAsync(cancellationToken);
