@@ -45,16 +45,6 @@ public class RemoveShowTrackingHandler : IRequestHandler<RemoveShowTrackingComma
         }
 
         _databaseContext.ShowTrackings.Remove(showTracking);
-        
-        Activity activity = new Activity();
-        activity.UserRemoteId = command.UserRemoteId;
-        activity.MediaRemoteId = command.ShowRemoteId;
-        activity.MediaStatus = showTracking.Status.ToString();
-        activity.NoOf = showTracking.EpisodesWatched;
-        activity.MediaType = TypeOfMedia.Show;
-        activity.Action = ActivityAction.Remove;
-        _databaseContext.Activities.Add(activity);
-        
         await _databaseContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;

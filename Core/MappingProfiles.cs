@@ -35,10 +35,6 @@ public class MappingProfiles : Profile
         UpdateBioMappings.Map(this);
         #endregion
         
-        #region Activity
-        GetUserActivityMappings.Map(this);
-        #endregion
-        
         #region Follows
         FollowUserMappings.Map(this);
         #endregion

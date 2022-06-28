@@ -102,15 +102,6 @@ public class AddGameTrackingHandler : IRequestHandler<AddGameTrackingCommand, Un
         var gameTracking = _mapper.Map<AddGameTrackingCommand, GameTracking>(command);
         _dbContext.GameTrackings.Add(gameTracking);
         
-        Activity activity = new Activity();
-        activity.UserRemoteId = command.UserRemoteId;
-        activity.MediaRemoteId = command.GameRemoteId.ToString();
-        activity.MediaStatus = command.Status.ToString();
-        activity.NoOf = (int) command.HoursPlayed;
-        activity.MediaType = TypeOfMedia.Game;
-        activity.Action = ActivityAction.Add;
-        _dbContext.Activities.Add(activity);
-        
         await _dbContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;

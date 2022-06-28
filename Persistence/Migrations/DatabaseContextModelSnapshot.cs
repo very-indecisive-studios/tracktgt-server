@@ -19,41 +19,6 @@ namespace Persistence.Migrations
                 .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Domain.Activity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("MediaRemoteId")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("MediaType")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("NewlyAdded")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("NoOf")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserRemoteId")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Activities");
-                });
-
             modelBuilder.Entity("Domain.Media.Book", b =>
                 {
                     b.Property<Guid>("Id")
