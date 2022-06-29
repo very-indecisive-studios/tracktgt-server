@@ -34,7 +34,7 @@ public class SwitchGameStore : IGameStore
             return null;
         }
 
-        return await _regionEShopGameStores[region].SearchGameStoreId(region, gameTitle);
+        return await _regionEShopGameStores[region].SearchGameStoreId(gameTitle);
     }
 
     public async Task<StoreGamePrice?> GetGamePrice(string region, string gameStoreId)

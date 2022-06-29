@@ -16,17 +16,17 @@ public class EShopNoEGameStore : IEShopRegionGameStore
         _httpClient = new HttpClient();
     }
 
-    public async Task<string?> SearchGameStoreId(string region, string gameTitle)
+    public async Task<string?> SearchGameStoreId(string gameTitle)
     {
         var searchResults = new List<NintendoSearchAPIDoc>();
 
         const int startOffset = 10;
         int start = -10;
-        for (int page = 1; page <= 3; page++)
+        for (int page = 1; page <= 2; page++)
         {
             var uriBuilder = new UriBuilder(NoESearchAPIURL);
             var query = HttpUtility.ParseQueryString(string.Empty);
-            query["fq"] = "type:GAME AND system_names_txt:Switch";
+            query["fq"] = "type:GAME AND system_names_txt:\"Switch\"";
             query["q"] = gameTitle;
             query["start"] = (start += startOffset).ToString();
             uriBuilder.Query = query.ToString();
@@ -35,7 +35,10 @@ public class EShopNoEGameStore : IEShopRegionGameStore
                 = await _httpClient.GetFromJsonAsync<NintendoSearchAPIBody>(uriBuilder.ToString());
             if (responseBody != null)
             {
-                searchResults.AddRange(responseBody.Response.Docs);
+                if (responseBody.Response?.Docs != null)
+                {
+                    searchResults.AddRange(responseBody.Response.Docs);
+                }
             }
         }
 
@@ -46,14 +49,14 @@ public class EShopNoEGameStore : IEShopRegionGameStore
         foreach (var searchResult in searchResults)
         {
             int dist = Levenshtein.GetDistance(
-                searchResult.Title.ToLower().Replace(" ", ""),
+                searchResult.Title?.ToLower().Replace(" ", ""),
                 normalizedGameTitle
             );
-
+            
             if (dist < lowestDist)
             {
                 lowestDist = dist;
-                nintendoId = searchResult.NsuidTxt.ElementAtOrDefault(0);
+                nintendoId = searchResult.NsuidTxt?.ElementAtOrDefault(0);
             }
         }
 
@@ -73,11 +76,11 @@ public class EShopNoEGameStore : IEShopRegionGameStore
             = await _httpClient.GetFromJsonAsync<NintendoPriceAPIResponse>(uriBuilder.ToString());
         if (responseBody == null) return null;
 
-        NintendoPriceAPIPrice? price = responseBody.Prices.ElementAtOrDefault(0);
+        NintendoPriceAPIPrice? price = responseBody.Prices?.ElementAtOrDefault(0);
         if (price == null) return null;
 
-        string currency = price.RegularPrice.Currency;
-        double currentPrice = price.RegularPrice.Amount;
+        string currency = price.RegularPrice?.Currency ?? "???";
+        double currentPrice = price.RegularPrice?.Amount ?? 0;
         bool isOnSale = false;
         DateTime? saleEnd = null;
 
