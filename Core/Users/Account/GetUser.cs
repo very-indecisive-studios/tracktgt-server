@@ -20,7 +20,9 @@ public class GetUserValidator : AbstractValidator<GetUserQuery>
 
 public record GetUserResult(
     string UserName,
-    string Email
+    string Email,
+    string ProfilePictureURL,
+    string Bio
 );
 
 public static class GetUserMappings

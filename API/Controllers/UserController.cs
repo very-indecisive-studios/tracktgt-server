@@ -102,7 +102,7 @@ public class UserController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpDelete("unfollow", Name = nameof(UnfollowUser))]
+    [HttpDelete("follow", Name = nameof(UnfollowUser))]
     public Task<Unit> UnfollowUser(UnfollowUserCommand unfollowUserCommand)
     {
         return Mediator.Send(unfollowUserCommand);
@@ -114,10 +114,34 @@ public class UserController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("follow/{followerUserId}/{followingUserId}", Name = nameof(CheckUserFollowing))]
-    public Task<CheckUserFollowingResult> CheckUserFollowing(string followerUserId, string followingUserId)
+    [HttpGet("follow/relationship", Name = nameof(CheckUserFollowing))]
+    public Task<CheckUserFollowingResult> CheckUserFollowing([FromQuery] CheckUserFollowingQuery checkUserFollowingQuery)
     {
-        return Mediator.Send(new CheckUserFollowingQuery(followerUserId, followingUserId));
+        return Mediator.Send(checkUserFollowingQuery);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpPost("account/profilePicture", Name = nameof(UpdateProfilePic))]
+    public Task<Unit> UpdateProfilePic(UpdateProfilePicCommand updateProfilePicCommand)
+    {
+        return Mediator.Send(updateProfilePicCommand);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpPost("account/bio", Name = nameof(UpdateBio))]
+    public Task<Unit> UpdateBio(UpdateBioCommand updateBioCommand)
+    {
+        return Mediator.Send(updateBioCommand);
     }
     
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetPricingUserPreferenceResult))]
