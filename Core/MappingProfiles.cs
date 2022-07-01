@@ -9,6 +9,7 @@ using Core.Pricing.Switch;
 using Core.Shows;
 using Core.Users;
 using Core.Users.Account;
+using Core.Users.Activity;
 using Core.Users.Following;
 using Core.Users.Preferences;
 using Core.Users.Register;
@@ -38,6 +39,7 @@ public class MappingProfiles : Profile
         UpdateBioMappings.Map(this);
         GetUserByUserNameMappings.Map(this);
         SearchUsersMappings.Map(this);
+        GetUserActivityMappings.Map(this);
         #endregion
         
         #region Follows
