@@ -42,6 +42,8 @@ public class MappingProfiles : Profile
         
         #region Follows
         FollowUserMappings.Map(this);
+        GetUserFollowersMappings.Map(this);
+        GetUserFollowingsMappings.Map(this);
         #endregion
         
         #region Shows

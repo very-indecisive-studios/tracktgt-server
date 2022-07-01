@@ -120,6 +120,30 @@ public class UserController : APIControllerBase
         return Mediator.Send(checkUserFollowingQuery);
     }
     
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserFollowersResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("follow/followers/{userRemoteId}", Name = nameof(GetUserFollowers))]
+    public Task<GetUserFollowersResult> GetUserFollowers(string userRemoteId)
+    {
+        return Mediator.Send(new GetUserFollowersQuery(userRemoteId));
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserFollowingsResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("follow/following/{userRemoteId}", Name = nameof(GetUserFollowings))]
+    public Task<GetUserFollowingsResult> GetUserFollowings(string userRemoteId)
+    {
+        return Mediator.Send(new GetUserFollowingsQuery(userRemoteId));
+    }
+    
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
