@@ -1,21 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.Exceptions;
-using Core.Users;
 using Core.Users.Account;
-using Domain;
 using Domain.User;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Persistence;
 
-namespace Core.Test.Users;
+namespace Core.Test.Users.Account;
 
 [TestClass]
-public class GetUserTest
+public class UpdateBioTest
 {
     private static SqliteConnection? Connection { get; set; }
     
@@ -25,33 +23,22 @@ public class GetUserTest
     
     private static IMapper? Mapper { get; set; }
     
-    private static GetUserHandler? GetUserHandler { get; set; }
+    private static UpdateBioHandler? UpdateBioHandler { get; set; }
 
+    private static string UserRemoteId = "m4nU_L+rAtIo";
+    
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)
     {
-        var fakeUserList = new List<User>
+        var fakeUser = new User()
         {
-            new ()
-            {
-                RemoteId = "m4nU_L+rAtIo",
-                Email = "christanaldo@manu.com",
-                UserName = "christanaldo"
-            },
-            new ()
-            {
-                RemoteId = "b0f4d33zn0tz",
-                Email = "bofa@example.com",
-                UserName = "bofa"
-            },
-            new ()
-            {
-                RemoteId = "C4nDiCeNu+z",
-                Email = "candice@example.com",
-                UserName = "candice"
-            }
+            RemoteId = UserRemoteId,
+            Email = "christanaldo@manu.com",
+            UserName = "christanaldo",
+            Bio = "SUIIIII",
+            ProfilePictureURL = "christanaldo.com"
         };
-        
+
         // Setup in memory database
         Connection = new SqliteConnection("Filename=:memory:");
         Connection.Open();
@@ -62,37 +49,45 @@ public class GetUserTest
 
         InMemDatabase = new DatabaseContext(ContextOptions);
         await InMemDatabase.Database.EnsureCreatedAsync();
-        await InMemDatabase.Users.AddRangeAsync(fakeUserList);
+        InMemDatabase.Users.Add(fakeUser);
         await InMemDatabase.SaveChangesAsync();
         
         var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile<MappingProfiles>(); });
         Mapper = mappingConfig.CreateMapper();
 
-        GetUserHandler = new GetUserHandler(InMemDatabase, Mapper);
+        UpdateBioHandler = new UpdateBioHandler(InMemDatabase, Mapper);
     }
 
     [TestMethod]
-    public async Task GetUser_Found()
+    public async Task UpdateBio_Found()
     {
         // Setup
-        var query = new GetUserQuery("b0f4d33zn0tz");
+        var newBio = "no more SUIII";
+        var command = new UpdateBioCommand(UserRemoteId, newBio);
         
         // Execute
-        var result = await GetUserHandler!.Handle(query, CancellationToken.None);
+        await UpdateBioHandler!.Handle(command, CancellationToken.None);
 
         // Verify
-        Assert.AreEqual("bofa", result.UserName);
-        Assert.AreEqual("bofa@example.com", result.Email);
+        var user = await InMemDatabase!.Users
+            .AsNoTracking()
+            .Where(u => u.RemoteId == "m4nU_L+rAtIo")
+            .FirstOrDefaultAsync();
+        
+        Assert.IsNotNull(user);
+        Assert.AreEqual(user.Bio, newBio);
     }
     
     [TestMethod]
-    public async Task GetUser_NotFound()
+    public async Task UpdateBio_NotFound()
     {
         // Setup
-        var query = new GetUserQuery("h3lPm33!");
+        var newBio = "messi the best";
+        var nonExistentUserRemoteId = "noexistnomore";
+        var command = new UpdateBioCommand(nonExistentUserRemoteId, newBio);
         
         // Execute
         // Verify
-        await Assert.ThrowsExceptionAsync<NotFoundException>(() => GetUserHandler!.Handle(query, CancellationToken.None));
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => UpdateBioHandler!.Handle(command, CancellationToken.None));
     }
 }
