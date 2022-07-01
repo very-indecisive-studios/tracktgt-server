@@ -59,6 +59,15 @@ public class UpdateShowTrackingHandler : IRequestHandler<UpdateShowTrackingComma
         _mapper.Map<UpdateShowTrackingCommand, ShowTracking>(command, showTracking);
         _dbContext.ShowTrackings.Update(showTracking);
         
+        Activity activity = new Activity();
+        activity.UserRemoteId = command.UserRemoteId;
+        activity.MediaRemoteId = command.ShowRemoteId;
+        activity.MediaStatus = command.Status.ToString();
+        activity.NoOf = command.EpisodesWatched;
+        activity.MediaType = TypeOfMedia.Show;
+        activity.Action = ActivityAction.Update;
+        _dbContext.Activities.Add(activity);
+        
         await _dbContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;
