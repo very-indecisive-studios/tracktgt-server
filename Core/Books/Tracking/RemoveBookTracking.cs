@@ -44,6 +44,16 @@ public class RemoveBookTrackingHandler : IRequestHandler<RemoveBookTrackingComma
         }
 
         _databaseContext.BookTrackings.Remove(bookTracking);
+        
+        Activity activity = new Activity();
+        activity.UserRemoteId = command.UserRemoteId;
+        activity.MediaRemoteId = command.BookRemoteId;
+        activity.MediaStatus = bookTracking.Status.ToString();
+        activity.NoOf = bookTracking.ChaptersRead;
+        activity.MediaType = TypeOfMedia.Book;
+        activity.Action = ActivityAction.Remove;
+        _databaseContext.Activities.Add(activity);
+        
         await _databaseContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;

@@ -99,6 +99,15 @@ public class AddBookTrackingHandler : IRequestHandler<AddBookTrackingCommand, Un
         var bookTracking = _mapper.Map<AddBookTrackingCommand, BookTracking>(command);
         _dbContext.BookTrackings.Add(bookTracking);
         
+        Activity activity = new Activity();
+        activity.UserRemoteId = command.UserRemoteId;
+        activity.MediaRemoteId = command.BookRemoteId;
+        activity.MediaStatus = command.Status.ToString();
+        activity.NoOf = command.ChaptersRead;
+        activity.MediaType = TypeOfMedia.Book;
+        activity.Action = ActivityAction.Add;
+        _dbContext.Activities.Add(activity);
+        
         await _dbContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;
