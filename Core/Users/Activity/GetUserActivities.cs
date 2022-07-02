@@ -22,6 +22,8 @@ public class GetUserActivitiesValidator : AbstractValidator<GetUserActivitiesQue
 public record GetUserActivitiesResult(List<GetUserActivitiesResult.GetUserActivitiesItemResult> Items)
 {
     public record GetUserActivitiesItemResult(
+        string UserName,
+        string ProfilePictureURL,
         string MediaRemoteId,
         string MediaTitle,
         string MediaCoverImageURL,
@@ -43,12 +45,10 @@ public static class GetUserActivitiesMappings
 public class GetUserActivitiesHandler : IRequestHandler<GetUserActivitiesQuery, GetUserActivitiesResult>
 {
     private readonly DatabaseContext _databaseContext;
-    private readonly IMapper _mapper;
 
-    public GetUserActivitiesHandler(DatabaseContext databaseContext, IMapper mapper)
+    public GetUserActivitiesHandler(DatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
-        _mapper = mapper;
     }
     
     public async Task<GetUserActivitiesResult> Handle(GetUserActivitiesQuery query, CancellationToken cancellationToken)
@@ -58,7 +58,22 @@ public class GetUserActivitiesHandler : IRequestHandler<GetUserActivitiesQuery, 
             .Where(a => a.UserRemoteId == query.UserRemoteId)
             .OrderByDescending(a => a.CreatedOn)
             .Take(10)
-            .ProjectTo<GetUserActivitiesResult.GetUserActivitiesItemResult>(_mapper.ConfigurationProvider)
+            .Join(
+                _databaseContext.Users,
+                a => a.UserRemoteId,
+                u => u.RemoteId,
+                (a, u) => new GetUserActivitiesResult.GetUserActivitiesItemResult(
+                    u.UserName,
+                    u.ProfilePictureURL,
+                    a.MediaRemoteId,
+                    a.MediaTitle,
+                    a.MediaCoverImageURL,
+                    a.Status,
+                    a.NoOf,
+                    a.MediaType,
+                    a.Action
+                )
+            )
             .ToListAsync(cancellationToken);
         
         return new (activities);
