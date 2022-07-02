@@ -50,7 +50,7 @@ public class RemoveBookTrackingHandler : IRequestHandler<RemoveBookTrackingComma
         activity.MediaRemoteId = command.BookRemoteId;
         activity.MediaStatus = bookTracking.Status.ToString();
         activity.NoOf = bookTracking.ChaptersRead;
-        activity.MediaType = TypeOfMedia.Book;
+        activity.MediaType = ActivityMediaType.Book;
         activity.Action = ActivityAction.Remove;
         _databaseContext.Activities.Add(activity);
         

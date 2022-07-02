@@ -107,7 +107,7 @@ public class AddGameTrackingHandler : IRequestHandler<AddGameTrackingCommand, Un
         activity.MediaRemoteId = command.GameRemoteId.ToString();
         activity.MediaStatus = command.Status.ToString();
         activity.NoOf = (int) command.HoursPlayed;
-        activity.MediaType = TypeOfMedia.Game;
+        activity.MediaType = ActivityMediaType.Game;
         activity.Action = ActivityAction.Add;
         _dbContext.Activities.Add(activity);
         

@@ -66,7 +66,7 @@ public class UpdateBookTrackingHandler : IRequestHandler<UpdateBookTrackingComma
         activity.MediaRemoteId = command.BookRemoteId;
         activity.MediaStatus = command.Status.ToString();
         activity.NoOf = command.ChaptersRead;
-        activity.MediaType = TypeOfMedia.Book;
+        activity.MediaType = ActivityMediaType.Book;
         activity.Action = ActivityAction.Update;
         _dbContext.Activities.Add(activity);
         

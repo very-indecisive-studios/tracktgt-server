@@ -51,7 +51,7 @@ public class RemoveShowTrackingHandler : IRequestHandler<RemoveShowTrackingComma
         activity.MediaRemoteId = command.ShowRemoteId;
         activity.MediaStatus = showTracking.Status.ToString();
         activity.NoOf = showTracking.EpisodesWatched;
-        activity.MediaType = TypeOfMedia.Show;
+        activity.MediaType = ActivityMediaType.Show;
         activity.Action = ActivityAction.Remove;
         _databaseContext.Activities.Add(activity);
         

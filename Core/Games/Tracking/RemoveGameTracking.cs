@@ -52,7 +52,7 @@ public class RemoveGameTrackingHandler : IRequestHandler<RemoveGameTrackingComma
         activity.MediaRemoteId = command.GameRemoteId.ToString();
         activity.MediaStatus = gameTracking.Status.ToString();
         activity.NoOf = (int) gameTracking.HoursPlayed;
-        activity.MediaType = TypeOfMedia.Game;
+        activity.MediaType = ActivityMediaType.Game;
         activity.Action = ActivityAction.Remove;
         _databaseContext.Activities.Add(activity);
         

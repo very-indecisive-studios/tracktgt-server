@@ -2,7 +2,7 @@
 
 #nullable disable
 
-public enum TypeOfMedia { Game, Show, Book }
+public enum ActivityMediaType { Game, Show, Book }
 public enum ActivityAction { Add, Update, Remove }
 
 public class Activity : Entity
@@ -15,7 +15,7 @@ public class Activity : Entity
     
     public int NoOf { get; set; } 
     
-    public TypeOfMedia MediaType { get; set; }
+    public ActivityMediaType MediaType { get; set; }
     
     public ActivityAction Action { get; set; }
 }

@@ -99,7 +99,7 @@ public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Un
         activity.MediaRemoteId = command.ShowRemoteId;
         activity.MediaStatus = command.Status.ToString();
         activity.NoOf = command.EpisodesWatched;
-        activity.MediaType = TypeOfMedia.Show;
+        activity.MediaType = ActivityMediaType.Show;
         activity.Action = ActivityAction.Add;
         _dbContext.Activities.Add(activity);
         

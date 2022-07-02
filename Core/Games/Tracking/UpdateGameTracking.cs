@@ -69,7 +69,7 @@ public class UpdateGameTrackingHandler : IRequestHandler<UpdateGameTrackingComma
         activity.MediaRemoteId = command.GameRemoteId.ToString();
         activity.MediaStatus = command.Status.ToString();
         activity.NoOf = (int) command.HoursPlayed;
-        activity.MediaType = TypeOfMedia.Game;
+        activity.MediaType = ActivityMediaType.Game;
         activity.Action = ActivityAction.Update;
         _dbContext.Activities.Add(activity);
         

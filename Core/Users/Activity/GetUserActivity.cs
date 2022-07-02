@@ -25,7 +25,7 @@ public record GetUserActivityResult(List<GetUserActivityResult.GetUserActivityIt
         string MediaRemoteId,
         string MediaStatus,
         int NoOf,
-        TypeOfMedia MediaType,
+        ActivityMediaType MediaActivityMediaType,
         ActivityAction Action
     );
 }

@@ -104,7 +104,7 @@ public class AddBookTrackingHandler : IRequestHandler<AddBookTrackingCommand, Un
         activity.MediaRemoteId = command.BookRemoteId;
         activity.MediaStatus = command.Status.ToString();
         activity.NoOf = command.ChaptersRead;
-        activity.MediaType = TypeOfMedia.Book;
+        activity.MediaType = ActivityMediaType.Book;
         activity.Action = ActivityAction.Add;
         _dbContext.Activities.Add(activity);
         

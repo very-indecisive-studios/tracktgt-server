@@ -64,7 +64,7 @@ public class UpdateShowTrackingHandler : IRequestHandler<UpdateShowTrackingComma
         activity.MediaRemoteId = command.ShowRemoteId;
         activity.MediaStatus = command.Status.ToString();
         activity.NoOf = command.EpisodesWatched;
-        activity.MediaType = TypeOfMedia.Show;
+        activity.MediaType = ActivityMediaType.Show;
         activity.Action = ActivityAction.Update;
         _dbContext.Activities.Add(activity);
         

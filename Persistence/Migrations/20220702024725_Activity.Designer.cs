@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220701085550_AddActivity")]
-    partial class AddActivity
+    [Migration("20220702024725_Activity")]
+    partial class Activity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
