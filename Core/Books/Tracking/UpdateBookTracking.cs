@@ -61,11 +61,22 @@ public class UpdateBookTrackingHandler : IRequestHandler<UpdateBookTrackingComma
         _mapper.Map<UpdateBookTrackingCommand, BookTracking>(command, bookTracking);
         _dbContext.BookTrackings.Update(bookTracking);
         
+        var book = await _dbContext.Books
+            .AsNoTracking()
+            .Where(b => b.RemoteId == command.BookRemoteId)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (book == null)
+        {
+            throw new NotFoundException("Book not found!");
+        }
+
         Activity activity = new Activity();
-        activity.UserRemoteId = command.UserRemoteId;
-        activity.MediaRemoteId = command.BookRemoteId;
-        activity.MediaStatus = command.Status.ToString();
-        activity.NoOf = command.ChaptersRead;
+        activity.UserRemoteId = bookTracking.UserRemoteId;
+        activity.Status = bookTracking.Status.ToString();
+        activity.NoOf = bookTracking.ChaptersRead;
+        activity.MediaRemoteId = book.RemoteId;
+        activity.MediaTitle = book.Title;
+        activity.MediaCoverImageURL = book.CoverImageURL;
         activity.MediaType = ActivityMediaType.Book;
         activity.Action = ActivityAction.Update;
         _dbContext.Activities.Add(activity);

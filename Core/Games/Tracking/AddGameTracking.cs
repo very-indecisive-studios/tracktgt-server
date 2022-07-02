@@ -74,39 +74,31 @@ public class AddGameTrackingHandler : IRequestHandler<AddGameTrackingCommand, Un
                          && tg.UserRemoteId == command.UserRemoteId
                          && tg.Platform.Equals(command.Platform))
             .AnyAsync(cancellationToken);
-
         if (isGameTrackingExists)
         {
             throw new ExistsException("Tracked game already exists!");
         }
         
-        // Verify game id.
-        bool isGameExists = await _dbContext.Games
-            .AsNoTracking()
-            .Where(g => g.RemoteId == command.GameRemoteId)
-            .AnyAsync(cancellationToken);
-        // Fetch from external API and store in db if game not cached
-        if (!isGameExists)
-        {
-            APIGame? apiGame = await _gameService.GetGameById(command.GameRemoteId);
-
-            if (apiGame == null)
-            {
-                throw new NotFoundException("Game not found!");
-            }
-
-            Game game = _mapper.Map<APIGame, Game>(apiGame);
-            _dbContext.Games.Add(game);
-        }
-
         var gameTracking = _mapper.Map<AddGameTrackingCommand, GameTracking>(command);
         _dbContext.GameTrackings.Add(gameTracking);
         
+        // Verify game id.
+        var game = await _dbContext.Games
+            .AsNoTracking()
+            .Where(g => g.RemoteId == command.GameRemoteId)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (game == null)
+        {
+            throw new NotFoundException("Game not found!");
+        }
+        
         Activity activity = new Activity();
-        activity.UserRemoteId = command.UserRemoteId;
-        activity.MediaRemoteId = command.GameRemoteId.ToString();
-        activity.MediaStatus = command.Status.ToString();
-        activity.NoOf = (int) command.HoursPlayed;
+        activity.UserRemoteId = gameTracking.UserRemoteId;
+        activity.Status = gameTracking.Status.ToString();
+        activity.NoOf = (int) gameTracking.HoursPlayed;
+        activity.MediaRemoteId = game.RemoteId.ToString();
+        activity.MediaTitle = game.Title;
+        activity.MediaCoverImageURL = game.CoverImageURL;
         activity.MediaType = ActivityMediaType.Game;
         activity.Action = ActivityAction.Add;
         _dbContext.Activities.Add(activity);

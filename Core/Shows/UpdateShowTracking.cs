@@ -59,11 +59,22 @@ public class UpdateShowTrackingHandler : IRequestHandler<UpdateShowTrackingComma
         _mapper.Map<UpdateShowTrackingCommand, ShowTracking>(command, showTracking);
         _dbContext.ShowTrackings.Update(showTracking);
         
+        var show = await _dbContext.Shows
+            .AsNoTracking()
+            .Where(show => show.RemoteId == command.ShowRemoteId)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (show == null)
+        {
+            throw new NotFoundException("Show not found!");
+        }
+        
         Activity activity = new Activity();
-        activity.UserRemoteId = command.UserRemoteId;
-        activity.MediaRemoteId = command.ShowRemoteId;
-        activity.MediaStatus = command.Status.ToString();
-        activity.NoOf = command.EpisodesWatched;
+        activity.UserRemoteId = showTracking.UserRemoteId;
+        activity.Status = showTracking.Status.ToString();
+        activity.NoOf = showTracking.EpisodesWatched;
+        activity.MediaRemoteId = show.RemoteId;
+        activity.MediaTitle = show.Title;
+        activity.MediaCoverImageURL = show.CoverImageURL;
         activity.MediaType = ActivityMediaType.Show;
         activity.Action = ActivityAction.Update;
         _dbContext.Activities.Add(activity);

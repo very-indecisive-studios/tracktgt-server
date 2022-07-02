@@ -10,8 +10,12 @@ public class Activity : Entity
     public string UserRemoteId { get; set; }
     
     public string MediaRemoteId { get; set; }
+    
+    public string MediaTitle { get; set; }
+    
+    public string MediaCoverImageURL { get; set; }
 
-    public string MediaStatus { get; set; }
+    public string Status { get; set; }
     
     public int NoOf { get; set; } 
     

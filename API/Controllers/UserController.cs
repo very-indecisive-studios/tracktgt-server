@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Core.Users;
 using Core.Users.Account;
+using Core.Users.Activity;
 using Core.Users.Following;
 using Core.Users.Preferences;
 using Core.Users.Register;
@@ -190,5 +191,17 @@ public class UserController : APIControllerBase
     public Task<Unit> UpdatePricingUserPreferenceCommand(UpdatePricingUserPreferenceCommand command)
     {
         return Mediator.Send(command);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserActivitiesResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("activity/{userRemoteId}", Name = nameof(GetUserActivities))]
+    public Task<GetUserActivitiesResult> GetUserActivities(string userRemoteId)
+    {
+        return Mediator.Send(new GetUserActivitiesQuery(userRemoteId));
     }
 }
