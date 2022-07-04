@@ -145,6 +145,18 @@ public class UserController : APIControllerBase
         return Mediator.Send(new GetUserFollowingsQuery(userRemoteId));
     }
     
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetTopUsersResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("follow/top", Name = nameof(GetTopUsers))]
+    public Task<GetTopUsersResult> GetTopUsers([FromQuery] GetTopUsersQuery getTopUsersQuery)
+    {
+        return Mediator.Send(getTopUsersQuery);
+    }
+    
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

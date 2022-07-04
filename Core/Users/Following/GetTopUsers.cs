@@ -16,15 +16,22 @@ public class GetTopUsersValidator : AbstractValidator<GetTopUsersQuery>
     }
 }
 
-public record GetTopUsersResult(
-    List<String> TopUsersList
-);
+public record GetTopUsersResult(List<GetTopUsersResult.GetTopUsersItemResult> Items)
+{
+    public record GetTopUsersItemResult(
+        string RemoteId,
+        string UserName,
+        string ProfilePictureURL,
+        string Bio,
+        int FollowersCount
+    );
+}
 
 public class GetTopUsersHandler : IRequestHandler<GetTopUsersQuery, GetTopUsersResult>
 {
     private readonly DatabaseContext _databaseContext;
 
-    public GetTopUsersHandler(DatabaseContext databaseContext, IMapper mapper)
+    public GetTopUsersHandler(DatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
     }
@@ -32,35 +39,25 @@ public class GetTopUsersHandler : IRequestHandler<GetTopUsersQuery, GetTopUsersR
     public async Task<GetTopUsersResult> Handle(GetTopUsersQuery query, CancellationToken cancellationToken)
     {
         var listOfFollows = await _databaseContext.Follows
-            .AsNoTracking().ToListAsync(cancellationToken);
+            .GroupBy(q => q.FollowingUserId)
+            .OrderByDescending(g => g.Count())
+            .Take(query.NoOfUsers)
+            .Select(g => new { UserRemoteId = g.Key, FollowersCount = g.Count()})
+            .Join(
+                _databaseContext.Users,
+                g => g.UserRemoteId,
+                u => u.RemoteId,
+                (g, u) => new GetTopUsersResult.GetTopUsersItemResult(
+                    u.RemoteId,
+                    u.UserName,
+                    u.ProfilePictureURL,
+                    u.Bio,
+                    g.FollowersCount
+                )
+            )
+            .ToListAsync(cancellationToken);
         
-        IDictionary<string, int> userAndFollowers = new Dictionary<string, int>();
-
-        foreach (var f in listOfFollows)
-        {
-            var currentUser = f.FollowingUserId;
-            if (userAndFollowers.ContainsKey(currentUser))
-            {
-                userAndFollowers[currentUser] += 1;
-            }
-            else
-            {
-                userAndFollowers.Add(currentUser, 1);
-            }
-        }
-
-        List<String> sortedTopUsersList = new List<String>();
-        foreach (var userAndFollower in userAndFollowers.OrderBy(key => key.Value))
-        {
-            sortedTopUsersList.Add(userAndFollower.Key);
-        }
         
-        List<String> limitedSortedTopUsersList = new List<String>(query.NoOfUsers);
-        for (int i = 0; i < query.NoOfUsers; i++)
-        {
-            limitedSortedTopUsersList.Add(sortedTopUsersList[i]);
-        }
-        
-        return new GetTopUsersResult(limitedSortedTopUsersList);
+        return new GetTopUsersResult(listOfFollows);
     }
 }
