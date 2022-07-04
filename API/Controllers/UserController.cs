@@ -216,4 +216,16 @@ public class UserController : APIControllerBase
     {
         return Mediator.Send(new GetUserActivitiesQuery(userRemoteId));
     }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetGlobalActivitiesResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("activity/global", Name = nameof(GetGlobalActivities))]
+    public Task<GetGlobalActivitiesResult> GetGlobalActivities()
+    {
+        return Mediator.Send(new GetGlobalActivitiesQuery());
+    }
 }
