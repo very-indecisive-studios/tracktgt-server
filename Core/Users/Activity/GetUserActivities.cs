@@ -30,7 +30,8 @@ public record GetUserActivitiesResult(List<GetUserActivitiesResult.GetUserActivi
         string Status,
         int NoOf,
         ActivityMediaType MediaType,
-        ActivityAction Action
+        ActivityAction Action,
+        DateTime DateTime
     );
 }
 
@@ -63,7 +64,8 @@ public class GetUserActivitiesHandler : IRequestHandler<GetUserActivitiesQuery, 
                     a.Status,
                     a.NoOf,
                     a.MediaType,
-                    a.Action
+                    a.Action,
+                    a.CreatedOn
                 )
             )
             .ToListAsync(cancellationToken);

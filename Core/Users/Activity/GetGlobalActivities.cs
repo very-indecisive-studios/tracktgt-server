@@ -20,7 +20,8 @@ public record GetGlobalActivitiesResult(List<GetGlobalActivitiesResult.GetGlobal
         string Status,
         int NoOf,
         ActivityMediaType MediaType,
-        ActivityAction Action
+        ActivityAction Action,
+        DateTime DateTime
     );
 }
 
@@ -53,7 +54,8 @@ public class GetGlobalActivitiesHandler : IRequestHandler<GetGlobalActivitiesQue
                     a.Status,
                     a.NoOf,
                     a.MediaType,
-                    a.Action
+                    a.Action,
+                    a.CreatedOn
                 )
             )
             .ToListAsync(cancellationToken);
