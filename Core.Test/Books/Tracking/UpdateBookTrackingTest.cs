@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Books.Tracking;
 using Core.Exceptions;
-using Domain;
+using Domain.Media;
 using Domain.Tracking;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -70,6 +70,10 @@ public class UpdateBookTrackingTest
             Format = fakeFormat,
             Status = fakeStatus,
             Ownership = fakeOwnership
+        });
+        InMemDatabase.Books.Add(new Book
+        {
+            RemoteId = fakeBookRemoteId
         });
         await InMemDatabase.SaveChangesAsync(CancellationToken.None);
 

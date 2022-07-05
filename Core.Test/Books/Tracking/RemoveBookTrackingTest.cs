@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Books.Tracking;
 using Core.Exceptions;
-using Domain;
+using Domain.Media;
 using Domain.Tracking;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +33,11 @@ public class RemoveBookTrackingTest
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)
     {
+        var fakeBook = new Book()
+        {
+            RemoteId = FakeBookRemoteId
+        };
+        
         var fakeBookTrackingsList = new List<BookTracking>()
         {
             new()
@@ -57,6 +62,7 @@ public class RemoveBookTrackingTest
         InMemDatabase = new DatabaseContext(ContextOptions);
         await InMemDatabase.Database.EnsureCreatedAsync();
         InMemDatabase.BookTrackings.AddRange(fakeBookTrackingsList);
+        InMemDatabase.Books.Add(fakeBook);
         await InMemDatabase.SaveChangesAsync();
 
         var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile<MappingProfiles>(); });

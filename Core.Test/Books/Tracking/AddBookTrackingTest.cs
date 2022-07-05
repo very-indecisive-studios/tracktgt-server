@@ -5,14 +5,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Books.Tracking;
 using Core.Exceptions;
-using Domain;
 using Domain.Media;
 using Domain.Tracking;
 using Domain.User;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Persistence;
 using Service.Book;
 
@@ -26,8 +24,6 @@ public class AddBookTrackingTest
     private static DbContextOptions<DatabaseContext>? ContextOptions { get; set; }
     
     private static DatabaseContext? InMemDatabase { get; set; }
-    
-    private static Mock<IBookService>? MockBookService { get; set; }
 
     private static IMapper? Mapper { get; set; }
     
@@ -65,15 +61,13 @@ public class AddBookTrackingTest
 
         await InMemDatabase.SaveChangesAsync();
 
-        MockBookService = new Mock<IBookService>();
-
         var mappingConfig = new MapperConfiguration(mc =>
         {
             mc.AddProfile<MappingProfiles>();
         });
         Mapper = mappingConfig.CreateMapper();
 
-        AddBookTrackingHandler = new AddBookTrackingHandler(InMemDatabase, MockBookService.Object, Mapper);
+        AddBookTrackingHandler = new AddBookTrackingHandler(InMemDatabase, Mapper);
     }
 
     [ClassCleanup]
@@ -81,15 +75,9 @@ public class AddBookTrackingTest
     {
         await Connection!.DisposeAsync();
     }
-    
-    [TestCleanup]
-    public void TestCaseCleanup()
-    {
-        MockBookService.Reset();
-    }
 
     [TestMethod]
-    public async Task AddBookTracking_Cached()
+    public async Task AddBookTracking_Default()
     {
         // Setup
         var command = new AddBookTrackingCommand(
@@ -105,54 +93,13 @@ public class AddBookTrackingTest
         await AddBookTrackingHandler!.Handle(command, CancellationToken.None);
         
         // Verify
-        MockBookService!.Verify(service => service.GetBookById(It.IsAny<string>()), Times.Never);
         var bookTracking = await InMemDatabase!.BookTrackings
             .Where(bt => bt.BookRemoteId.Equals(FakeExistingBookId) 
                          && bt.UserRemoteId.Equals(FakeExistingUserId))
             .CountAsync();
         Assert.AreEqual(1, bookTracking);
     }
-    
-    [TestMethod]
-    public async Task AddBookTracking_NoCached_APIHit()
-    {
-        // Setup
-        var fakeAPIBook = new APIBook(
-            "BOOKNOTEXIST",
-            "",
-            "Chaos Chef",
-            "Won Book of the Year",
-            new List<string> { "Very Indecisive Studios" }
-        );
 
-        var command = new AddBookTrackingCommand(
-            FakeExistingUserId,
-            fakeAPIBook.Id,
-            200,
-            BookTrackingFormat.Digital,
-            BookTrackingStatus.Planning,
-            BookTrackingOwnership.Owned
-        );
-        
-        MockBookService!.Setup(service => service.GetBookById(command.BookRemoteId))
-            .ReturnsAsync(fakeAPIBook);
-        
-        // Execute
-        await AddBookTrackingHandler!.Handle(command, CancellationToken.None);
-        
-        // Verify
-        MockBookService.Verify(service => service.GetBookById(It.IsAny<string>()));
-        var bookTrackingCount = await InMemDatabase!.BookTrackings
-            .Where(bt => bt.BookRemoteId.Equals(FakeExistingBookId) 
-                         && bt.UserRemoteId.Equals(FakeExistingUserId))
-            .CountAsync();
-        Assert.AreEqual(1, bookTrackingCount);
-        var bookCount = await InMemDatabase.Books
-            .Where(b => b.RemoteId.Equals(fakeAPIBook.Id))
-            .CountAsync();
-        Assert.AreEqual(1, bookCount);
-    }
-    
     [TestMethod]
     public async Task AddBookTracking_TrackingExists()
     {
@@ -183,12 +130,8 @@ public class AddBookTrackingTest
             BookTrackingOwnership.Owned
         );
         
-        MockBookService!.Setup(service => service.GetBookById(command.BookRemoteId))
-            .ReturnsAsync((APIBook?) null);
-        
         // Execute & Verify
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddBookTrackingHandler!.Handle(command, CancellationToken.None));
-        MockBookService.Verify(service => service.GetBookById(It.IsAny<string>()));
     }
     
     [TestMethod]
@@ -212,10 +155,6 @@ public class AddBookTrackingTest
             BookTrackingOwnership.Owned
         );
 
-        
-        MockBookService!.Setup(service => service.GetBookById(command.BookRemoteId))
-            .ReturnsAsync(fakeAPIBook);
-        
         // Execute & Verify
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddBookTrackingHandler!.Handle(command, CancellationToken.None));
     }

@@ -38,13 +38,11 @@ public static class AddShowTrackingMappings
 public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Unit>
 {
     private readonly DatabaseContext _dbContext;
-    private readonly IShowService _showService;
     private readonly IMapper _mapper;
     
-    public AddShowTrackingHandler(DatabaseContext dbContext, IShowService showService, IMapper mapper)
+    public AddShowTrackingHandler(DatabaseContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
-        _showService = showService;
         _mapper = mapper;
     }
 

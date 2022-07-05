@@ -42,13 +42,11 @@ public static class AddBookTrackingMappings
 public class AddBookTrackingHandler : IRequestHandler<AddBookTrackingCommand, Unit>
 {
     private readonly DatabaseContext _dbContext;
-    private readonly IBookService _bookService;
     private readonly IMapper _mapper;
 
-    public AddBookTrackingHandler(DatabaseContext dbContext, IBookService bookService, IMapper mapper)
+    public AddBookTrackingHandler(DatabaseContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
-        _bookService = bookService;
         _mapper = mapper;
     }
 

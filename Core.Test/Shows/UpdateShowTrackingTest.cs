@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Core.Exceptions;
 using Core.Shows;
-using Domain;
 using Domain.Media;
 using Domain.Tracking;
 using Persistence;
@@ -68,6 +67,10 @@ public class UpdateShowTrackingTest
             ShowRemoteId = fakeShowRemoteId,
             EpisodesWatched = fakeEpisodesWatched,
             Status = fakeStatus,
+        });
+        InMemDatabase.Shows.Add(new Show()
+        {
+            RemoteId = fakeShowRemoteId
         });
         await InMemDatabase.SaveChangesAsync(CancellationToken.None);
 

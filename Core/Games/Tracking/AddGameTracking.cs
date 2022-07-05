@@ -44,13 +44,11 @@ public static class AddGameTrackingMappings
 public class AddGameTrackingHandler : IRequestHandler<AddGameTrackingCommand, Unit>
 {
     private readonly DatabaseContext _dbContext;
-    private readonly IGameService _gameService;
     private readonly IMapper _mapper;
 
-    public AddGameTrackingHandler(DatabaseContext dbContext, IGameService gameService, IMapper mapper)
+    public AddGameTrackingHandler(DatabaseContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
-        _gameService = gameService;
         _mapper = mapper;
     }
 

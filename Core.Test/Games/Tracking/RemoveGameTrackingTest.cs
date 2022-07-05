@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Games.Tracking;
 using Core.Exceptions;
-using Domain;
+using Domain.Media;
 using Domain.Tracking;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +33,11 @@ public class RemoveGameTrackingTest
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)
     {
+        var fakeGame = new Game()
+        {
+            RemoteId = FakeGameRemoteId
+        };
+        
         var fakeGameTrackingsList = new List<GameTracking>()
         {
             new()
@@ -58,6 +63,7 @@ public class RemoveGameTrackingTest
         InMemDatabase = new DatabaseContext(ContextOptions);
         await InMemDatabase.Database.EnsureCreatedAsync();
         InMemDatabase.GameTrackings.AddRange(fakeGameTrackingsList);
+        InMemDatabase.Games.Add(fakeGame);
         await InMemDatabase.SaveChangesAsync();
 
         var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile<MappingProfiles>(); });

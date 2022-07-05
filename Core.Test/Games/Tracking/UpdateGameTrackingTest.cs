@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Exceptions;
 using Core.Games.Tracking;
-using Domain;
+using Domain.Media;
 using Domain.Tracking;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -72,6 +72,10 @@ public class UpdateGameTrackingTest
             Format = fakeFormat,
             Status = fakeStatus,
             Ownership = fakeOwnership
+        });
+        InMemDatabase.Games.Add(new Game
+        {
+            RemoteId = fakeGameRemoteId
         });
         await InMemDatabase.SaveChangesAsync(CancellationToken.None);
 

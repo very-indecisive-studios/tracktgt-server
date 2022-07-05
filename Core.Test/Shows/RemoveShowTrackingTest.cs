@@ -4,11 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Moq.EntityFrameworkCore;
 using Core.Exceptions;
 using Core.Shows;
-using Domain;
 using Domain.Media;
 using Domain.Tracking;
 using Microsoft.Data.Sqlite;
@@ -36,6 +33,11 @@ public class RemoveShowTrackingTest
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)
     {
+        var fakeShow = new Show()
+        {
+            RemoteId = FakeShowRemoteId
+        };
+        
         var fakeShowTrackingsList = new List<ShowTracking>()
         {
             new()
@@ -58,6 +60,7 @@ public class RemoveShowTrackingTest
         InMemDatabase = new DatabaseContext(ContextOptions);
         await InMemDatabase.Database.EnsureCreatedAsync();
         InMemDatabase.ShowTrackings.AddRange(fakeShowTrackingsList);
+        InMemDatabase.Shows.Add(fakeShow);
         await InMemDatabase.SaveChangesAsync();
 
         var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile<MappingProfiles>(); });
