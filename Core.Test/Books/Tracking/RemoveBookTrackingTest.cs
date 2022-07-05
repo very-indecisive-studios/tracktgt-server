@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Books.Tracking;
 using Core.Exceptions;
+using Domain;
 using Domain.Media;
 using Domain.Tracking;
 using Microsoft.Data.Sqlite;
@@ -86,6 +87,13 @@ public class RemoveBookTrackingTest
                         && b.BookRemoteId.Equals(FakeBookRemoteId))
             .CountAsync();
         Assert.AreEqual(0, count);
+        
+        var activity = await InMemDatabase.Activities
+            .Where(a => a.UserRemoteId.Equals(FakeUserRemoteId))
+            .FirstOrDefaultAsync();
+        Assert.IsNotNull(activity);
+        Assert.AreEqual(ActivityMediaType.Book, activity.MediaType);
+        Assert.AreEqual(ActivityAction.Remove, activity.Action);
     }
 
     [TestMethod]

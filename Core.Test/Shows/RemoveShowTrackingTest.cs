@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Core.Exceptions;
 using Core.Shows;
+using Domain;
 using Domain.Media;
 using Domain.Tracking;
 using Microsoft.Data.Sqlite;
@@ -84,6 +85,13 @@ public class RemoveShowTrackingTest
                                    && showTracking.ShowRemoteId.Equals(FakeShowRemoteId))
             .CountAsync();
         Assert.AreEqual(0, count);
+        
+        var activity = await InMemDatabase.Activities
+            .Where(a => a.UserRemoteId.Equals(FakeUserRemoteId))
+            .FirstOrDefaultAsync();
+        Assert.IsNotNull(activity);
+        Assert.AreEqual(ActivityMediaType.Show, activity.MediaType);
+        Assert.AreEqual(ActivityAction.Remove, activity.Action);
     }
 
     [TestMethod]

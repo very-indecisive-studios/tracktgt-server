@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Books.Tracking;
 using Core.Exceptions;
+using Domain;
 using Domain.Media;
 using Domain.Tracking;
 using Microsoft.Data.Sqlite;
@@ -97,6 +98,13 @@ public class UpdateBookTrackingTest
         Assert.AreEqual(updatedBookTracking.Format, newFakeFormat);
         Assert.AreEqual(updatedBookTracking.Status, newFakeStatus);
         Assert.AreEqual(updatedBookTracking.Ownership, newFakeOwnership);
+        
+        var activity = await InMemDatabase.Activities
+            .Where(a => a.UserRemoteId.Equals(fakeUserRemoteId))
+            .FirstOrDefaultAsync();
+        Assert.IsNotNull(activity);
+        Assert.AreEqual(ActivityMediaType.Book, activity.MediaType);
+        Assert.AreEqual(ActivityAction.Update, activity.Action);
     }
 
     [TestMethod]

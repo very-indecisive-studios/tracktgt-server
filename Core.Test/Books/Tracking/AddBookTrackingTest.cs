@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Books.Tracking;
 using Core.Exceptions;
+using Domain;
 using Domain.Media;
 using Domain.Tracking;
 using Domain.User;
@@ -98,6 +99,13 @@ public class AddBookTrackingTest
                          && bt.UserRemoteId.Equals(FakeExistingUserId))
             .CountAsync();
         Assert.AreEqual(1, bookTracking);
+        
+        var activity = await InMemDatabase.Activities
+            .Where(a => a.UserRemoteId.Equals(FakeExistingUserId))
+            .FirstOrDefaultAsync();
+        Assert.IsNotNull(activity);
+        Assert.AreEqual(ActivityMediaType.Book, activity.MediaType);
+        Assert.AreEqual(ActivityAction.Add, activity.Action);
     }
 
     [TestMethod]

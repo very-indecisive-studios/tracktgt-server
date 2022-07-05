@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Core.Exceptions;
 using Core.Shows;
+using Domain;
 using Domain.Media;
 using Domain.Tracking;
 using Persistence;
@@ -91,6 +92,13 @@ public class UpdateShowTrackingTest
         Assert.IsNotNull(updatedShowTracking);
         Assert.AreEqual(updatedShowTracking.EpisodesWatched, newFakeEpisodesWatched);
         Assert.AreEqual(updatedShowTracking.Status, newFakeStatus);
+        
+        var activity = await InMemDatabase.Activities
+            .Where(a => a.UserRemoteId.Equals(fakeUserRemoteId))
+            .FirstOrDefaultAsync();
+        Assert.IsNotNull(activity);
+        Assert.AreEqual(ActivityMediaType.Show, activity.MediaType);
+        Assert.AreEqual(ActivityAction.Update, activity.Action);
     }
 
     [TestMethod]
