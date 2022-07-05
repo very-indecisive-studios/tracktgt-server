@@ -9,6 +9,9 @@ namespace Persistence.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Activities");
+            
             migrationBuilder.CreateTable(
                 name: "Activities",
                 columns: table => new
