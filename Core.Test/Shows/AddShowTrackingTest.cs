@@ -131,18 +131,9 @@ public class AddShowTrackingTest
     [TestMethod]
     public async Task AddShowTracking_UserNotFound()
     {
-        // Setup
-        var fakeAPIShow = new APIShow(
-            "m_123",
-            "",
-            "Chaos Chef",
-            "Won Movie of the Year",
-            ShowType.Movie
-        );
-
         var command = new AddShowTrackingCommand(
             "abcd",
-            fakeAPIShow.Id,
+            "s_shownotexist",
             200,
             ShowTrackingStatus.Planning
         );

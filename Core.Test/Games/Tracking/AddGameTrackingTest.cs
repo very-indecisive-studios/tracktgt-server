@@ -139,20 +139,9 @@ public class AddGameTrackingTest
     [TestMethod]
     public async Task AddBookTracking_UserNotFound()
     {
-        // Setup
-        var fakeAPIGame = new APIGame(
-            123,
-            "",
-            "Chaos Chef",
-            "Won Game of the Year",
-            1,
-            new List<string> { "PC" },
-            new List<string> { "SONY" }
-        );
-
         var command = new AddGameTrackingCommand(
             "abcd",
-            fakeAPIGame.Id,
+            123,
             200,
             "PC",
             GameTrackingFormat.Digital,

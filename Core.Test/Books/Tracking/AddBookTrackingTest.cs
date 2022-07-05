@@ -137,18 +137,9 @@ public class AddBookTrackingTest
     [TestMethod]
     public async Task AddBookTracking_UserNotFound()
     {
-        // Setup
-        var fakeAPIBook = new APIBook(
-            "2BOOKNOTEXIST",
-            "",
-            "Chaos Chef",
-            "Won Book of the Year",
-            new List<string> { "Very Indecisive Studios" }
-        );
-
         var command = new AddBookTrackingCommand(
             "abcd",
-            fakeAPIBook.Id,
+            "does not exist",
             200,
             BookTrackingFormat.Digital,
             BookTrackingStatus.Planning,
