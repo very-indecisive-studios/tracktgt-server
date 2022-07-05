@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Exceptions;
+using AutoMapper;
 using Core.Games.Tracking;
+using Core.Exceptions;
 using Domain;
+using Domain.Media;
 using Domain.Tracking;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Moq.EntityFrameworkCore;
 using Persistence;
 
 namespace Core.Test.Games.Tracking;
@@ -15,63 +18,91 @@ namespace Core.Test.Games.Tracking;
 [TestClass]
 public class RemoveGameTrackingTest
 {
-    private static Mock<DatabaseContext>? MockDatabase { get; set; }
+    private static SqliteConnection? Connection { get; set; }
+
+    private static DbContextOptions<DatabaseContext>? ContextOptions { get; set; }
+
+    private static DatabaseContext? InMemDatabase { get; set; }
+
+    private static IMapper? Mapper { get; set; }
 
     private static RemoveGameTrackingHandler? RemoveGameTrackingHandler { get; set; }
 
-    [ClassInitialize]
-    public static void TestClassInit(TestContext context)
-    {
-        MockDatabase = new Mock<DatabaseContext>();
+    private const string FakeUserRemoteId = "d33Z_NuT5";
+    private const long FakeGameRemoteId = 0;
 
-        RemoveGameTrackingHandler = new RemoveGameTrackingHandler(MockDatabase.Object);
-    }
-    
-    [TestCleanup]
-    public void TestCaseCleanup()
+    [ClassInitialize]
+    public static async Task TestClassInit(TestContext context)
     {
-        MockDatabase.Reset();
+        var fakeGame = new Game()
+        {
+            RemoteId = FakeGameRemoteId
+        };
+        
+        var fakeGameTrackingsList = new List<GameTracking>()
+        {
+            new()
+            {
+                UserRemoteId = FakeUserRemoteId,
+                GameRemoteId = FakeGameRemoteId,
+                HoursPlayed = 100,
+                Platform = "PC",
+                Format = GameTrackingFormat.Digital,
+                Status = GameTrackingStatus.Paused,
+                Ownership = GameTrackingOwnership.Owned
+            }
+        };
+
+        // Setup in memory database
+        Connection = new SqliteConnection("Filename=:memory:");
+        Connection.Open();
+
+        ContextOptions = new DbContextOptionsBuilder<DatabaseContext>()
+            .UseSqlite(Connection)
+            .Options;
+
+        InMemDatabase = new DatabaseContext(ContextOptions);
+        await InMemDatabase.Database.EnsureCreatedAsync();
+        InMemDatabase.GameTrackings.AddRange(fakeGameTrackingsList);
+        InMemDatabase.Games.Add(fakeGame);
+        await InMemDatabase.SaveChangesAsync();
+
+        var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile<MappingProfiles>(); });
+        Mapper = mappingConfig.CreateMapper();
+
+        RemoveGameTrackingHandler = new RemoveGameTrackingHandler(InMemDatabase);
     }
 
     [TestMethod]
     public async Task RemoveGameTracking_Exists()
     {
         // Setup
-        var fakeGameRemoteId = 1;
-        var fakeUserRemoteId = "d33Z_NuT5";
-        var fakePlatform = "PC";
-        var fakeGameTracking = new GameTracking
-        {
-            GameRemoteId = fakeGameRemoteId,
-            UserRemoteId = fakeUserRemoteId,
-            Platform = fakePlatform
-        };
-
-        MockDatabase!.Setup(databaseContext => databaseContext.GameTrackings)
-            .ReturnsDbSet(new List<GameTracking> { fakeGameTracking });
-
-        var command = new RemoveGameTrackingCommand(fakeUserRemoteId, fakeGameRemoteId, fakePlatform);
+        var command = new RemoveGameTrackingCommand(FakeUserRemoteId, FakeGameRemoteId, "PC");
         
         // Execute
         await RemoveGameTrackingHandler!.Handle(command, CancellationToken.None);
 
         // Verify
-        MockDatabase.Verify(databaseContext => databaseContext.GameTrackings.Remove(fakeGameTracking));
+        var count = await InMemDatabase!.GameTrackings
+            .Where(b => b.UserRemoteId.Equals(FakeUserRemoteId) 
+                        && b.GameRemoteId.Equals(FakeGameRemoteId))
+            .CountAsync();
+        Assert.AreEqual(0, count);
+        
+        var activity = await InMemDatabase.Activities
+            .Where(a => a.UserRemoteId.Equals(FakeUserRemoteId))
+            .FirstOrDefaultAsync();
+        Assert.IsNotNull(activity);
+        Assert.AreEqual(ActivityMediaType.Game, activity.MediaType);
+        Assert.AreEqual(ActivityAction.Remove, activity.Action);
     }
 
     [TestMethod]
     public async Task RemoveGameTracking_NotExists()
     {
         // Setup
-        var fakeGameRemoteId = 1;
-        var fakeUserRemoteId = "d33Z_NuT5";
-        var fakePlatform = "PC";
+        var command = new RemoveGameTrackingCommand(FakeUserRemoteId, FakeGameRemoteId, "PS4");
 
-        MockDatabase!.Setup(databaseContext => databaseContext.GameTrackings)
-            .ReturnsDbSet(new List<GameTracking>());
-
-        var command = new RemoveGameTrackingCommand(fakeUserRemoteId, fakeGameRemoteId, fakePlatform);
-        
         // Execute
         // Verify
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => 

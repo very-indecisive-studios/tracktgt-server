@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Core.Users;
+namespace Core.Users.Account;
 
 public record GetUserStatsQuery(string UserRemoteId) : IRequest<GetUserStatsResult>;
 
@@ -18,10 +18,8 @@ public class GetUserStatsValidator : AbstractValidator<GetUserStatsQuery>
 
 public record GetUserStatsResult(
     float GamingHours,
-    int ShowsWatched,
-    int ChaptersRead,
-    int Following,
-    int Followers
+    int EpisodesWatched,
+    int ChaptersRead
 );
 
 public class GetUserStatsHandler : IRequestHandler<GetUserStatsQuery, GetUserStatsResult>
@@ -40,7 +38,7 @@ public class GetUserStatsHandler : IRequestHandler<GetUserStatsQuery, GetUserSta
             .Where(gt => gt.UserRemoteId == query.UserRemoteId)
             .SumAsync(gt => gt.HoursPlayed, cancellationToken);
 
-        var showsWatched = await _databaseContext.ShowTrackings
+        var episodesWatched = await _databaseContext.ShowTrackings
             .AsNoTracking()
             .Where(st => st.UserRemoteId == query.UserRemoteId)
             .SumAsync(st => st.EpisodesWatched, cancellationToken);
@@ -49,15 +47,7 @@ public class GetUserStatsHandler : IRequestHandler<GetUserStatsQuery, GetUserSta
             .AsNoTracking()
             .Where(bt => bt.UserRemoteId == query.UserRemoteId)
             .SumAsync(bt => bt.ChaptersRead, cancellationToken);
-        
-        var following = await _databaseContext.Follows
-            .AsNoTracking()
-            .Where(f => f.FollowerUserId == query.UserRemoteId).CountAsync(cancellationToken);
-        
-        var followers = await _databaseContext.Follows
-            .AsNoTracking()
-            .Where(f => f.FollowingUserId == query.UserRemoteId).CountAsync(cancellationToken);
 
-        return new GetUserStatsResult(gamingHours,showsWatched,chaptersRead,following,followers);
+        return new GetUserStatsResult(gamingHours, episodesWatched, chaptersRead);
     }
 }

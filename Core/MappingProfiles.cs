@@ -8,7 +8,11 @@ using Core.Games.Wishlist;
 using Core.Pricing.Switch;
 using Core.Shows;
 using Core.Users;
+using Core.Users.Account;
+using Core.Users.Activity;
+using Core.Users.Following;
 using Core.Users.Preferences;
+using Core.Users.Register;
 
 namespace Core;
 
@@ -33,10 +37,14 @@ public class MappingProfiles : Profile
         GetUserMappings.Map(this);
         UpdateProfilePicMappings.Map(this);
         UpdateBioMappings.Map(this);
+        GetUserByUserNameMappings.Map(this);
+        SearchUsersMappings.Map(this);
         #endregion
         
         #region Follows
         FollowUserMappings.Map(this);
+        GetUserFollowersMappings.Map(this);
+        GetUserFollowingsMappings.Map(this);
         #endregion
         
         #region Shows

@@ -46,6 +46,27 @@ public class RemoveGameTrackingHandler : IRequestHandler<RemoveGameTrackingComma
         }
 
         _databaseContext.GameTrackings.Remove(gameTracking);
+
+        var game = await _databaseContext.Games
+            .AsNoTracking()
+            .Where(g => g.RemoteId == command.GameRemoteId)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (game == null)
+        {
+            throw new NotFoundException("Game not found!");
+        }
+        
+        Activity activity = new Activity();
+        activity.UserRemoteId = command.UserRemoteId;
+        activity.Status = gameTracking.Status.ToString();
+        activity.NoOf = (int) gameTracking.HoursPlayed;
+        activity.MediaRemoteId = game.RemoteId.ToString();
+        activity.MediaTitle = game.Title;
+        activity.MediaCoverImageURL = game.CoverImageURL;
+        activity.MediaType = ActivityMediaType.Game;
+        activity.Action = ActivityAction.Remove;
+        _databaseContext.Activities.Add(activity);
+        
         await _databaseContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;

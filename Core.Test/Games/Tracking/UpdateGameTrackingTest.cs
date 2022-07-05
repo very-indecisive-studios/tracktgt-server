@@ -5,6 +5,7 @@ using AutoMapper;
 using Core.Exceptions;
 using Core.Games.Tracking;
 using Domain;
+using Domain.Media;
 using Domain.Tracking;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -73,6 +74,10 @@ public class UpdateGameTrackingTest
             Status = fakeStatus,
             Ownership = fakeOwnership
         });
+        InMemDatabase.Games.Add(new Game
+        {
+            RemoteId = fakeGameRemoteId
+        });
         await InMemDatabase.SaveChangesAsync(CancellationToken.None);
 
         var newFakeHoursPlayed = 25;
@@ -96,6 +101,13 @@ public class UpdateGameTrackingTest
         Assert.AreEqual(updatedGameTracking.Format, newFakeFormat);
         Assert.AreEqual(updatedGameTracking.Status, newFakeStatus);
         Assert.AreEqual(updatedGameTracking.Ownership, newFakeOwnership);
+        
+        var activity = await InMemDatabase.Activities
+            .Where(a => a.UserRemoteId.Equals(fakeUserRemoteId))
+            .FirstOrDefaultAsync();
+        Assert.IsNotNull(activity);
+        Assert.AreEqual(ActivityMediaType.Game, activity.MediaType);
+        Assert.AreEqual(ActivityAction.Update, activity.Action);
     }
 
     [TestMethod]

@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
+using Domain.User;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Domain;
-using Domain.User;
 using Persistence;
 
-namespace Core.Users;
+namespace Core.Users.Register;
 
 public record RegisterUserCommand(
     string UserRemoteId,

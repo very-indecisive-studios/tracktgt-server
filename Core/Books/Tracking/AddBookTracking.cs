@@ -42,13 +42,11 @@ public static class AddBookTrackingMappings
 public class AddBookTrackingHandler : IRequestHandler<AddBookTrackingCommand, Unit>
 {
     private readonly DatabaseContext _dbContext;
-    private readonly IBookService _bookService;
     private readonly IMapper _mapper;
 
-    public AddBookTrackingHandler(DatabaseContext dbContext, IBookService bookService, IMapper mapper)
+    public AddBookTrackingHandler(DatabaseContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
-        _bookService = bookService;
         _mapper = mapper;
     }
 
@@ -77,27 +75,29 @@ public class AddBookTrackingHandler : IRequestHandler<AddBookTrackingCommand, Un
             throw new ExistsException("Tracked book already exists!");
         }
         
-        // Verify book id.
-        bool isBookExists = await _dbContext.Books
-            .AsNoTracking()
-            .Where(b => b.RemoteId == command.BookRemoteId)
-            .AnyAsync(cancellationToken);
-        // Fetch from external API and store in db if book not cached
-        if (!isBookExists)
-        {
-            APIBook? apiBook = await _bookService.GetBookById(command.BookRemoteId);
-
-            if (apiBook == null)
-            {
-                throw new NotFoundException("Book not found!");
-            }
-
-            Book book = _mapper.Map<APIBook, Book>(apiBook);
-            _dbContext.Books.Add(book);
-        }
-
         var bookTracking = _mapper.Map<AddBookTrackingCommand, BookTracking>(command);
         _dbContext.BookTrackings.Add(bookTracking);
+        
+        // Verify book id.
+        var book = await _dbContext.Books
+            .AsNoTracking()
+            .Where(b => b.RemoteId == command.BookRemoteId)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (book == null)
+        {
+            throw new NotFoundException("Book not found!");
+        }
+
+        Activity activity = new Activity();
+        activity.UserRemoteId = bookTracking.UserRemoteId;
+        activity.Status = bookTracking.Status.ToString();
+        activity.NoOf = bookTracking.ChaptersRead;
+        activity.MediaRemoteId = book.RemoteId;
+        activity.MediaTitle = book.Title;
+        activity.MediaCoverImageURL = book.CoverImageURL;
+        activity.MediaType = ActivityMediaType.Book;
+        activity.Action = ActivityAction.Add;
+        _dbContext.Activities.Add(activity);
         
         await _dbContext.SaveChangesAsync(cancellationToken);
         

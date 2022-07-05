@@ -3,15 +3,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.Exceptions;
-using Core.Users;
-using Domain;
+using Core.Users.Register;
 using Domain.User;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Persistence;
 
-namespace Core.Test.Users;
+namespace Core.Test.Users.Register;
 
 [TestClass]
 public class RegisterUserTest

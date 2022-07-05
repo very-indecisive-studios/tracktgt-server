@@ -1,8 +1,13 @@
 ﻿using System.Net.Mime;
+using System.Runtime.CompilerServices;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Core.Users;
+using Core.Users.Account;
+using Core.Users.Activity;
+using Core.Users.Following;
 using Core.Users.Preferences;
+using Core.Users.Register;
 
 namespace API.Controllers;
 
@@ -26,7 +31,7 @@ public class UserController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("checkUserExist", Name = nameof(CheckUserExist))]
+    [HttpGet("exist", Name = nameof(CheckUserExist))]
     public Task<CheckUserExistResult> CheckUserExist([FromQuery] CheckUserExistQuery query)
     {
         return Mediator.Send(query);
@@ -38,10 +43,142 @@ public class UserController : APIControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    [HttpGet("{userRemoteId}", Name = nameof(GetUser))]
+    [HttpGet("id/{userRemoteId}", Name = nameof(GetUser))]
     public Task<GetUserResult> GetUser(string userRemoteId)
     {
         return Mediator.Send(new GetUserQuery(userRemoteId));
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserByUserNameResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("username/{userName}", Name = nameof(GetUserByUserName))]
+    public Task<GetUserByUserNameResult> GetUserByUserName(string userName)
+    {
+        return Mediator.Send(new GetUserByUserNameQuery(userName));
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserStatsResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("stats/{userId}", Name = nameof(GetUserStats))]
+    public Task<GetUserStatsResult> GetUserStats(string userId)
+    {
+        return Mediator.Send(new GetUserStatsQuery(userId));
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SearchUsersResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("search/{userName}", Name = nameof(SearchUsers))]
+    public Task<SearchUsersResult> SearchUsers(string userName)
+    {
+        return Mediator.Send(new SearchUsersQuery(userName));
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpPost("follow", Name = nameof(FollowUser))]
+    public Task<Unit> FollowUser(FollowUserCommand followUserCommand)
+    {
+        return Mediator.Send(followUserCommand);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpDelete("follow", Name = nameof(UnfollowUser))]
+    public Task<Unit> UnfollowUser(UnfollowUserCommand unfollowUserCommand)
+    {
+        return Mediator.Send(unfollowUserCommand);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CheckUserFollowingResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("follow/relationship", Name = nameof(CheckUserFollowing))]
+    public Task<CheckUserFollowingResult> CheckUserFollowing([FromQuery] CheckUserFollowingQuery checkUserFollowingQuery)
+    {
+        return Mediator.Send(checkUserFollowingQuery);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserFollowersResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("follow/followers/{userRemoteId}", Name = nameof(GetUserFollowers))]
+    public Task<GetUserFollowersResult> GetUserFollowers(string userRemoteId)
+    {
+        return Mediator.Send(new GetUserFollowersQuery(userRemoteId));
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserFollowingsResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("follow/following/{userRemoteId}", Name = nameof(GetUserFollowings))]
+    public Task<GetUserFollowingsResult> GetUserFollowings(string userRemoteId)
+    {
+        return Mediator.Send(new GetUserFollowingsQuery(userRemoteId));
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetTopUsersResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("follow/top", Name = nameof(GetTopUsers))]
+    public Task<GetTopUsersResult> GetTopUsers([FromQuery] GetTopUsersQuery getTopUsersQuery)
+    {
+        return Mediator.Send(getTopUsersQuery);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpPost("account/profilePicture", Name = nameof(UpdateProfilePic))]
+    public Task<Unit> UpdateProfilePic(UpdateProfilePicCommand updateProfilePicCommand)
+    {
+        return Mediator.Send(updateProfilePicCommand);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpPost("account/bio", Name = nameof(UpdateBio))]
+    public Task<Unit> UpdateBio(UpdateBioCommand updateBioCommand)
+    {
+        return Mediator.Send(updateBioCommand);
     }
     
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetPricingUserPreferenceResult))]
@@ -67,4 +204,40 @@ public class UserController : APIControllerBase
     {
         return Mediator.Send(command);
     }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserActivitiesResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("activity/{userRemoteId}", Name = nameof(GetUserActivities))]
+    public Task<GetUserActivitiesResult> GetUserActivities(string userRemoteId)
+    {
+        return Mediator.Send(new GetUserActivitiesQuery(userRemoteId));
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetGlobalActivitiesResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("activity/global", Name = nameof(GetGlobalActivities))]
+    public Task<GetGlobalActivitiesResult> GetGlobalActivities()
+    {
+        return Mediator.Send(new GetGlobalActivitiesQuery());
+    }
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserFollowingsActivitiesResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("activity/timeline/{userRemoteId}", Name = nameof(GetTimeline))]
+    public Task<GetUserFollowingsActivitiesResult> GetTimeline(string userRemoteId)
+    {
+        return Mediator.Send(new GetUserFollowingsActivitiesQuery(userRemoteId));
+    }
+    
 }

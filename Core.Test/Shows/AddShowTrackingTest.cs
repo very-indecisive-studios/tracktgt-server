@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Core.Exceptions;
 using Core.Shows;
 using Domain;
@@ -26,8 +25,6 @@ public class AddShowTrackingTest
     private static DbContextOptions<DatabaseContext>? ContextOptions { get; set; }
     
     private static DatabaseContext? InMemDatabase { get; set; }
-    
-    private static Mock<IShowService>? MockShowService { get; set; }
 
     private static IMapper? Mapper { get; set; }
     
@@ -65,15 +62,13 @@ public class AddShowTrackingTest
 
         await InMemDatabase.SaveChangesAsync();
 
-        MockShowService = new Mock<IShowService>();
-
         var mappingConfig = new MapperConfiguration(mc =>
         {
             mc.AddProfile<MappingProfiles>();
         });
         Mapper = mappingConfig.CreateMapper();
 
-        AddShowTrackingHandler = new AddShowTrackingHandler(InMemDatabase, MockShowService.Object, Mapper);
+        AddShowTrackingHandler = new AddShowTrackingHandler(InMemDatabase, Mapper);
     }
 
     [ClassCleanup]
@@ -81,15 +76,9 @@ public class AddShowTrackingTest
     {
         await Connection!.DisposeAsync();
     }
-    
-    [TestCleanup]
-    public void TestCaseCleanup()
-    {
-        MockShowService.Reset();
-    }
 
     [TestMethod]
-    public async Task AddShowTracking_Cached()
+    public async Task AddShowTracking_Default()
     {
         // Setup
         var command = new AddShowTrackingCommand(
@@ -103,52 +92,20 @@ public class AddShowTrackingTest
         await AddShowTrackingHandler!.Handle(command, CancellationToken.None);
         
         // Verify
-        MockShowService!.Verify(service => service.GetShowById(It.IsAny<string>()), Times.Never);
         var showTracking = await InMemDatabase!.ShowTrackings
             .Where(showTracking => showTracking.ShowRemoteId.Equals(FakeExistingShowId) 
                                    && showTracking.UserRemoteId.Equals(FakeExistingUserId))
             .CountAsync();
         Assert.AreEqual(1, showTracking);
+        
+        var activity = await InMemDatabase.Activities
+            .Where(a => a.UserRemoteId.Equals(FakeExistingUserId))
+            .FirstOrDefaultAsync();
+        Assert.IsNotNull(activity);
+        Assert.AreEqual(ActivityMediaType.Show, activity.MediaType);
+        Assert.AreEqual(ActivityAction.Add, activity.Action);
     }
-    
-    [TestMethod]
-    public async Task AddShowTracking_NoCached_APIHit()
-    {
-        // Setup
-        var fakeAPIShow = new APIShow(
-            "m_1223",
-            "",
-            "Chaos Chef",
-            "Underrated Movie of the Year",
-            ShowType.Movie
-        );
 
-        var command = new AddShowTrackingCommand(
-            FakeExistingUserId,
-            fakeAPIShow.Id,
-            1,
-            ShowTrackingStatus.Completed
-        );
-        
-        MockShowService!.Setup(service => service.GetShowById(command.ShowRemoteId))
-            .ReturnsAsync(fakeAPIShow);
-        
-        // Execute
-        await AddShowTrackingHandler!.Handle(command, CancellationToken.None);
-        
-        // Verify
-        MockShowService.Verify(service => service.GetShowById(It.IsAny<string>()));
-        var showTrackingCount = await InMemDatabase!.ShowTrackings
-            .Where(showTracking => showTracking.ShowRemoteId.Equals(FakeExistingShowId) 
-                                   && showTracking.UserRemoteId.Equals(FakeExistingUserId))
-            .CountAsync();
-        Assert.AreEqual(1, showTrackingCount);
-        var showCount = await InMemDatabase.Shows
-            .Where(b => b.RemoteId.Equals(fakeAPIShow.Id))
-            .CountAsync();
-        Assert.AreEqual(1, showCount);
-    }
-    
     [TestMethod]
     public async Task AddShowTracking_TrackingExists()
     {
@@ -159,10 +116,7 @@ public class AddShowTrackingTest
             0,
             ShowTrackingStatus.Planning
         );
-        
-        MockShowService!.Setup(service => service.GetShowById(command.ShowRemoteId))
-            .ReturnsAsync((APIShow?) null);
-        
+
         // Execute & Verify
         await Assert.ThrowsExceptionAsync<ExistsException>(() => AddShowTrackingHandler!.Handle(command, CancellationToken.None));
     }
@@ -178,37 +132,20 @@ public class AddShowTrackingTest
             ShowTrackingStatus.Planning
         );
         
-        MockShowService!.Setup(service => service.GetShowById(command.ShowRemoteId))
-            .ReturnsAsync((APIShow?) null);
-        
         // Execute & Verify
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddShowTrackingHandler!.Handle(command, CancellationToken.None));
-        MockShowService.Verify(service => service.GetShowById(It.IsAny<string>()));
     }
     
     [TestMethod]
     public async Task AddShowTracking_UserNotFound()
     {
-        // Setup
-        var fakeAPIShow = new APIShow(
-            "m_123",
-            "",
-            "Chaos Chef",
-            "Won Movie of the Year",
-            ShowType.Movie
-        );
-
         var command = new AddShowTrackingCommand(
             "abcd",
-            fakeAPIShow.Id,
+            "s_shownotexist",
             200,
             ShowTrackingStatus.Planning
         );
 
-        
-        MockShowService!.Setup(service => service.GetShowById(command.ShowRemoteId))
-            .ReturnsAsync(fakeAPIShow);
-        
         // Execute & Verify
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => AddShowTrackingHandler!.Handle(command, CancellationToken.None));
     }

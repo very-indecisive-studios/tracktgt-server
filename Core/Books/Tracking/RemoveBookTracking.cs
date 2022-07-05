@@ -44,6 +44,27 @@ public class RemoveBookTrackingHandler : IRequestHandler<RemoveBookTrackingComma
         }
 
         _databaseContext.BookTrackings.Remove(bookTracking);
+        
+        var book = await _databaseContext.Books
+            .AsNoTracking()
+            .Where(b => b.RemoteId == command.BookRemoteId)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (book == null)
+        {
+            throw new NotFoundException("Book not found!");
+        }
+
+        Activity activity = new Activity();
+        activity.UserRemoteId = bookTracking.UserRemoteId;
+        activity.Status = bookTracking.Status.ToString();
+        activity.NoOf = bookTracking.ChaptersRead;
+        activity.MediaRemoteId = book.RemoteId;
+        activity.MediaTitle = book.Title;
+        activity.MediaCoverImageURL = book.CoverImageURL;
+        activity.MediaType = ActivityMediaType.Book;
+        activity.Action = ActivityAction.Remove;
+        _databaseContext.Activities.Add(activity);
+        
         await _databaseContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;

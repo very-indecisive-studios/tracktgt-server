@@ -38,13 +38,11 @@ public static class AddShowTrackingMappings
 public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Unit>
 {
     private readonly DatabaseContext _dbContext;
-    private readonly IShowService _showService;
     private readonly IMapper _mapper;
     
-    public AddShowTrackingHandler(DatabaseContext dbContext, IShowService showService, IMapper mapper)
+    public AddShowTrackingHandler(DatabaseContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
-        _showService = showService;
         _mapper = mapper;
     }
 
@@ -74,25 +72,28 @@ public class AddShowTrackingHandler : IRequestHandler<AddShowTrackingCommand, Un
             throw new ExistsException("Tracked show already exists!");
         }
         
-        // Fetch from external API and store in db if show do not exist.
-        bool isShowExists = await _dbContext.Shows
-            .AsNoTracking()
-            .Where(show => show.RemoteId == command.ShowRemoteId)
-            .AnyAsync(cancellationToken);
-
-        if (!isShowExists)
-        {
-            APIShow? apiShow = await _showService.GetShowById(command.ShowRemoteId);
-            
-            if (apiShow == null)
-            {
-                throw new NotFoundException("Show not found!");
-            }
-            _dbContext.Shows.Add(_mapper.Map<APIShow, Show>(apiShow));
-        }
-        
         var showTracking = _mapper.Map<AddShowTrackingCommand, ShowTracking>(command);
         _dbContext.ShowTrackings.Add(showTracking);
+        
+        var show = await _dbContext.Shows
+            .AsNoTracking()
+            .Where(show => show.RemoteId == command.ShowRemoteId)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (show == null)
+        {
+            throw new NotFoundException("Show not found!");
+        }
+        
+        Activity activity = new Activity();
+        activity.UserRemoteId = showTracking.UserRemoteId;
+        activity.Status = showTracking.Status.ToString();
+        activity.NoOf = showTracking.EpisodesWatched;
+        activity.MediaRemoteId = show.RemoteId;
+        activity.MediaTitle = show.Title;
+        activity.MediaCoverImageURL = show.CoverImageURL;
+        activity.MediaType = ActivityMediaType.Show;
+        activity.Action = ActivityAction.Add;
+        _dbContext.Activities.Add(activity);
         
         await _dbContext.SaveChangesAsync(cancellationToken);
         

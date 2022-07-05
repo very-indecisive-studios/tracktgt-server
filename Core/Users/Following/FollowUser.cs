@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
+using Domain.User;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Domain;
-using Domain.User;
 using Persistence;
 
-namespace Core.Users;
+namespace Core.Users.Following;
 
 public record FollowUserCommand(
     string FollowerUserId,
@@ -45,14 +44,15 @@ public class FollowUserHandler : IRequestHandler<FollowUserCommand, Unit>
     public async Task<Unit> Handle(FollowUserCommand command, CancellationToken cancellationToken)
     {
         var isRelationshipExists = await _dbContext.Follows
-            .Where(f => f.FollowerUserId == command.FollowerUserId)
-            .AnyAsync(f => f.FollowingUserId.Equals(command.FollowingUserId), cancellationToken);
+            .Where(f => f.FollowerUserId.Equals(command.FollowerUserId) 
+                        && f.FollowingUserId.Equals(command.FollowingUserId))
+            .AnyAsync(cancellationToken);
         if (isRelationshipExists)
         {
             throw new ExistsException("Already following!");
         }
 
-        _dbContext.Users.Add(_mapper.Map<FollowUserCommand, User>(command));
+        _dbContext.Follows.Add(_mapper.Map<FollowUserCommand, Follow>(command));
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;

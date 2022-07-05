@@ -69,6 +69,10 @@ public class UpdateShowTrackingTest
             EpisodesWatched = fakeEpisodesWatched,
             Status = fakeStatus,
         });
+        InMemDatabase.Shows.Add(new Show()
+        {
+            RemoteId = fakeShowRemoteId
+        });
         await InMemDatabase.SaveChangesAsync(CancellationToken.None);
 
         // Simulated Update
@@ -88,6 +92,13 @@ public class UpdateShowTrackingTest
         Assert.IsNotNull(updatedShowTracking);
         Assert.AreEqual(updatedShowTracking.EpisodesWatched, newFakeEpisodesWatched);
         Assert.AreEqual(updatedShowTracking.Status, newFakeStatus);
+        
+        var activity = await InMemDatabase.Activities
+            .Where(a => a.UserRemoteId.Equals(fakeUserRemoteId))
+            .FirstOrDefaultAsync();
+        Assert.IsNotNull(activity);
+        Assert.AreEqual(ActivityMediaType.Show, activity.MediaType);
+        Assert.AreEqual(ActivityAction.Update, activity.Action);
     }
 
     [TestMethod]

@@ -45,6 +45,27 @@ public class RemoveShowTrackingHandler : IRequestHandler<RemoveShowTrackingComma
         }
 
         _databaseContext.ShowTrackings.Remove(showTracking);
+        
+        var show = await _databaseContext.Shows
+            .AsNoTracking()
+            .Where(show => show.RemoteId == command.ShowRemoteId)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (show == null)
+        {
+            throw new NotFoundException("Show not found!");
+        }
+        
+        Activity activity = new Activity();
+        activity.UserRemoteId = showTracking.UserRemoteId;
+        activity.Status = showTracking.Status.ToString();
+        activity.NoOf = showTracking.EpisodesWatched;
+        activity.MediaRemoteId = show.RemoteId;
+        activity.MediaTitle = show.Title;
+        activity.MediaCoverImageURL = show.CoverImageURL;
+        activity.MediaType = ActivityMediaType.Show;
+        activity.Action = ActivityAction.Remove;
+        _databaseContext.Activities.Add(activity);
+        
         await _databaseContext.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;

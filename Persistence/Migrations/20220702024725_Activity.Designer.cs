@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -10,9 +11,10 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220702024725_Activity")]
+    partial class Activity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,13 +36,10 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("MediaCoverImageURL")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("MediaRemoteId")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("MediaTitle")
+                    b.Property<string>("MediaStatus")
                         .HasColumnType("longtext");
 
                     b.Property<int>("MediaType")
@@ -48,9 +47,6 @@ namespace Persistence.Migrations
 
                     b.Property<int>("NoOf")
                         .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("UserRemoteId")
                         .HasColumnType("longtext");

@@ -4,8 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Moq.EntityFrameworkCore;
 using Core.Exceptions;
 using Core.Shows;
 using Domain;
@@ -36,6 +34,11 @@ public class RemoveShowTrackingTest
     [ClassInitialize]
     public static async Task TestClassInit(TestContext context)
     {
+        var fakeShow = new Show()
+        {
+            RemoteId = FakeShowRemoteId
+        };
+        
         var fakeShowTrackingsList = new List<ShowTracking>()
         {
             new()
@@ -58,6 +61,7 @@ public class RemoveShowTrackingTest
         InMemDatabase = new DatabaseContext(ContextOptions);
         await InMemDatabase.Database.EnsureCreatedAsync();
         InMemDatabase.ShowTrackings.AddRange(fakeShowTrackingsList);
+        InMemDatabase.Shows.Add(fakeShow);
         await InMemDatabase.SaveChangesAsync();
 
         var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile<MappingProfiles>(); });
@@ -81,6 +85,13 @@ public class RemoveShowTrackingTest
                                    && showTracking.ShowRemoteId.Equals(FakeShowRemoteId))
             .CountAsync();
         Assert.AreEqual(0, count);
+        
+        var activity = await InMemDatabase.Activities
+            .Where(a => a.UserRemoteId.Equals(FakeUserRemoteId))
+            .FirstOrDefaultAsync();
+        Assert.IsNotNull(activity);
+        Assert.AreEqual(ActivityMediaType.Show, activity.MediaType);
+        Assert.AreEqual(ActivityAction.Remove, activity.Action);
     }
 
     [TestMethod]

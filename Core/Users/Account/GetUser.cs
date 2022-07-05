@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Core.Exceptions;
-using Domain;
 using Domain.User;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Core.Users;
+namespace Core.Users.Account;
 
 public record GetUserQuery(string UserRemoteId) : IRequest<GetUserResult>;
 
@@ -21,7 +20,9 @@ public class GetUserValidator : AbstractValidator<GetUserQuery>
 
 public record GetUserResult(
     string UserName,
-    string Email
+    string Email,
+    string ProfilePictureURL,
+    string Bio
 );
 
 public static class GetUserMappings
