@@ -34,14 +34,6 @@ public record GetUserActivitiesResult(List<GetUserActivitiesResult.GetUserActivi
     );
 }
 
-public static class GetUserActivitiesMappings
-{
-    public static void Map(Profile profile)
-    {
-        profile.CreateMap<Domain.Activity, GetUserActivitiesResult.GetUserActivitiesItemResult>();
-    }
-}
-
 public class GetUserActivitiesHandler : IRequestHandler<GetUserActivitiesQuery, GetUserActivitiesResult>
 {
     private readonly DatabaseContext _databaseContext;

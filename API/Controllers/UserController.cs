@@ -228,4 +228,16 @@ public class UserController : APIControllerBase
     {
         return Mediator.Send(new GetGlobalActivitiesQuery());
     }
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserFollowingsActivitiesResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [HttpGet("activity/timeline/{userRemoteId}", Name = nameof(GetTimeline))]
+    public Task<GetUserFollowingsActivitiesResult> GetTimeline(string userRemoteId)
+    {
+        return Mediator.Send(new GetUserFollowingsActivitiesQuery(userRemoteId));
+    }
+    
 }
