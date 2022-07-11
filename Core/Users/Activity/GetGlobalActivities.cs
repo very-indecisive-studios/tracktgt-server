@@ -12,6 +12,7 @@ public record GetGlobalActivitiesQuery() : IRequest<GetGlobalActivitiesResult>;
 public record GetGlobalActivitiesResult(List<GetGlobalActivitiesResult.GetGlobalActivitiesItemResult> Items)
 {
     public record GetGlobalActivitiesItemResult(
+        string Id,
         string UserName,
         string ProfilePictureURL,
         string MediaRemoteId,
@@ -46,6 +47,7 @@ public class GetGlobalActivitiesHandler : IRequestHandler<GetGlobalActivitiesQue
                 a => a.UserRemoteId,
                 u => u.RemoteId,
                 (a, u) => new GetGlobalActivitiesResult.GetGlobalActivitiesItemResult(
+                    a.Id.ToString(),
                     u.UserName,
                     u.ProfilePictureURL,
                     a.MediaRemoteId,

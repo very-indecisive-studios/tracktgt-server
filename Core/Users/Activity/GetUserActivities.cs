@@ -22,6 +22,7 @@ public class GetUserActivitiesValidator : AbstractValidator<GetUserActivitiesQue
 public record GetUserActivitiesResult(List<GetUserActivitiesResult.GetUserActivitiesItemResult> Items)
 {
     public record GetUserActivitiesItemResult(
+        string Id,
         string UserName,
         string ProfilePictureURL,
         string MediaRemoteId,
@@ -56,6 +57,7 @@ public class GetUserActivitiesHandler : IRequestHandler<GetUserActivitiesQuery, 
                 a => a.UserRemoteId,
                 u => u.RemoteId,
                 (a, u) => new GetUserActivitiesResult.GetUserActivitiesItemResult(
+                    a.Id.ToString(),
                     u.UserName,
                     u.ProfilePictureURL,
                     a.MediaRemoteId,

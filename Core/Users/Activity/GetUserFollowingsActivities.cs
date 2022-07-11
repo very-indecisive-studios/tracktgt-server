@@ -21,6 +21,7 @@ public record GetUserFollowingsActivitiesResult(
 )
 {
     public record GetUserFollowingsActivitiesItemResult(
+        string Id,
         string UserName,
         string ProfilePictureURL,
         string MediaRemoteId,
@@ -59,6 +60,7 @@ public class GetUserFollowingsActivitiesHandler : IRequestHandler<GetUserFollowi
                 a => a.UserRemoteId,
                 u => u.RemoteId,
                 (a, u) => new GetUserFollowingsActivitiesResult.GetUserFollowingsActivitiesItemResult(
+                    a.Id.ToString(),
                     u.UserName,
                     u.ProfilePictureURL,
                     a.MediaRemoteId,
