@@ -10,6 +10,8 @@ public class GetAllGameWishlistsQuery : PagedListRequest, IRequest<PagedListResu
 {
     public string UserRemoteId { get; set; } = "";
     
+    public bool SortByRecentlyModified { get; set; } = false;
+
     public bool SortByPlatform { get; set; } = false;
 }
 
@@ -44,17 +46,18 @@ public class GetAllGameWishlistsHandler : IRequestHandler<GetAllGameWishlistsQue
             .AsNoTracking()
             .Where(tg => tg.UserRemoteId == query.UserRemoteId);
 
-        if (query.SortByPlatform) queryable = queryable.OrderBy(gt => gt.Platform);
+        if (query.SortByRecentlyModified) queryable = queryable.OrderByDescending(gw => gw.LastModifiedOn);
+        if (query.SortByPlatform) queryable = queryable.OrderBy(gw => gw.Platform);
 
         var joinQueryable = queryable.Join(
             _databaseContext.Games,
-            gt => gt.GameRemoteId,
+            gw => gw.GameRemoteId,
             g => g.RemoteId,
-            (gt, g) => new GetAllGameWishlistsItemResult(
-                gt.GameRemoteId,
+            (gw, g) => new GetAllGameWishlistsItemResult(
+                gw.GameRemoteId,
                 g.Title,
                 g.CoverImageURL,
-                gt.Platform
+                gw.Platform
             )
         );
         

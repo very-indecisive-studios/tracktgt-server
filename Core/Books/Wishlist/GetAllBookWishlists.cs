@@ -10,6 +10,8 @@ namespace Core.Books.Wishlist;
 public class GetAllBookWishlistsQuery : PagedListRequest, IRequest<PagedListResult<GetAllBookWishlistsItemResult>>
 {
     public string UserRemoteId { get; set; } = "";
+    
+    public bool SortByRecentlyModified { get; set; } = false;
 }
 
 public class GetAllBookWishlistsValidator : AbstractValidator<GetAllBookWishlistsQuery>
@@ -40,6 +42,8 @@ public class GetAllBookWishlistsHandler : IRequestHandler<GetAllBookWishlistsQue
         var queryable = _databaseContext.BookWishlists
             .AsNoTracking()
             .Where(bt => bt.UserRemoteId == query.UserRemoteId);
+
+        if (query.SortByRecentlyModified) queryable = queryable.OrderByDescending(bw => bw.LastModifiedOn);
 
         var joinQueryable = queryable.Join(
             _databaseContext.Books,
